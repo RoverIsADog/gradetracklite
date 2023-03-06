@@ -1,18 +1,113 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="utf-8" />
-    <title>Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="./styles.css" />
-  </head>
-  <body>
-    <div id="root"> <!-- Mimick React JS structure while prototyping -->
-      <div id="page-container">
-        <div id="sidebar-container"></div>
-        <div id="caontent-container"></div>
-        <div id="preview-container"></div>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" type="text/css" href="./styles.css" />
+  <link rel="stylesheet" type="text/css" href="./sidebar.css" />
+</head>
+
+<body>
+  <div id="root"> <!-- Mimick React JS structure while prototyping -->
+    <!-- RELATING TO THE SIDEBAR -->
+    <div id="sidebar-container">
+      <div class="card" id="sidebar-card">
+        <!-- Logo -->
+        <div id="logo-container">
+          <img src="./img/logo.png" style="height: 3rem;">
+        </div>
+        <div class="horizontal-line"></div>
+        
+        <!-- Semester list -->
+        <div class="sb-select" id="semesters-container">
+          <!-- List header (img, name, +) -->
+          <div class="sb-select-header">
+            <img class="sb-select-header-ico" src="./img/calendar-svgrepo-com.svg">
+            <div class="sb-select-header-txt">Semesters</div>
+            <img class="sb-select-header-plus sb-selectable" src="./img/plus-svgrepo-com.svg">
+          </div>
+
+          <!-- List of semesters -->
+          <div class="sb-list">
+            <div class="sb-list-element sb-selectable">Winter 2023</div>
+            <div class="sb-list-element sb-selectable">Summer 2023</div>
+            <div class="sb-list-element sb-selectable">Fall 2023</div>
+            <div class="sb-list-element sb-selectable">Winter 2024</div>
+            <div class="sb-list-element sb-selectable">Summer 2024</div>
+            <div class="sb-list-element sb-selectable">Fall 2024</div>
+            <div class="sb-list-element sb-selectable">Winter 2025</div>
+            <div class="sb-list-element sb-selectable">Summer 2025</div>
+            <div class="sb-list-element sb-selectable">Fall 2025</div>
+          </div>
+        </div>
+        <div class="horizontal-line"></div>
+        
+        <!-- Courses list -->
+        <div class="sb-select" id="courses-container">
+          <!-- List header (img, name, +) -->
+          <div class="sb-select-header">
+            <img class="sb-select-header-ico" src="./img/education-books-apple-svgrepo-com.svg">
+            <div class="sb-select-header-txt">Courses</div>
+            <img class="sb-select-header-plus sb-selectable" src="./img/plus-svgrepo-com.svg">
+          </div>
+          
+          <div class="sb-list">
+            <div class="sb-list-element sb-selectable">COMP 111</div>
+            <div class="sb-list-element sb-selectable">COMP 222</div>
+            <div class="sb-list-element sb-selectable">COMP 333</div>
+            <div class="sb-list-element sb-selectable">COMP 444</div>
+            <div class="sb-list-element sb-selectable">COMP 555</div>
+            <div class="sb-list-element sb-selectable">COMP 666</div>
+            <div class="sb-list-element sb-selectable">COMP 777</div>
+          </div>
+        </div>
+        <div class="horizontal-line"></div>
+        
+        <!-- GPA container -->
+        <div class="sidebar-item" id="gpa-container">
+          <span style="color: green;">3.3</span>&nbsp;CGPA
+        </div>
+
+        <!-- Padding -->
+        <div style="height: 100%;"></div>
+
+        <!-- User -->
+        <div class="sb-selectable" id="user-container">
+          <!-- We're not actually storing any user pfp this just is just a random gravatar. -->
+          <img src="./img/identicon.png">
+          <div>
+            <div style="font-size: large; font-weight: bold;">UserName</div>
+            <div>Account Settings</div>
+          </div>
+        </div>
+
+        <!-- Sign out -->
+        <div class="sb-item sb-selectable" id="logout">
+          <img src="./img/sign-out-2-svgrepo-com.svg">
+          <div>Sign out</div>
+        </div>
+
+        <!-- Privacy -->
+        <!-- Sign out -->
+        <div class="sb-item sb-selectable" id="privacy">
+          <img src="./img/contract-line-svgrepo-com.svg">
+          <div>Privacy and Terms</div>
+        </div>
+
+
       </div>
     </div>
-  </body>
+    <!-- RELATING TO THE CONTENT -->
+    <div id="content-container">
+
+    </div>
+    <!-- RELATING TO THE PREVIEW -->
+    <div id="preview-container">
+
+    </div>
+  </div>
+</body>
+
 </html>

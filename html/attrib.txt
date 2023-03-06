@@ -1,0 +1,37 @@
+All icons from SVGRepo and Flaticon are credited below and used
+within the bounds of their respective licenses.
+
+Calendar icon:
+  MIT license
+  https://www.svgrepo.com/svg/500483/calendar
+  element-plus at svgrepo.com. Used with attribution.
+
+Book & apple icon:
+  Attribution CC BY license
+  https://www.svgrepo.com/svg/385297/education-books-apple
+  wishforge.games at svgrepo.com. Used with attribution.
+
+Plus icon:
+  MIT license
+  https://www.svgrepo.com/svg/510136/plus
+  zest at svgrepo.com
+  Modifications: Colour modified to grey.
+
+Gravatar:
+  Generated at http://identicon.net/ using some random string (we forgot).
+
+Logout icon:
+  Public domain
+  https://www.svgrepo.com/svg/469799/sign-out-2
+  Mary Akveo at svgrepo.com
+
+Contract icon:
+  Public domain
+  https://www.svgrepo.com/svg/486130/contract-line
+  SVG Repo at svgrepo.com
+
+Upload icon:
+  CC Attribution license
+  https://www.svgrepo.com/svg/506351/upload
+  Software Mansion at svgrepo.com
+  
