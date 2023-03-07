@@ -7,6 +7,7 @@
   <title>Dashboard</title>
   <link rel="stylesheet" type="text/css" href="./styles.css" />
   <link rel="stylesheet" type="text/css" href="./sidebar.css" />
+  <link rel="stylesheet" type="text/css" href="./content.css" />
 </head>
 
 <body>
@@ -19,7 +20,7 @@
           <img src="./img/logo.png" style="height: 3rem;">
         </div>
         <div class="horizontal-line"></div>
-        
+
         <!-- Semester list -->
         <div class="sb-select" id="semesters-container">
           <!-- List header (img, name, +) -->
@@ -30,12 +31,12 @@
           </div>
 
           <!-- List of semesters -->
-          <div class="sb-list">
+          <div class="sb-list thin-scrollbar">
             <div class="sb-list-element sb-selectable">Winter 2023</div>
             <div class="sb-list-element sb-selectable">Summer 2023</div>
             <div class="sb-list-element sb-selectable">Fall 2023</div>
             <div class="sb-list-element sb-selectable">Winter 2024</div>
-            <div class="sb-list-element sb-selectable">Summer 2024</div>
+            <div class="sb-list-element sb-selectable sb-selected">Summer 2024</div>
             <div class="sb-list-element sb-selectable">Fall 2024</div>
             <div class="sb-list-element sb-selectable">Winter 2025</div>
             <div class="sb-list-element sb-selectable">Summer 2025</div>
@@ -43,7 +44,7 @@
           </div>
         </div>
         <div class="horizontal-line"></div>
-        
+
         <!-- Courses list -->
         <div class="sb-select" id="courses-container">
           <!-- List header (img, name, +) -->
@@ -52,19 +53,19 @@
             <div class="sb-select-header-txt">Courses</div>
             <img class="sb-select-header-plus sb-selectable" src="./img/plus-svgrepo-com.svg">
           </div>
-          
-          <div class="sb-list">
+
+          <div class="sb-list thin-scrollbar">
             <div class="sb-list-element sb-selectable">COMP 111</div>
             <div class="sb-list-element sb-selectable">COMP 222</div>
             <div class="sb-list-element sb-selectable">COMP 333</div>
-            <div class="sb-list-element sb-selectable">COMP 444</div>
+            <div class="sb-list-element sb-selectable sb-selected">COMP 444</div>
             <div class="sb-list-element sb-selectable">COMP 555</div>
             <div class="sb-list-element sb-selectable">COMP 666</div>
             <div class="sb-list-element sb-selectable">COMP 777</div>
           </div>
         </div>
         <div class="horizontal-line"></div>
-        
+
         <!-- GPA container -->
         <div class="sidebar-item" id="gpa-container">
           <span style="color: green;">3.3</span>&nbsp;CGPA
@@ -78,7 +79,7 @@
           <!-- We're not actually storing any user pfp this just is just a random gravatar. -->
           <img src="./img/identicon.png">
           <div>
-            <div style="font-size: large; font-weight: bold;">UserName</div>
+            <div id="username">UserNameThatIsWayTooLongForItsOwnGood</div>
             <div>Account Settings</div>
           </div>
         </div>
@@ -99,8 +100,248 @@
 
       </div>
     </div>
-    <!-- RELATING TO THE CONTENT -->
-    <div id="content-container">
+    <!-- RELATING TO THE CURRENT COURSE -->
+    <div id="course-container">
+      <!-- Another div level here to prevent weird padding/margin problems -->
+      <div id="course-area">
+        <!-- Course information -->
+        <div class="course-info selectable-item">
+          <div class="course-name cap-text" style="display: block;">
+            COMP 444
+          </div>
+          <div style="flex-grow: 1;"></div> <!-- Grow to push away L and R sides -->
+          <div class="course-data">
+            <div class="course-gpa"><span style="color: green">3.3</span> GPA</div>
+            <div class="course-credits">4 Credits</div>
+          </div>
+        </div>
+        <div class="horizontal-line-bold"></div>
+
+        <!-- Show categories in a list -->
+        <div class="category-list thin-scrollbar">
+
+          <!-- Sample Category 1: Quizzes -->
+          <div class="category-item">
+
+            <!-- Category info -->
+            <div class="category-header selectable-item">
+              <div>
+                <div class="category-name"><span style="font-weight: bold;">Quizzes</span> - 20 points (20%)</div>
+                <div class="category-description cap-text">
+                  Thursday every week except im making a super long message that will definitely not fit in the allocated space and it would be good if something stopped me right now instead of displaying this entire run on sentence but actually I will keep going until any and all bugs involving long text will definitely show.
+                </div>
+              </div>
+              <img src="./img/plus-svgrepo-com.svg">
+            </div>
+            <div class="horizontal-line"></div>
+
+            <!-- Grades in that category -->
+            <div class="grade-list">
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Quiz 1</div>
+                  <div class="grade-description cap-text">
+                    Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">4/8 (<span style="color: orange;">50%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Quiz 2</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Quiz 3</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Quiz 3</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">2/8 (<span style="color: red;">25%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Category info -->
+          <div class="category-item">
+
+            <div class="category-header selectable-item">
+              <div>
+                <div class="category-name"><span style="font-weight: bold;">Assignments</span> - 40 points (40%)</div>
+                <div class="category-description cap-text">
+                  Thursday every week except im making a super long message that will definitely not fit in the allocated space and it would be good if something stopped me right now instead of displaying this entire run on sentence but actually I will keep going until any and all bugs involving long text will definitely show.
+                </div>
+              </div>
+              <img src="./img/plus-svgrepo-com.svg">
+            </div>
+            <div class="horizontal-line"></div>
+
+            <!-- Grades in that category -->
+            <div class="grade-list">
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Assignment 1</div>
+                  <div class="grade-description cap-text">
+                    Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">4/8 (<span style="color: orange;">50%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Assignment 2</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Assignment 3</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Assignment 4</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">2/8 (<span style="color: red;">25%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Category info -->
+          <div class="category-item">
+
+            <div class="category-header selectable-item">
+              <div>
+                <div class="category-name"><span style="font-weight: bold;">Exams</span> - 40 points (40%)</div>
+                <div class="category-description cap-text">
+                  Thursday every week except im making a super long message that will definitely not fit in the allocated space and it would be good if something stopped me right now instead of displaying this entire run on sentence but actually I will keep going until any and all bugs involving long text will definitely show.
+                </div>
+              </div>
+              <img src="./img/plus-svgrepo-com.svg">
+            </div>
+            <div class="horizontal-line"></div>
+
+            <!-- Grades in that category -->
+            <div class="grade-list">
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Exam 1</div>
+                  <div class="grade-description cap-text">
+                    Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">4/8 (<span style="color: orange;">50%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Exam 2</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Exam 3</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+              <div class="grade-item selectable-item">
+                <div class="grade-vert-box">
+                  <div class="grade-name cap-text">Ludicrously long grade item description to test if the code css breaks when trying to render it</div>
+                  <div class="grade-description cap-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                  </div>
+                </div>
+                <div class="grade-vert-box">
+                  <div class="grade-score">2/8 (<span style="color: red;">25%</span>)</div>
+                  <div class="grade-weight">weight: 5</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
 
     </div>
     <!-- RELATING TO THE PREVIEW -->

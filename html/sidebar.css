@@ -1,33 +1,36 @@
-/* //////////// SIDEBAR //////////// */
+/* ################ SIDEBAR ################ */
 #sidebar-card {
+  /* To align contents vertically */
   display: flex;
   flex-direction: column;
-  /* Recall: mar=1 padd=1 up & down */
-  height: calc(100% - 4rem);
-  overflow: auto;
-}
 
-#sidebar-card::-webkit-scrollbar {
-  display: none;
+  /* Prevent overflowing,
+  Recall: mar=1 padd=1 up & down */
+  height: calc(100% - 4rem);
 }
 
 .sb-selectable {
+  /* Defines an item in the scrollbar that can be selected,
+  with standardised colour, transition and border roundings. */
   transition: 0.2s;
   border-radius: 0.4rem;
 }
-
-.sb-selectable:hover {
+.sb-selectable:hover, .sb-selected {
   background-color: rgb(191, 191, 191);
 }
 
 /* //////////// SIDEBAR SELECT //////////// */
-/* ++ Header ++ */
+/* CSS applying to a list of choices in the
+sidebar, containing a title (header) with plus
+button to add elements, and a list of selectable
+content. */
+
 .sb-select-header {
+  /* Horizontal align header elements */
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
   align-items: center;
-
 
   max-height: 3rem;
   height: 3rem;
@@ -53,6 +56,13 @@
 .sb-select-header-plus {
   border-radius: 50%;
   height: 50%;
+  display: none;
+}
+
+.sb-select-header:hover .sb-select-header-plus {
+  /* Having trouble animating this + like those in categories' headers :( */
+  display: block;
+  fill: black;
 }
 
 /* ++ List ++ */
@@ -63,8 +73,6 @@
 
   /* Relating to overflow */
   overflow: auto;
-  /* Firefox only for now :( */
-  scrollbar-width: thin;
 }
 
 .sb-list-element {
@@ -73,10 +81,6 @@
   font-size: large;
   border-radius: 0.5rem;
   text-align: left;
-}
-
-.sb-list-element:hover {
-  background-color: rgb(191, 191, 191);
 }
 
 /* //////////// SIDEBAR GPA //////////// */
@@ -100,6 +104,13 @@
   padding-left: 0.5rem;
   overflow: hidden;
   justify-content: center;
+}
+
+#username {
+  font-size: large;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 #user-container>img {

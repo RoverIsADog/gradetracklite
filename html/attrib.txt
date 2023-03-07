@@ -1,3 +1,16 @@
+TODO INCLUDE COPY OF THE LICENSE FOR:
+* SIL OPF (fonts)
+* MIT
+* Attribution CC BY license
+
+[Fonts]
+SIL Open Font License 1.1
+The website uses Montserrat font by the Montserrat Font Project.
+https://github.com/JulietaUla/Montserrat
+
+The TIFF files included in the website are subject to the above license.
+
+[Icons]
 All icons from SVGRepo and Flaticon are credited below and used
 within the bounds of their respective licenses.
 
@@ -34,4 +47,3 @@ Upload icon:
   CC Attribution license
   https://www.svgrepo.com/svg/506351/upload
   Software Mansion at svgrepo.com
-  

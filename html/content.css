@@ -1,0 +1,132 @@
+#course-area {
+  padding: 2rem;
+  max-height: calc(100% - 4rem);
+  
+  display: flex;
+  flex-direction: column;
+}
+
+.selectable-item {
+  padding: 0.5rem;
+  transition: 0.2s;
+  border-radius: 0.5rem;
+}
+
+.selectable-item:hover {
+  background-color: #d9d9d9;
+}
+
+.selected-item {
+  background-color: #d9d9d9;
+}
+
+/* ///////////////// HEADER ///////////////// */
+
+.course-info {
+  display: flex;
+  flex-direction: row;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.course-name {
+  /* Override .cap-text's display: -webkit-box as it doesn't work well
+  if the div is a flex child for whatever reason. */
+  display: block;
+
+  font-size: xxx-large;
+  font-weight: bold;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.course-data {
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+  justify-content: center;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.course-gpa {
+  font-size: x-large;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+/* ///////////////// CATEGORY ///////////////// */
+.category-item {
+  width: 100%;
+}
+
+.category-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.category-header:hover {
+  background-color: #d9d9d9;
+}
+
+.category-header img {
+  margin: 0.5rem;
+  height: 1.5rem;
+
+  /* Relating to appearing on hover */
+  transition: 0.05s;
+  width: 0;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Only display plus if selected */
+.category-header:hover img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.category-header:hover img:hover {
+  background-color: #a8a8a8;
+}
+
+.category-name {
+  white-space: nowrap;
+  font-size: x-large;
+}
+
+.category-description {
+  -webkit-line-clamp: 2;
+}
+
+/* ///////////////// GRADE ///////////////// */
+.grade-item {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: row;
+}
+
+.grade-name {
+  font-size: x-large;
+}
+
+.grade-vert-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.grade-score, .grade-weight {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.grade-score {
+  font-size: x-large;
+
+}
