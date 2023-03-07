@@ -1,3 +1,5 @@
+/* Stuff relating to the entire page only here */
+
 body {
   /* Reset values just in case */
   margin: 0;
@@ -13,7 +15,7 @@ body {
 
 }
 
-/* ############## Scrollbar related ##############  */
+/* #################### Scrollbar related ####################  */
 .thin-scrollbar {
   /* Only works with Firefox right now :( */
   scrollbar-width: thin;
@@ -23,6 +25,7 @@ body {
 ::-webkit-scrollbar-track { background: #f0f0f0; }
 ::-webkit-scrollbar-thumb { background: #cdcdcd; }
 ::-webkit-scrollbar-thumb:hover { background: #a6a6a6; }
+
 
 .cap-text {
   /* Using https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
@@ -37,29 +40,28 @@ body {
 }
 
 #root {
-  display: flex;
-  flex-direction: row;
   height: 100%;
   width: 100%;
+  /* Separate the 3 screen panes horizontally */
+  display: flex;
+  flex-direction: row;
 }
 
 .card {
-  background-color: rgb(242, 242, 242);
-  
-  overflow: hidden;
+  /* Box properties for the sidebar and preview panes. */
+  background-color: #f2f2f2;
   border-radius: 1.5rem;
+  box-shadow: 0 0 0.5rem 0.1em #acacac;
+  overflow: hidden;
+
   padding: 1rem;
   margin: 1rem;
-  max-height: calc(100% - 4rem);
-  
-  box-shadow: 0 0 0.5rem 0.1em rgb(172, 172, 172);
+  max-height: calc(100% - 4rem); /* 2x pad & margin */
 }
 
-#page-container>div {
-  height: 100%;
-}
+/* Define each 3 panes' space using a container div with NO margin/padding to
+avoid weird margin/padding behaviour w.r.t height and width causing overflow.*/
 
-/* Basic box containing the card to avoid weird things happening due to the card's padding and margin. */
 #sidebar-container {
   width: 25%;
   min-width: 17rem;
@@ -78,8 +80,10 @@ body {
   background-color: blanchedalmond;
 }
 
+/* Shared utils */
+
 .horizontal-line {
-  background-color: rgb(217, 217, 217);
+  background-color: #d9d9d9;
   height: 2px;
   margin-top: 1px;
   margin-bottom: 1px;
@@ -87,10 +91,10 @@ body {
 }
 
 .horizontal-line-bold {
-  background-color: rgb(129, 129, 129);
+  background-color: #818181;
   height: 3px;
   margin-top: 1px;
   margin-bottom: 1px;
-  flex-shrink: 0;
   border-radius: 1px;
+  flex-shrink: 0;
 }

@@ -22,46 +22,46 @@
         <div class="horizontal-line"></div>
 
         <!-- Semester list -->
-        <div class="sb-select" id="semesters-container">
+        <div class="sb-choice" id="semesters-container">
           <!-- List header (img, name, +) -->
-          <div class="sb-select-header">
-            <img class="sb-select-header-ico" src="./img/calendar-svgrepo-com.svg">
-            <div class="sb-select-header-txt">Semesters</div>
-            <img class="sb-select-header-plus sb-selectable" src="./img/plus-svgrepo-com.svg">
+          <div class="sb-choice-header">
+            <img class="sb-choice-header-ico" src="./img/calendar-svgrepo-com.svg">
+            <div class="sb-choice-header-name">Semesters</div>
+            <img class="sb-choice-header-plus sb-selectable" src="./img/plus-svgrepo-com.svg">
           </div>
 
           <!-- List of semesters -->
-          <div class="sb-list thin-scrollbar">
-            <div class="sb-list-element sb-selectable">Winter 2023</div>
-            <div class="sb-list-element sb-selectable">Summer 2023</div>
-            <div class="sb-list-element sb-selectable">Fall 2023</div>
-            <div class="sb-list-element sb-selectable">Winter 2024</div>
-            <div class="sb-list-element sb-selectable sb-selected">Summer 2024</div>
-            <div class="sb-list-element sb-selectable">Fall 2024</div>
-            <div class="sb-list-element sb-selectable">Winter 2025</div>
-            <div class="sb-list-element sb-selectable">Summer 2025</div>
-            <div class="sb-list-element sb-selectable">Fall 2025</div>
+          <div class="sb-choice-list thin-scrollbar">
+            <div class="sb-choice-list-element sb-selectable">Winter 2023</div>
+            <div class="sb-choice-list-element sb-selectable">Summer 2023</div>
+            <div class="sb-choice-list-element sb-selectable">Fall 2023</div>
+            <div class="sb-choice-list-element sb-selectable">Winter 2024</div>
+            <div class="sb-choice-list-element sb-selectable sb-selected">Summer 2024</div>
+            <div class="sb-choice-list-element sb-selectable">Fall 2024</div>
+            <div class="sb-choice-list-element sb-selectable">Winter 2025</div>
+            <div class="sb-choice-list-element sb-selectable">Summer 2025</div>
+            <div class="sb-choice-list-element sb-selectable">Fall 2025</div>
           </div>
         </div>
         <div class="horizontal-line"></div>
 
         <!-- Courses list -->
-        <div class="sb-select" id="courses-container">
+        <div class="sb-choice" id="courses-container">
           <!-- List header (img, name, +) -->
-          <div class="sb-select-header">
-            <img class="sb-select-header-ico" src="./img/education-books-apple-svgrepo-com.svg">
-            <div class="sb-select-header-txt">Courses</div>
-            <img class="sb-select-header-plus sb-selectable" src="./img/plus-svgrepo-com.svg">
+          <div class="sb-choice-header">
+            <img class="sb-choice-header-ico" src="./img/education-books-apple-svgrepo-com.svg">
+            <div class="sb-choice-header-name">Courses</div>
+            <img class="sb-choice-header-plus sb-selectable" src="./img/plus-svgrepo-com.svg">
           </div>
 
-          <div class="sb-list thin-scrollbar">
-            <div class="sb-list-element sb-selectable">COMP 111</div>
-            <div class="sb-list-element sb-selectable">COMP 222</div>
-            <div class="sb-list-element sb-selectable">COMP 333</div>
-            <div class="sb-list-element sb-selectable sb-selected">COMP 444</div>
-            <div class="sb-list-element sb-selectable">COMP 555</div>
-            <div class="sb-list-element sb-selectable">COMP 666</div>
-            <div class="sb-list-element sb-selectable">COMP 777</div>
+          <div class="sb-choice-list thin-scrollbar">
+            <div class="sb-choice-list-element sb-selectable">COMP 111</div>
+            <div class="sb-choice-list-element sb-selectable">COMP 222</div>
+            <div class="sb-choice-list-element sb-selectable">COMP 333</div>
+            <div class="sb-choice-list-element sb-selectable sb-selected">COMP 444</div>
+            <div class="sb-choice-list-element sb-selectable">COMP 555</div>
+            <div class="sb-choice-list-element sb-selectable">COMP 666</div>
+            <div class="sb-choice-list-element sb-selectable">COMP 777</div>
           </div>
         </div>
         <div class="horizontal-line"></div>
@@ -72,7 +72,7 @@
         </div>
 
         <!-- Padding -->
-        <div style="height: 100%;"></div>
+        <div style="flex-grow: 1;"></div>
 
         <!-- User -->
         <div class="sb-selectable" id="user-container">
@@ -106,12 +106,12 @@
       <div id="course-area">
         <!-- Course information -->
         <div class="course-info selectable-item">
-          <div class="course-name cap-text" style="display: block;">
+          <div class="course-name cap-text">
             COMP 444
           </div>
           <div style="flex-grow: 1;"></div> <!-- Grow to push away L and R sides -->
           <div class="course-data">
-            <div class="course-gpa"><span style="color: green">3.3</span> GPA</div>
+            <div class="course-gpa"><span style="color: green">3.3</span> GPA (75%)</div>
             <div class="course-credits">4 Credits</div>
           </div>
         </div>
@@ -125,8 +125,12 @@
 
             <!-- Category info -->
             <div class="category-header selectable-item">
-              <div>
-                <div class="category-name"><span style="font-weight: bold;">Quizzes</span> - 20 points (20%)</div>
+              <!-- Max width to allow name to expand, min-width to allow name to shrink -->
+              <div class="category-header-box">
+                <div class="category-header-top">
+                  <div class="category-name cap-text">Quizzes and other stuff that definitely won't fit in this tiny box forcing the text to ellipsis</div>
+                  <div class="category-weight">15/20 (<span style="color: orange;">50%</span>)</div>
+                </div>
                 <div class="category-description cap-text">
                   Thursday every week except im making a super long message that will definitely not fit in the allocated space and it would be good if something stopped me right now instead of displaying this entire run on sentence but actually I will keep going until any and all bugs involving long text will definitely show.
                 </div>
@@ -155,7 +159,7 @@
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Quiz 2</div>
                   <div class="grade-description cap-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                    Lorem ipsum dolor sit amet.
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -165,10 +169,10 @@
               </div>
 
               <div class="grade-item selectable-item">
-                <div class="grade-vert-box">
+                <div class="grade-vert-box" style="flex-grow: 1;">
                   <div class="grade-name cap-text">Quiz 3</div>
                   <div class="grade-description cap-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                    Lorem ipsum dolor sit amet, consectetur.
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -198,10 +202,13 @@
           <div class="category-item">
 
             <div class="category-header selectable-item">
-              <div>
-                <div class="category-name"><span style="font-weight: bold;">Assignments</span> - 40 points (40%)</div>
+              <div class="category-header-box">
+                <div class="category-header-top">
+                  <div class="category-name cap-text">Assignments</div>
+                  <div class="category-weight">15/20 (<span style="color: orange;">50%</span>)</div>
+                </div>
                 <div class="category-description cap-text">
-                  Thursday every week except im making a super long message that will definitely not fit in the allocated space and it would be good if something stopped me right now instead of displaying this entire run on sentence but actually I will keep going until any and all bugs involving long text will definitely show.
+                  Due tuesday every week.
                 </div>
               </div>
               <img src="./img/plus-svgrepo-com.svg">
@@ -215,7 +222,7 @@
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Assignment 1</div>
                   <div class="grade-description cap-text">
-                    Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long.
+                    Assignmnent 1 description
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -228,7 +235,7 @@
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Assignment 2</div>
                   <div class="grade-description cap-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                    Assignmnent 2 description
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -241,7 +248,7 @@
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Assignment 3</div>
                   <div class="grade-description cap-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                    Assignmnent 3 description
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -254,7 +261,7 @@
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Assignment 4</div>
                   <div class="grade-description cap-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                    Assignmnent 4 description
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -271,10 +278,13 @@
           <div class="category-item">
 
             <div class="category-header selectable-item">
-              <div>
-                <div class="category-name"><span style="font-weight: bold;">Exams</span> - 40 points (40%)</div>
+              <div class="category-header-box">
+                <div class="category-header-top">
+                  <div class="category-name cap-text">Exams</div>
+                  <div class="category-weight">15/20 (<span style="color: orange;">50%</span>)</div>
+                </div>
                 <div class="category-description cap-text">
-                  Thursday every week except im making a super long message that will definitely not fit in the allocated space and it would be good if something stopped me right now instead of displaying this entire run on sentence but actually I will keep going until any and all bugs involving long text will definitely show.
+                  Due tuesday every week.
                 </div>
               </div>
               <img src="./img/plus-svgrepo-com.svg">
@@ -288,7 +298,7 @@
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Exam 1</div>
                   <div class="grade-description cap-text">
-                    Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long.
+                    Assignmnent 1 description
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -301,7 +311,7 @@
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Exam 2</div>
                   <div class="grade-description cap-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                    Assignmnent 2 description
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -314,7 +324,7 @@
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Exam 3</div>
                   <div class="grade-description cap-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                    Assignmnent 3 description
                   </div>
                 </div>
                 <div class="grade-vert-box">
@@ -325,9 +335,9 @@
 
               <div class="grade-item selectable-item">
                 <div class="grade-vert-box">
-                  <div class="grade-name cap-text">Ludicrously long grade item description to test if the code css breaks when trying to render it</div>
+                  <div class="grade-name cap-text">Exam 4</div>
                   <div class="grade-description cap-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi rhoncus sed mauris ac tincidunt. Mauris est eros, fringilla vitae eleifend non, lacinia eu enim. Vestibulum auctor gravida commodo. In sit amet lorem non massa ultrices commodo a sit amet neque.
+                    Assignmnent 4 description
                   </div>
                 </div>
                 <div class="grade-vert-box">
