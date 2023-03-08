@@ -1,24 +1,29 @@
+import React, {useState} from "react";
 import logo from './logo.svg';
 import './App.css';
+import { Login } from './components/Login';
+import { Register } from './components/Register';
+import  Popup  from "./components/Popup";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const [currentForm, setCurrentForm] = useState('login');
+
+  const toggleForm = (formName) => {
+    setCurrentForm(formName);
+  }
+
+  return (<main>
+    <div className="top-bar">
+          <h2 className="top-bar-text">Grade Tracker</h2>
+      </div>
+    <div className="App">   
+      <br/>
+      {
+        currentForm === 'login' ? <Login onFormSwitch={toggleForm}/> : <Register onFormSwitch={toggleForm}/>
+      }
     </div>
+  </main>
+    
   );
 }
 
