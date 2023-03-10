@@ -8,16 +8,8 @@
 
 .selectable-item {
   padding: 0.5rem;
-  transition: 0.2s ease-in-out;
+  transition: 0.15s;
   border-radius: 0.5rem;
-}
-
-.selectable-item:hover {
-  background-color: #d9d9d9;
-}
-
-.selected-item {
-  background-color: #d9d9d9;
 }
 
 /* ################## COURSE INFO ################## */
@@ -79,10 +71,6 @@ hover */
   align-items: center;
 }
 
-.category-header:hover {
-  background-color: #d9d9d9;
-}
-
 .category-header img {
   height: 1.5rem;
 
@@ -100,10 +88,6 @@ hover */
   /* Make hitbox bigger */
   width: 1.5rem;
   height: 1.5rem;
-}
-
-.category-header:hover img:hover {
-  background-color: #a8a8a8;
 }
 
 /* Child of category-header as said above. Mostly here

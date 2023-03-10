@@ -20,7 +20,7 @@
 /* ################## PREVIEW PROPERTY HEADER ################## */
 
 .preview-item-name {
-  padding-left: 0.2rem;
+  padding-left: 0.5rem;
   font-size: large;
   font-weight: bold;
 }
@@ -51,8 +51,8 @@ itself on the right */
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: right;
   font-size: large;
+  text-align: right;
 }
 
 /* ################## VERTICAL PROPERTY ################## */

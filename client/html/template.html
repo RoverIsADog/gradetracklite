@@ -10,6 +10,7 @@
   <link rel="stylesheet" type="text/css" href="./css/content.css" />
   <link rel="stylesheet" type="text/css" href="./css/preview.css" />
   <link rel="stylesheet" type="text/css" href="./css/input.css" />
+  <link rel="stylesheet" type="text/css" href="./css/color-bright.css" />
 </head>
 
 <body>
@@ -18,8 +19,10 @@
     <div id="sidebar-container">
       <div class="card thin-scrollbar" id="sidebar-card">
         <!-- Logo -->
-        <div id="logo-container">
-          <img src="./img/logo.png" style="height: 3rem;">
+        <div id="sb-logo-container">
+          <img src="./img/logo.png" class="not-icon" style="height: 3rem;">
+          <div style="flex-grow: 1;"></div>
+          <img src="./img/day-night-sun-moon-cycle-svgrepo-com.svg" class="toggle-dark sb-selectable">
         </div>
         <div class="horizontal-line"></div>
 
@@ -70,7 +73,7 @@
 
         <!-- GPA container -->
         <div class="sidebar-item" id="gpa-container">
-          <span style="color: green;">3.3</span>&nbsp;CGPA
+          <span class="color-good">3.3</span>&nbsp;CGPA
         </div>
 
         <!-- Padding -->
@@ -79,7 +82,7 @@
         <!-- User -->
         <div class="sb-selectable" id="user-container">
           <!-- We're not actually storing any user pfp this just is just a random gravatar. -->
-          <img src="./img/identicon.png">
+          <img src="./img/identicon.png" class="not-icon">
           <div>
             <div id="username">UserNameThatIsWayTooLongForItsOwnGood</div>
             <div>Account Settings</div>
@@ -113,7 +116,7 @@
           </div>
           <div style="flex-grow: 1;"></div> <!-- Grow to push away L and R sides -->
           <div class="course-data">
-            <div class="course-gpa"><span style="color: green">3.3</span> GPA (75%)</div>
+            <div class="course-gpa"><span class="color-good">3.3</span> GPA (75%)</div>
             <div class="course-credits">4 Credits</div>
           </div>
         </div>
@@ -131,7 +134,7 @@
               <div class="category-header-box">
                 <div class="category-header-top">
                   <div class="category-name cap-text">Quizzes and other stuff that definitely won't fit in this tiny box forcing the text to ellipsis</div>
-                  <div class="category-weight">15/20 (<span style="color: orange;">50%</span>)</div>
+                  <div class="category-weight">15/20 (<span class="color-mid">50%</span>)</div>
                 </div>
                 <div class="category-description cap-text">
                   Thursday every week except im making a super long message that will definitely not fit in the allocated space and it would be good if something stopped me right now instead of displaying this entire run on sentence but actually I will keep going until any and all bugs involving long text will definitely show.
@@ -152,7 +155,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">4/8 (<span style="color: orange;">50%</span>)</div>
+                  <div class="grade-score">4/8 (<span class="color-mid">50%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -165,7 +168,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-score">6/8 (<span class="color-good">75%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -178,7 +181,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-score">6/8 (<span class="color-good">75%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -191,7 +194,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">2/8 (<span style="color: red;">25%</span>)</div>
+                  <div class="grade-score">2/8 (<span class="color-bad">25%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -207,7 +210,7 @@
               <div class="category-header-box">
                 <div class="category-header-top">
                   <div class="category-name cap-text">Assignments</div>
-                  <div class="category-weight">15/20 (<span style="color: orange;">50%</span>)</div>
+                  <div class="category-weight">15/20 (<span class="color-mid">50%</span>)</div>
                 </div>
                 <div class="category-description cap-text">
                   Due tuesday every week.
@@ -228,7 +231,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">4/8 (<span style="color: orange;">50%</span>)</div>
+                  <div class="grade-score">4/8 (<span class="color-mid">50%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -241,7 +244,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-score">6/8 (<span class="color-good">75%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -254,7 +257,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-score">6/8 (<span class="color-good"">75%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -267,7 +270,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">2/8 (<span style="color: red;">25%</span>)</div>
+                  <div class="grade-score">2/8 (<span class="color-bad">25%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -283,7 +286,7 @@
               <div class="category-header-box">
                 <div class="category-header-top">
                   <div class="category-name cap-text">Exams</div>
-                  <div class="category-weight">15/20 (<span style="color: orange;">50%</span>)</div>
+                  <div class="category-weight">15/20 (<span class="color-mid">50%</span>)</div>
                 </div>
                 <div class="category-description cap-text">
                   Due tuesday every week.
@@ -304,7 +307,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">4/8 (<span style="color: orange;">50%</span>)</div>
+                  <div class="grade-score">4/8 (<span class="color-mid">50%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -317,7 +320,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-score">6/8 (<span class="color-good">75%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -330,7 +333,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">6/8 (<span style="color: green;">75%</span>)</div>
+                  <div class="grade-score">6/8 (<span class="color-good">75%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>
@@ -343,7 +346,7 @@
                   </div>
                 </div>
                 <div class="grade-vert-box">
-                  <div class="grade-score">2/8 (<span style="color: red;">25%</span>)</div>
+                  <div class="grade-score">2/8 (<span class="color-bad">25%</span>)</div>
                   <div class="grade-weight">weight: 5</div>
                 </div>
               </div>

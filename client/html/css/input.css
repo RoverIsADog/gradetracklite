@@ -9,7 +9,7 @@ input, textarea {
   padding: 0.5rem 0.2rem 0.5rem 0.2rem;
 
   border: none;
-  border-bottom: solid 1px #d9d9d9;
+  border-bottom: solid 1px;
   border-radius: 0;
 
   font-size: large;
@@ -17,14 +17,11 @@ input, textarea {
 
 input:focus, input:hover, textarea:focus, textarea:hover {
   outline: none;
+  /* See color.css for more details on focus formatting. */
+}
 
-  /* To make the bottom of the text-box thicker while focussed without changing the bottom-border (which would cause the text to jump), use a linear gradient from top to bottom, where the 96% top is transparent, and the bottom 4% is the same colour as the border.
-  This actually kind of breaks for text areas that are super long because 4% of big is big but whatever.
-  */
-  background-color: white;
-  /* Not getting rid of the border here to avoid text jumping */
-  background: linear-gradient(to bottom, #00000000 96%, #d9d9d9 4%), white;
-  
+textarea:focus, textarea:hover {
+  border-bottom-width: 5px ;
 }
 
 input[type="date"] {

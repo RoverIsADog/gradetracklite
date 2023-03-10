@@ -7,11 +7,21 @@
 .sb-selectable {
   /* Defines an item in the scrollbar that can be selected,
   with standardised colour, transition and border roundings. */
-  transition: 0.2s ease-in-out;
+  transition: 0.15s;
   border-radius: 0.4rem;
 }
-.sb-selectable:hover, .sb-selected {
-  background-color: rgb(191, 191, 191);
+
+#sb-logo-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.toggle-dark {
+  /* Button used to toggle dark mode. */
+  height: 2rem;
+  padding: 0.5rem;
+  border-radius: 50%;
 }
 
 /* ################## SIDEBAR CHOICE ################## */
@@ -33,7 +43,7 @@ elements, and a list of selectable content. */
 }
 
 .sb-choice-header-ico {
-  height: auto;
+  height: 2.2rem;
   width: 2.2rem;
 }
 
