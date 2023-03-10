@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { RegisterForm } from "../components/RegisterForm";
 import { LoginForm } from "../components/LoginForm";
-import "../css/AuthPage.css";
+import "../css/authpage.css";
 
 /**
  * Component responsible for rendering the login and register pages.
@@ -19,7 +19,7 @@ function AuthPage() {
       <div className="top-bar">
         <h2 className="top-bar-text">Grade Tracker</h2>
       </div>
-      <div className="App">
+      <div className="auth-page">
         <br />
         {currentForm === "login" ? <LoginForm onFormSwitch={toggleForm} /> : <RegisterForm onFormSwitch={toggleForm} />}
       </div>
