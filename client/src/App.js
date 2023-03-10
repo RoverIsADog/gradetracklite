@@ -1,29 +1,31 @@
-import React, {useState} from "react";
-import logo from './logo.svg';
-import './App.css';
-import { Login } from './components/Login';
-import { Register } from './components/Register';
-import  Popup  from "./components/Popup";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Attributions from "./pages/Attributions";
+import AuthPage from "./pages/AuthPage";
+import Dashboard from "./pages/Dashboard"; // Path: /app
 
 function App() {
-  const [currentForm, setCurrentForm] = useState('login');
+  /* 
+  On page load, the user will either be directed to the login/registration page if they enter
+  the path '/' and the dashboard page otherwise.
 
-  const toggleForm = (formName) => {
-    setCurrentForm(formName);
-  }
+  React router paths are clientside only (React-Router intercepts Link clicks & rerenders the
+  page). If the user refreshes on a production build, they will get a 404.
 
-  return (<main>
-    <div className="top-bar">
-          <h2 className="top-bar-text">Grade Tracker</h2>
-      </div>
-    <div className="App">   
-      <br/>
-      {
-        currentForm === 'login' ? <Login onFormSwitch={toggleForm}/> : <Register onFormSwitch={toggleForm}/>
-      }
-    </div>
-  </main>
-    
+  https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually
+  
+  If we host on mimi, we'll have to have rewrite rules to send the paths to the compiled
+  index.html (so that React-Router can render the appropriate page).
+
+  Unless to add new pages or add common element (eg a common header), App.js should not contain any
+  components.
+  */
+  return (
+    <Routes>
+      <Route path="/" element={<AuthPage />}></Route>
+      <Route path="/app" element={<Dashboard />}></Route>
+      <Route path="/attributions" element={<Attributions />}></Route>
+    </Routes>
   );
 }
 
