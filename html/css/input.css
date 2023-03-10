@@ -1,0 +1,49 @@
+/* Material design inspired input fields that "light up" when selected and otherwise
+don't stand out (except for a bottom edge) when unused. */
+
+input, textarea {
+  background: none;
+  transition: 0.1s;
+
+  margin: 0;
+  padding: 0.5rem 0.2rem 0.5rem 0.2rem;
+
+  border: none;
+  border-bottom: solid 1px #d9d9d9;
+  border-radius: 0;
+
+  font-size: large;
+}
+
+input:focus, input:hover, textarea:focus, textarea:hover {
+  outline: none;
+
+  /* To make the bottom of the text-box thicker while focussed without changing the bottom-border (which would cause the text to jump), use a linear gradient from top to bottom, where the 96% top is transparent, and the bottom 4% is the same colour as the border.
+  This actually kind of breaks for text areas that are super long because 4% of big is big but whatever.
+  */
+  background-color: white;
+  /* Not getting rid of the border here to avoid text jumping */
+  background: linear-gradient(to bottom, #00000000 96%, #d9d9d9 4%), white;
+  
+}
+
+input[type="date"] {
+  /* Segoe UI looks pretty bad so I changed it */
+  font-family: 'Verdana', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+textarea {
+  resize: vertical;
+  /* For whatever reason fonts are reset inside textareas */
+  font-family: 'Segoe UI', 'Verdana', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.input-small {
+  /* Designed for 3 or less characters */
+  text-align: center;
+  width: 3em;
+}

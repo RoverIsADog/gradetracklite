@@ -1,0 +1,108 @@
+/* Stuff relating to the entire page only here */
+
+body {
+  /* Reset values just in case */
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  width: 100vw;
+  height: 100vh;
+
+  /* Fallback fonts copied from create-react-app */
+  font-family: 'Segoe UI', 'Verdana', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+ /*background-color: rgb(250, 245, 239); */
+}
+
+/* #################### Scrollbar related ####################  */
+.thin-scrollbar {
+  /* Only works with Firefox right now :( */
+  scrollbar-width: thin;
+}
+/* Other than Firefox */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f0f0f0; }
+::-webkit-scrollbar-thumb { background: #cdcdcd; }
+::-webkit-scrollbar-thumb:hover { background: #a6a6a6; }
+
+/* #################### Shared utils #################### */
+
+.horizontal-line {
+  background-color: #d9d9d9;
+  height: 2px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  flex-shrink: 0;
+}
+
+.horizontal-line-bold {
+  background-color: #818181;
+  height: 3px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.cap-text {
+  /* Using https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
+  instead of raw text-overflow: ellipsis because that option only works for
+  one line. Doesn't work for the 2 ppl still using edge but whatever.
+  Class members should override -webkit-line-clamp for more than one line. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; /* Override me */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* #################### Pane container related ####################  */
+
+#root {
+  height: 100%;
+  width: 100%;
+  /* Separate the 3 screen panes horizontally */
+  display: flex;
+  flex-direction: row;
+}
+
+.card {
+  /* Box properties for the sidebar and preview panes. */
+  background-color: #f2f2f2;
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem 0.1em #acacac;
+  
+  overflow: auto; /* Just in case */
+
+  padding: 1rem;
+  margin: 1rem;
+  /* Prevent overflowing (2 x (mar + pad)) */
+  max-height: calc(100% - 4rem);
+  height: calc(100% - 4rem);
+
+}
+
+/* Define each 3 panes' space using a container div with NO margin/padding to
+avoid weird margin/padding behaviour w.r.t height and width causing overflow.*/
+
+#sidebar-container {
+  width: 25%;
+  min-width: 17rem;
+  max-width: 22rem;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+#course-container {
+  width: 50%;
+  max-height: 100%;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+#preview-container {
+  min-width: 25rem;
+  width: 25%;
+}
