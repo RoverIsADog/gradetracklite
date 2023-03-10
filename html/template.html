@@ -5,16 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta charset="utf-8" />
   <title>Dashboard</title>
-  <link rel="stylesheet" type="text/css" href="./styles.css" />
-  <link rel="stylesheet" type="text/css" href="./sidebar.css" />
-  <link rel="stylesheet" type="text/css" href="./content.css" />
+  <link rel="stylesheet" type="text/css" href="./css/styles.css" />
+  <link rel="stylesheet" type="text/css" href="./css/sidebar.css" />
+  <link rel="stylesheet" type="text/css" href="./css/content.css" />
+  <link rel="stylesheet" type="text/css" href="./css/preview.css" />
+  <link rel="stylesheet" type="text/css" href="./css/input.css" />
 </head>
 
 <body>
   <div id="root"> <!-- Mimick React JS structure while prototyping -->
     <!-- RELATING TO THE SIDEBAR -->
     <div id="sidebar-container">
-      <div class="card" id="sidebar-card">
+      <div class="card thin-scrollbar" id="sidebar-card">
         <!-- Logo -->
         <div id="logo-container">
           <img src="./img/logo.png" style="height: 3rem;">
@@ -142,7 +144,7 @@
             <!-- Grades in that category -->
             <div class="grade-list">
 
-              <div class="grade-item selectable-item">
+              <div class="grade-item selectable-item selected-item">
                 <div class="grade-vert-box">
                   <div class="grade-name cap-text">Quiz 1</div>
                   <div class="grade-description cap-text">
@@ -356,7 +358,85 @@
     </div>
     <!-- RELATING TO THE PREVIEW -->
     <div id="preview-container">
+      <div class="card thin-scrollbar" id="preview-card">
+        <div class="preview-name">Quiz 1 and more text to test overflow</div>
+        <div class="horizontal-line"></div>
+        <!-- Grade entry -->
+        <div class="preview-item preview-inline">
+          <div class="preview-inline-left">
+            <img class="preview-item-ico" src="./img/abacus-svgrepo-com.svg">
+            <div class="preview-item-name">Grade</div>
+          </div>
+          <div class="preview-inline-right">
+            <div>(50%)&nbsp</div>
+            <label for="points-actual"></label>
+            <input class="input-small" type="text" name="points-actual" value="4">
+            <div>&nbsp/&nbsp</div>
+            <label for="points-max"></label>
+            <input class="input-small" type="text" name="points-max" value="8">
+          </div>
+        </div>
 
+        <!-- Weight entry -->
+        <div class="preview-item preview-inline">
+          <div class="preview-inline-left">
+            <img class="preview-item-ico" src="./img/weight-svgrepo-com.svg">
+            <div class="preview-item-name">Weight</div>
+          </div>
+          <div class="preview-inline-right">
+            <label for="weight"></label>
+            <input class="input-small" type="text" name="weight" value="5">
+          </div>
+        </div>
+
+        <!-- Date entry -->
+        <div class="preview-item preview-inline">
+          <div class="preview-inline-left">
+            <img class="preview-item-ico" src="./img/time-svgrepo-com.svg">
+            <div class="preview-item-name">Date</div>
+          </div>
+          <div class="preview-inline-right">
+            <label for="weight"></label>
+            <input class="input-large" type="date" name="date" value="2023-01-22">
+          </div>
+        </div>
+
+        <!-- Category entry -->
+        <div class="preview-item preview-inline">
+          <div class="preview-inline-left">
+            <img class="preview-item-ico" src="./img/bookshelf-library-svgrepo-com.svg">
+            <div class="preview-item-name">Category</div>
+          </div>
+          <div class="preview-inline-right">
+            <div class="cap-text" style="padding-left: 1rem; -webkit-line-clamp: 3;">
+              Quizzes and other stuff that definitely won't fit in this small space and will probably lead to overflow just to test.
+            </div>
+          </div>
+        </div>
+
+        <!-- Course entry -->
+        <div class="preview-item preview-inline">
+          <div class="preview-inline-left">
+            <img class="preview-item-ico" src="./img/education-books-apple-svgrepo-com.svg">
+            <div class="preview-item-name">Course</div>
+          </div>
+          <div class="preview-inline-right">
+            <div class="cap-text" style="padding-left: 1rem; -webkit-line-clamp: 3;">
+              COMP 444
+            </div>
+          </div>
+        </div>
+
+        <!-- Course entry -->
+        <div class="preview-item preview-vertical">
+          <div class="preview-vertical-about">
+            <img class="preview-item-ico" src="./img/open-book-svgrepo-com.svg">
+            <div class="preview-item-name">Description</div>
+          </div>
+          <textarea name="grade-description" rows="6">Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long.</textarea>
+        </div>
+
+      </div>
     </div>
   </div>
 </body>

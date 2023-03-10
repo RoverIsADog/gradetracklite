@@ -2,16 +2,12 @@
   /* To align contents vertically */
   display: flex;
   flex-direction: column;
-
-  /* Prevent overflowing,
-  Recall: mar=1 padd=1 up & down */
-  height: calc(100% - 4rem);
 }
 
 .sb-selectable {
   /* Defines an item in the scrollbar that can be selected,
   with standardised colour, transition and border roundings. */
-  transition: 0.2s;
+  transition: 0.2s ease-in-out;
   border-radius: 0.4rem;
 }
 .sb-selectable:hover, .sb-selected {
@@ -128,6 +124,11 @@ elements, and a list of selectable content. */
   flex-direction: row;
   padding: 0.5rem;
   height: 2rem;
+}
+
+.sb-item>img {
+  /* Required for chrome */
+  height: inherit;
 }
 
 /* Each sb-item flexbox contains one img and one div */

@@ -1,14 +1,10 @@
-TODO INCLUDE COPY OF THE LICENSE FOR:
-* SIL OPF (fonts)
-* MIT
-* Attribution CC BY license
-
 [Fonts]
 SIL Open Font License 1.1
 The website uses Montserrat font by the Montserrat Font Project.
 https://github.com/JulietaUla/Montserrat
 
-The TIFF files included in the website are subject to the above license.
+The TIFF files downloaded while visiting the website are subject to
+the above license.
 
 [Icons]
 All icons from SVGRepo and Flaticon are credited below and used
@@ -47,3 +43,37 @@ Upload icon:
   CC Attribution license
   https://www.svgrepo.com/svg/506351/upload
   Software Mansion at svgrepo.com
+
+Abacus icon:
+  Public domain
+  https://www.svgrepo.com/svg/485953/abacus
+  brankic1979 at svgrepo.com
+
+Weight icon:
+  Attribution CC BY license
+  https://www.svgrepo.com/svg/331983/weight
+  Amit Jakhu at svgrepo.com
+  
+Clock icon:
+  Public domain
+  https://www.svgrepo.com/svg/506771/time
+  Salah Elimam at svgrepo.com
+
+Bookshelf icon:
+  MIT license
+  https://www.svgrepo.com/svg/455392/bookshelf-library
+  Vectopus at svgrepo.com
+
+Filter (funnel) icon:
+  https://www.svgrepo.com/svg/509927/filter
+  zest at svgrepo.com
+
+Open book icon:
+  Public domain
+  https://www.svgrepo.com/svg/293919/open-book
+  SVG Repo at svgrepo.com
+
+[Licenses]
+As per the terms of some of the licences, here are their copies.
+
+MIT License

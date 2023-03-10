@@ -8,7 +8,7 @@
 
 .selectable-item {
   padding: 0.5rem;
-  transition: 0.2s;
+  transition: 0.2s ease-in-out;
   border-radius: 0.5rem;
 }
 
@@ -87,7 +87,7 @@ hover */
   height: 1.5rem;
 
   /* Relating to appearing on hover */
-  transition: 0.05s;
+  transition: 0.05s ease-in-out;
   width: 0;
   object-fit: cover;
   border-radius: 50%;

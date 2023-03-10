@@ -13,6 +13,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+ /*background-color: rgb(250, 245, 239); */
 }
 
 /* #################### Scrollbar related ####################  */
@@ -26,61 +27,7 @@ body {
 ::-webkit-scrollbar-thumb { background: #cdcdcd; }
 ::-webkit-scrollbar-thumb:hover { background: #a6a6a6; }
 
-
-.cap-text {
-  /* Using https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
-  instead of raw text-overflow: ellipsis because that option only works for
-  one line. Doesn't work for the 2 ppl still using edge but whatever.
-  Class members should override -webkit-line-clamp for more than one line. */
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1; /* Override me */
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#root {
-  height: 100%;
-  width: 100%;
-  /* Separate the 3 screen panes horizontally */
-  display: flex;
-  flex-direction: row;
-}
-
-.card {
-  /* Box properties for the sidebar and preview panes. */
-  background-color: #f2f2f2;
-  border-radius: 1.5rem;
-  box-shadow: 0 0 0.5rem 0.1em #acacac;
-  overflow: hidden;
-
-  padding: 1rem;
-  margin: 1rem;
-  max-height: calc(100% - 4rem); /* 2x pad & margin */
-}
-
-/* Define each 3 panes' space using a container div with NO margin/padding to
-avoid weird margin/padding behaviour w.r.t height and width causing overflow.*/
-
-#sidebar-container {
-  width: 25%;
-  min-width: 17rem;
-  max-width: 25rem;
-  max-height: 100%;
-  overflow: hidden;
-}
-
-#course-container {
-  width: 50%;
-  max-height: 100%;
-}
-
-#preview-container {
-  width: 30%;
-  background-color: blanchedalmond;
-}
-
-/* Shared utils */
+/* #################### Shared utils #################### */
 
 .horizontal-line {
   background-color: #d9d9d9;
@@ -97,4 +44,65 @@ avoid weird margin/padding behaviour w.r.t height and width causing overflow.*/
   margin-bottom: 1px;
   border-radius: 1px;
   flex-shrink: 0;
+}
+
+.cap-text {
+  /* Using https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
+  instead of raw text-overflow: ellipsis because that option only works for
+  one line. Doesn't work for the 2 ppl still using edge but whatever.
+  Class members should override -webkit-line-clamp for more than one line. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; /* Override me */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* #################### Pane container related ####################  */
+
+#root {
+  height: 100%;
+  width: 100%;
+  /* Separate the 3 screen panes horizontally */
+  display: flex;
+  flex-direction: row;
+}
+
+.card {
+  /* Box properties for the sidebar and preview panes. */
+  background-color: #f2f2f2;
+  border-radius: 1rem;
+  box-shadow: 0 0 0.5rem 0.1em #acacac;
+  
+  overflow: auto; /* Just in case */
+
+  padding: 1rem;
+  margin: 1rem;
+  /* Prevent overflowing (2 x (mar + pad)) */
+  max-height: calc(100% - 4rem);
+  height: calc(100% - 4rem);
+
+}
+
+/* Define each 3 panes' space using a container div with NO margin/padding to
+avoid weird margin/padding behaviour w.r.t height and width causing overflow.*/
+
+#sidebar-container {
+  width: 25%;
+  min-width: 17rem;
+  max-width: 22rem;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+#course-container {
+  width: 50%;
+  max-height: 100%;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+#preview-container {
+  min-width: 25rem;
+  width: 25%;
 }
