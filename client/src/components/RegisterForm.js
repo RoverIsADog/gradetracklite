@@ -11,6 +11,14 @@ export const RegisterForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(username);
+    if (true){
+      console.log("Registration successful for", username)
+      props.onFormSwitch('login');
+    }
+    else{
+      console.log("Registration unsuccessful")
+    }
+
   };
 
   return (
