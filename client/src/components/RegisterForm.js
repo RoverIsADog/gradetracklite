@@ -4,7 +4,7 @@ import Popup from "./Popup";
 export const RegisterForm = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [checkbox, setCheckbox] = useState(false);
   const [buttonPopup, setButtonPopup] = useState(false);
 
@@ -26,9 +26,9 @@ export const RegisterForm = (props) => {
         <label htmlFor="password">Password</label>
         <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="*********" required id="password" name="password" />
 
-        {/* Name */}
-        <label htmlFor="name">Full name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} type="text" name="name" required id="name" placeholder="Full Name"></input>
+        {/* Email */}
+        <label htmlFor="email">Email address</label>
+        <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" required id="email" placeholder="youremail@mail.com"></input>
 
         {/* Checkbox for Terms and Condition */}
         <label htmlFor="checkbox">
@@ -45,7 +45,6 @@ export const RegisterForm = (props) => {
         </Popup>
 
         {/* Register Button */}
-        {/* <button className="register-btn" onClick={()=>props.onFormSwitch('login')} type="submit">Register</button> */}
         <button className="register-btn" type="submit">
           Register
         </button>
