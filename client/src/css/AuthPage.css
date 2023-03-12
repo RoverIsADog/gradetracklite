@@ -97,6 +97,10 @@ button {
   padding-left: 0.25rem;
 }
 
+.error-message {
+  color: #f44336;
+}
+
 
 
 /* .App-logo {

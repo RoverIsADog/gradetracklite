@@ -7,20 +7,30 @@ export const LoginForm = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken]=useState(null);
+  const [error, setError] = useState('');
 
-  const navigate= useNavigate();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(username);
-    fetch('https://localhost:8000/login', {method: 'POST', body: {username:username, password:password}})
-    .then(res=>{
-      return res.json();
-    })
-    .then(data =>{
-      setToken(data.token);
-      navigate("/app");
-    })
+    try {
+      const response = await axios.post('http://localhost:8000/login', {
+        username,
+        password,
+      });
+
+      console.log('await done');
+      
+      if (response.data.uuid) {
+        setToken(response.data.token);
+        navigate("/app");
+      } else {
+        setError('Error: invalid username or password');
+      }
+    } catch (err) {
+      console.log(err);
+    }
     
   };
 
@@ -36,6 +46,10 @@ export const LoginForm = (props) => {
         {/* PASSWORD */}
         <label htmlFor="password">Password</label>
         <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="*********" required id="password" name="password" />
+
+        {/* ERROR */}
+        {error && <p className="error-message">{error}</p>}
+
         <button className="login-btn" type="submit">
           Log In
         </button>

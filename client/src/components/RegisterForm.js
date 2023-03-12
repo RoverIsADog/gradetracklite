@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Popup from "./Popup";
 
 export const RegisterForm = (props) => {
@@ -7,18 +9,30 @@ export const RegisterForm = (props) => {
   const [email, setEmail] = useState("");
   const [checkbox, setCheckbox] = useState(false);
   const [buttonPopup, setButtonPopup] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(username);
-    if (true){
-      console.log("Registration successful for", username)
-      props.onFormSwitch('login');
+    try {
+      const response = await axios.post('http://localhost:8000/register', {
+        username,
+        password,
+        email
+      });
+      
+      if (response.data.error === 0) {
+        props.onFormSwitch("login");
+      } else {
+        setError('Error: invalid username or password');
+      }
+    } catch (err) {
+      console.log('Request failed:');
+      console.log(err);
     }
-    else{
-      console.log("Registration unsuccessful")
-    }
-
+    
   };
 
   return (
@@ -51,6 +65,9 @@ export const RegisterForm = (props) => {
           <h3>Terms and Conditions</h3>
           <p>Lorem ipsum...</p>
         </Popup>
+
+        {/* ERROR */}
+        {error && <p className="error-message">{error}</p>}
 
         {/* Register Button */}
         <button className="register-btn" type="submit">
