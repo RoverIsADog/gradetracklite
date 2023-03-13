@@ -33,6 +33,80 @@ db.run(
   }
 );
 
+// Create the semesters table if it doesn't exist
+db.run(
+  `CREATE TABLE IF NOT EXISTS semesters (
+    uuid TEXT PRIMARY KEY,
+    user_uuid TEXT NOT NULL,
+    year INTEGER NOT NULL,
+    semester TEXT NOT NULL,
+    FOREIGN KEY(user_uuid) REFERENCES users(uuid)
+  );`, (err) => {
+    if (err) {
+      console.error('Error creating semesters table:', err);
+    } else {
+      console.log('Semesters table created');
+    }
+  }
+);
+
+// Create the courses table if it doesn't exist
+db.run(
+  `CREATE TABLE IF NOT EXISTS courses (
+    uuid TEXT PRIMARY KEY,
+    semester_uuid TEXT NOT NULL,
+    course_name TEXT NOT NULL,
+    course_credits INTEGER NOT NULL,
+    course_description TEXT,
+    FOREIGN KEY(semester_uuid) REFERENCES semesters(uuid)
+  );`, (err) => {
+    if (err) {
+      console.error('Error creating courses table:', err);
+    } else {
+      console.log('Courses table created');
+    }
+  }
+);
+
+// Create the grade_categories table if it doesn't exist
+db.run(
+  `CREATE TABLE IF NOT EXISTS grade_categories (
+    uuid TEXT PRIMARY KEY,
+    semester_uuid TEXT NOT NULL,
+    category_type TEXT NOT NULL,
+    category_weight INTEGER NOT NULL,
+    category_description TEXT,
+    FOREIGN KEY(semester_uuid) REFERENCES semesters(uuid)
+  );`, (err) => {
+    if (err) {
+      console.error('Error creating grade_categories table:', err);
+    } else {
+      console.log('grade_categories table created');
+    }
+  }
+);
+
+// Create the grade_items table if it doesn't exist
+db.run(
+  `CREATE TABLE IF NOT EXISTS grade_items (
+    uuid TEXT PRIMARY KEY,
+    category_uuid TEXT NOT NULL,
+    item_name TEXT NOT NULL,
+    item_weight INTEGER NOT NULL,
+    item_mark INTEGER NOT NULL,
+    item_total INTEGER NOT NULL,
+    item_description TEXT,
+    item_date TEXT NOT NULL,
+    FOREIGN KEY (category_uuid) REFERENCES grade_categories(uuid)
+  );`, (err) => {
+    if (err) {
+      console.error('Error creating grade_items table:', err);
+    } else {
+      console.log('grade_items table created');
+    }
+  }
+);
+
 // Routes
 require('./routes')(app, db);
 
