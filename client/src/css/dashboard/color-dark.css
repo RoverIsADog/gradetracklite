@@ -1,0 +1,74 @@
+/* This file contains all the colours from the other files
+to allow dark mode. This file should be loaded AFTER the
+dark mode colour css file to take priority. */
+
+/* #################### FROM STYLES.CSS ####################  */
+body {
+  background-color: #161616;
+  color: white;
+}
+
+input, textarea {
+  color: white;
+}
+
+/* From styles.css */
+.horizontal-line {
+  background-color: #626262;
+}
+.horizontal-line-bold {
+  background-color: #818181;
+}
+
+/* Scrollbar related */
+::-webkit-scrollbar-track { background: #7e7e7e; }
+::-webkit-scrollbar-thumb { background: #323232; }
+::-webkit-scrollbar-thumb:hover { background: #595959; }
+
+/* Color for cards (sidebar and preview) */
+.card {
+  background-color: #2c2c2c;
+  box-shadow: 0; /* They don't really work in dark mode */
+}
+
+/* #################### FROM SIDEBAR.CSS ####################  */
+/* Sidebar elements change colour when hovered or selected */
+.sb-selectable:hover, .sb-selected {
+  background-color: #454545;
+}
+
+/* #################### FROM CONTENT.CSS ####################  */
+
+/* Selectable course items also change colours. */
+.selectable-item:hover, .selected-item, .category-header:hover {
+  background-color: #454545;
+}
+
+/* When the plus is selected, we want it to be darker than
+the category's select colour */
+.category-header:hover img:hover {
+  background-color: #646464;
+}
+
+/* #################### FROM CONTENT.CSS ####################  */
+input, textarea {
+  border-bottom-color: #505050;
+}
+
+input:focus, input:hover {
+  /* To make the bottom of the text-box thicker while focussed
+  without changing the bottom-border (which would cause the text
+  to jump), use a linear gradient from top to bottom, where the
+  96% top is transparent, and the bottom 4% is the same colour
+  as the border.
+  /* Not getting rid of the border here to avoid text jumping */
+  background: linear-gradient(to bottom, #00000000 96%, #505050 4%), #393939;
+}
+
+input:focus, input:hover, textarea:focus, textarea:hover {
+  background-color: #393939;
+}
+
+img:not(.not-icon) {
+  filter: invert(1);
+}
