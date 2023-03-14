@@ -23,3 +23,6 @@ yarn-error.log*
 
 # db
 database.db
+
+# env
+.env
