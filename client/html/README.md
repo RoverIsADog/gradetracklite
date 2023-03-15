@@ -1,6 +1,8 @@
 # HTML Folder
 
-This folder contains raw HTML and CSS templates for the frontend webpages. They are implementations of the powerpoint designs. They should be reimplemented in React later.
+This folder contains raw HTML and CSS templates for the frontend webpages with sample data. They are direct implementations of the powerpoint designs. The expectation is that they be re-implemented in React later. 
+
+**THIS FOLDER EXISTS FOR ARCHIVAL PURPOSES ONLY NOW, REACT REIMPLEMENTATION DONE**
 
 ## Design Language
 

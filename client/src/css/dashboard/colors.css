@@ -1,0 +1,193 @@
+/* 
+This file contains all the CSS properties that can change between
+different themes. Using custom properties (css variables) for the value
+of all changeable properties so that we can easily toggle between them.
+
+The dark theme button in the app adds data-theme='dark' to the
+dashboard-container div (not root as it would break stuff), where
+the dark theme variables take precedence.
+*/
+
+:root {
+  /* General stuff */
+  --background-color: white;
+  --text-color: black;
+
+  /* Horizontal lines */
+  --horiz-line: #d9d9d9;
+  --horiz-line-bold: #818181;
+
+  /* Scrollbar stuff */
+  --scrollbar-track-color: #f0f0f0;
+  --scrollbar-thumb-color: #cdcdcd;
+  --scrollbar-thumb-hover-color: #a6a6a6;
+
+  /* Card related */
+  --card-background: #f2f2f2;
+  --card-shadow: 0px 1px 2px 0px #3c3c3c66, 0px 1px 3px 1px #3c3c3c28;
+
+  /* Score related */
+  --color-bad: rgb(211, 0, 0);
+  --color-mid: #cf8804;
+  --color-good: green;
+
+  /* Sidebar pane */
+  --sidebar-hover: #bfbfbf;
+
+  /* Content pane */
+  --content-hover: #d9d9d9;
+  --content-hover-img: #a8a8a8;
+  /* Has to be brighter */
+
+  /* Inputs */
+  --input-bottom-line: #d9d9d9;
+  --input-bottom-background: linear-gradient(to bottom, #00000000 96%, #d9d9d9 4%), white;
+  --input-hover: white;
+
+  /* Icons */
+  --icon-filter: none;
+
+}
+
+[data-theme='dark'] {
+  /* General stuff */
+  --background-color: #161616;
+  --text-color: white;
+
+  /* Horizontal lines */
+  --horiz-line: #626262;
+  --horiz-line-bold: #818181;
+
+  /* Scrollbar stuff */
+  --scrollbar-track-color: #7e7e7e;
+  --scrollbar-thumb-color: #323232;
+  --scrollbar-thumb-hover-color: #595959;
+
+  /* Card related */
+  --card-background: #2c2c2c;
+  --card-shadow: 0;
+  /* Looks better without shadows in dark mode */
+
+  /* Score related */
+  --color-bad: red;
+  --color-mid: orange;
+  --color-good: green;
+
+  /* Sidebar pane */
+  --sidebar-hover: #454545;
+
+  /* Content pane */
+  --content-hover: #454545;
+  --content-hover-img: #646464;
+  /* Has to be brighter */
+
+  /* Inputs */
+  --input-bottom-line: #505050;
+  --input-bottom-background: linear-gradient(to bottom, #00000000 96%, #505050 4%), #393939;
+  --input-hover: #393939;
+
+  /* Icons */
+  --icon-filter: invert(1);
+}
+
+/* #################### FROM STYLES.CSS ####################  */
+#dashboard-container {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+input,
+textarea {
+  color: var(--text-color);
+}
+
+/* From styles.css */
+.horizontal-line {
+  background-color: var(--horiz-line);
+}
+
+.horizontal-line-bold {
+  background-color: var(--horiz-line-bold);
+}
+
+/* Scrollbar related */
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-color)
+}
+
+/* Color for cards (sidebar and preview) */
+.card {
+  background-color: var(--card-background);
+  box-shadow: var(--card-shadow);
+}
+
+.color-bad {
+  color: var(--color-bad);
+}
+
+.color-mid {
+  color: var(--color-mid);
+}
+
+.color-good {
+  color: var(--color-good);
+}
+
+/* #################### FROM SIDEBAR.CSS ####################  */
+/* Sidebar elements change colour when hovered or selected */
+.sb-selectable:hover,
+.sb-selected {
+  background-color: var(--sidebar-hover);
+}
+
+/* #################### FROM CONTENT.CSS ####################  */
+
+/* Selectable course items also change colours. */
+.selectable-item:hover,
+.selected-item,
+.category-header:hover {
+  background-color: var(--content-hover);
+}
+
+/* When the plus is selected, we want it to be darker than
+the category's select colour */
+.category-header:hover img:hover {
+  background-color: var(--content-hover-img);
+}
+
+/* #################### FROM INPUT.CSS ####################  */
+input,
+textarea {
+  border-bottom-color: var(--input-bottom-line);
+}
+
+input:focus,
+input:hover {
+  /* To make the bottom of the text-box thicker while focussed
+  without changing the bottom-border (which would cause the text
+  to jump), use a linear gradient from top to bottom, where the
+  96% top is transparent, and the bottom 4% is the same colour
+  as the border.
+  /* Not getting rid of the border here to avoid text jumping */
+  background: var(--input-bottom-background)
+}
+
+input:focus,
+input:hover,
+textarea:focus,
+textarea:hover {
+  background-color: var(--input-hover);
+}
+
+/* #################### ICONS ####################  */
+img:not(.not-icon) {
+  filter: var(--icon-filter);
+}

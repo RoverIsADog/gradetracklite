@@ -51,16 +51,6 @@ body {
   text-overflow: ellipsis;
 }
 
-.color-bad {
-  color: red;
-}
-.color-mid {
-  color: orange;
-}
-.color-good {
-  color: green;
-}
-
 /* #################### Pane container related ####################  */
 
 #dashboard-container {

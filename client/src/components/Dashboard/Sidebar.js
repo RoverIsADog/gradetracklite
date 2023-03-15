@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import "../../css/dashboard/sidebar.css";
 import logoImg from "../../img/logo.png";
-import darkModeIco from "../../img/day-night-sun-moon-cycle-svgrepo-com.svg";
+import sunIco from "../../img/sun-svgrepo-com.svg";
+import moonIco from "../../img/moon-svgrepo-com.svg";
 import semestersIco from "../../img/calendar-svgrepo-com.svg";
 import coursesIco from "../../img/education-books-apple-svgrepo-com.svg";
 import plusIco from "../../img/plus-svgrepo-com.svg";
@@ -9,28 +10,30 @@ import identicon from "../../img/identicon.png"; // TODO procedurally generate b
 import logoutIco from "../../img/sign-out-2-svgrepo-com.svg";
 import privacyIco from "../../img/contract-line-svgrepo-com.svg";
 import { useNavigate } from "react-router-dom";
-import { contextDark } from "../../pages/Dashboard";
+import { contextTheme } from "../../pages/Dashboard";
 
 function Sidebar(semesterList, courseList) {
   const navigate = useNavigate();
   const handleLogout = () => {
-    console.log("Logging out")
-    console.log("TODO: clear session cookie/storage")
+    console.log("Logging out");
+    console.log("TODO: clear session cookie/storage");
     navigate("/");
   };
 
-  const contDark = useContext(contextDark);
-  console.log(contDark.darkMode)
-  console.log(contDark.toggleDarkMode)
+  const { theme, toggleTheme } = useContext(contextTheme);
 
   return (
     <div id="sidebar-container">
       <div className="card thin-scrollbar" id="sidebar-card">
-        {/* Logo */}
+        {/* Box containing the logo and a dark/light mode toggle button. */}
         <div id="sb-logo-container">
           <img src={logoImg} className="not-icon" style={{ height: "3rem" }} alt="Logo" />
           <div style={{ flexGrow: 1 }} />
-          <img src={darkModeIco} className="toggle-dark sb-selectable" alt="Dark mode icon" onClick={(e) => contDark.toggleDarkMode()} />
+          <img
+            src={theme === "light" ? moonIco : sunIco}
+            className="toggle-dark sb-selectable not-icon" alt="Dark mode icon"
+            onClick={(e) => toggleTheme()}
+            />
         </div>
         <div className="horizontal-line" />
 
@@ -93,7 +96,7 @@ function Sidebar(semesterList, courseList) {
         </div>
 
         {/* Sign out */}
-        <div className="sb-item sb-selectable" id="logout" onClick={handleLogout} >
+        <div className="sb-item sb-selectable" id="logout" onClick={handleLogout}>
           <img src={logoutIco} alt="logout" />
           <div>Sign out</div>
         </div>
