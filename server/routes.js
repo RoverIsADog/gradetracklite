@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
+const { expressjwt: expressJwt } = require('express-jwt');
+console.log('expressJwt:', expressJwt);
 
 module.exports = (app, db) => {
   // /login POST request
@@ -14,7 +16,7 @@ module.exports = (app, db) => {
     // SQL query
     db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
       if (err) {
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: -1, error_message: 'Internal server error' });
         return;
       }
 
@@ -65,7 +67,7 @@ module.exports = (app, db) => {
     db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
       if (err) {
         console.error('Error selecting user:', err);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: -1, error_message: 'Internal server error' });
         return;
       }
 
@@ -79,7 +81,7 @@ module.exports = (app, db) => {
           (err) => {
             if (err) {
               console.error('Error inserting user:', err);
-              res.status(500).json({ error: 'Internal server error' });
+              res.status(500).json({ error: -1, error_message: 'Internal server error' });
             } else {
               // Success response
               res.json({ error: 0, message: 'User created successfully' });
@@ -89,4 +91,46 @@ module.exports = (app, db) => {
       }
     });
   });
+
+  // Middleware to protect the /semester-list route
+  app.use(
+    '/semester-list',
+    expressJwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'] })
+  );
+
+  // /semester-list GET request
+  app.get('/semester-list', (req, res) => {
+    // Get user UUID
+    const userUuid = req.user.uuid;
+
+    // SQL query
+    db.all(
+      'SELECT uuid, course_name, course_credits, course_description FROM semesters WHERE user_uuid = ?',
+      [userUuid],
+      (err, rows) => {
+        if (err) {
+          console.error('Error fetching semesters:', err);
+          res.status(500).json({ error: -1, error_message: 'Internal server error' });
+          return;
+        }
+
+        // Create semester list
+        const semesterList = rows.map((row) => ({
+          uuid: row.uuid,
+          course_name: row.course_name,
+          course_credits: row.course_credits,
+          course_description: row.course_description || 'None',
+        }));
+
+        // Success response
+        res.json({
+          error: 0,
+          error_message: 'Semesters successfully fetched',
+          semester_list: semesterList,
+        });
+      }
+    );
+  });
+
+  // / request
 };

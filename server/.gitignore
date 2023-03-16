@@ -1,16 +1,22 @@
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# Testing
 /coverage
 /html/pending
 
-# production
+# Production
 /build
 
-# misc
+# Database
+database.db
+
+# Environment
+.env
+
+# Miscellaneous
 .DS_Store
 .env.local
 .env.development.local
@@ -20,9 +26,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# db
-database.db
-
-# env
-.env
