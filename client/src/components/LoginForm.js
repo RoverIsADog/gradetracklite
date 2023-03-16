@@ -19,13 +19,13 @@ export const LoginForm = (props) => {
         username,
         password,
       });
-
-      console.log('await done');
       
-      if (response.data.uuid) {
+      if (response.data.error === 0) {
+        console.log('Login successful');
         setToken(response.data.token);
         navigate("/app");
       } else {
+        console.log('Login failed');
         setError('Error: invalid username or password');
       }
     } catch (err) {
