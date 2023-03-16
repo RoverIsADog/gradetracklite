@@ -42,19 +42,36 @@ export const RegisterForm = (props) => {
 
         {/* USERNAME */}
         <label htmlFor="username">Username</label>
-        <input value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username" required id="username" name="username" />
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          type="text"
+          placeholder="Username"
+          required id="username"
+          name="username" />
 
         {/* PASSWORD */}
         <label htmlFor="password">Password</label>
-        <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="*********" required id="password" name="password" />
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          placeholder="*********"
+          required id="password"
+          name="password" />
 
         {/* Email */}
         <label htmlFor="email">Email address</label>
-        <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" required id="email" placeholder="youremail@mail.com"></input>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          type="email"
+          name="email"
+          placeholder="youremail@mail.com"></input>
 
         {/* Checkbox for Terms and Condition */}
         <label htmlFor="checkbox">
-          <input value={checkbox} onClick={() => setCheckbox(true)} type="checkbox" required id="checkbox" name="checkbox" />I have agreed to
+          <input value={checkbox} onClick={() => setCheckbox(true)} type="checkbox" required id="checkbox" name="checkbox" /> I have agreed to
           <button className="popup-btn " onClick={() => setButtonPopup(true)} type="button">
             the terms and conditions
           </button>
