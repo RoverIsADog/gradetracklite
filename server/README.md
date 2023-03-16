@@ -116,29 +116,14 @@ This section pertains to the API requests related to loading information to the 
 
 ### Request
 
-On the register page, the user enters their username and password, and an optional email, and the frontend will send a POST request with the following content:
-
-- username
-- password
-- email
-
-Here is a sample request:
-
-```JSON
-{
-    "username": "JDoe",
-    "password": "123456",
-    "email": "jodoe@email.com"
-}
-```
-
 ### Response
 
-The server checks if the username exists in the database, and creates a new user with the given information if not.
+The server checks if the UUID exists in the database, and gets all semesters from that user.
 It then sends a response with the following content:
 
 - error
 - error message
+- semesterList
 
 The error code corresponds to 0 for a successful registration, otherwise it failed.
 
@@ -147,7 +132,17 @@ Here is a sample success response:
 ```JSON
 {
     "error": 0,
-    "error_message": "User created successfully"
+    "error_message": "Semesters successfully fetched",
+    "semesterList": [
+        {
+            "uuid": "UUID4()",
+            "semester_name": "Winter 2023"
+        },
+        {
+            "uuid": "UUID4()",
+            "semester_name": "Fall 2022"
+        }
+    ]
 }
 ```
 
@@ -156,7 +151,8 @@ Here is a sample fail response:
 ```JSON
 {
     "error": 1,
-    "error_message": "Username already exists"
+    "error_message": "User does not exist",
+    "semesterList": []
 }
 ```
 
