@@ -1,0 +1,75 @@
+{
+  "categoryList": [
+    {
+      "catName": "Exams",
+      "catID": "Ofjtibul4QdNos3l",
+      "catDescription": "1st counts for 20% 2nd for 40%",
+      "catWeight": 60,
+      "_comment1": "There are no grades yet. Empty [] instead of null/dne",
+      "catGradesList": []
+    },
+    {
+      "catName": "Assignments",
+      "catID": "rur6Ysqj6Qh7oz08",
+      "catDescription": "Lorem Ipsum or dne/null",
+      "catWeight": 20,
+      "catGradesList": [
+        {
+          "itemID": "zgJGqmGsYQGPnECC",
+          "itemName": "Assignment 1",
+          "itemDesc": "Lorem Ipsum or dne/null",
+          "itemDate": "unix timestamp or dne/null",
+          "itemWeight": 5,
+          "itemActualPoints": 4,
+          "itemMaxPoints": 8
+        },
+        {
+          "itemID": "lXtbtrRYBhnfjHYi",
+          "itemName": "Assignment 2",
+          "itemDesc": "Lorem Ipsum or dne/null",
+          "itemDate": "unix timestamp or dne/null",
+          "itemWeight": 5,
+          "itemActualPoints": 4,
+          "itemMaxPoints": 8
+        }
+      ]
+    },
+    {
+      "catName": "Quizzes",
+      "catID": "Ofjtibul4QdNos3l",
+      "catDescription": "Lorem Ipsum or dne/null",
+      "catWeight": 20,
+      "catGradeList": [
+        {
+          "itemID": "lXtbtrRYBhnfjHYi",
+          "itemName": "Quiz 1",
+          "itemDesc": "Lorem Ipsum or dne/null",
+          "itemDate": "unix timestamp or dne/null",
+          "itemWeight": 5,
+          "itemActualPoints": 4,
+          "itemMaxPoints": 8
+        },
+        {
+          "itemID": "lXtbtrRYBhnfjHYi",
+          "itemName": "Quiz 2",
+          "itemDesc": "Lorem Ipsum or dne/null",
+          "itemDate": "unix timestamp or dne/null",
+          "itemWeight": 5,
+          "itemActualPoints": 6,
+          "itemMaxPoints": 8
+        },
+        {
+          "itemID": "xXJRtdl82ZwiHvXL",
+          "itemName": "Quiz 3",
+          "itemDesc": "Lorem Ipsum or dne/null",
+          "itemDate": "unix timestamp or dne/null",
+          "itemWeight": 5,
+          "itemActualPoints": 5,
+          "itemMaxPoints": 8
+        }
+      ]
+    }
+  ],
+  "error": null,
+  "errorMessage": null
+}

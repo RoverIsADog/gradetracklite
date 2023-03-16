@@ -1,0 +1,14 @@
+{
+  "createdGrade": {
+    "gradeID": "Rw9agg3p9IuJjSXM",
+    "gradeName": "Quiz 4",
+    "gradeWeight": 5,
+    "gradePoints": 4,
+    "gradeMaxPoints": 8,
+    "gradeDate": 12315125,
+    "gradeDescription": "Lorem Ipsum"
+  },
+  "success": true,
+  "error": null,
+  "errorMessage": null
+}

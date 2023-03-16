@@ -11,8 +11,13 @@ import logoutIco from "../../img/sign-out-2-svgrepo-com.svg";
 import privacyIco from "../../img/contract-line-svgrepo-com.svg";
 import { useNavigate } from "react-router-dom";
 import { contextTheme } from "../../pages/Dashboard";
+import { apiLocation } from "../../App";
+import useFetch from "../../hooks/useFetch";
 
 function Sidebar(semesterList, courseList) {
+  const apiURL = useContext(apiLocation);
+
+  // Logout button
   const navigate = useNavigate();
   const handleLogout = () => {
     console.log("Logging out");
@@ -20,7 +25,11 @@ function Sidebar(semesterList, courseList) {
     navigate("/");
   };
 
+  // Dark mode button
   const { theme, toggleTheme } = useContext(contextTheme);
+
+  // List of semesters
+  const { data, loading, error } = useFetch(`${apiURL}/get-semesters`);
 
   return (
     <div id="sidebar-container">
