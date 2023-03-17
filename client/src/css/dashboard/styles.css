@@ -80,7 +80,7 @@ avoid weird margin/padding behaviour w.r.t height and width causing overflow.*/
 
 #sidebar-container {
   width: 25%;
-  min-width: 17rem;
+  min-width: 18rem;
   max-width: 22rem;
   max-height: 100%;
   overflow: hidden;

@@ -59,8 +59,8 @@ the dark theme variables take precedence.
   --horiz-line-bold: #818181;
 
   /* Scrollbar stuff */
-  --scrollbar-track-color: #7e7e7e;
-  --scrollbar-thumb-color: #323232;
+  --scrollbar-track-color: #323232;
+  --scrollbar-thumb-color: #7e7e7e;
   --scrollbar-thumb-hover-color: #595959;
 
   /* Card related */

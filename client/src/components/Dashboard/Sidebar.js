@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { contextTheme } from "../../pages/Dashboard";
 import { apiLocation } from "../../App";
 import useFetch from "../../hooks/useFetch";
+import SidebarChoice from "./SidebarChoice";
 
 function Sidebar(semesterList, courseList) {
   const apiURL = useContext(apiLocation);
@@ -29,11 +30,12 @@ function Sidebar(semesterList, courseList) {
   const { theme, toggleTheme } = useContext(contextTheme);
 
   // List of semesters
-  const { data, loading, error } = useFetch(`${apiURL}/get-semesters`);
+  const semesterFetchMetrics = useFetch(`${apiURL}/get-semesters`);
 
   return (
     <div id="sidebar-container">
       <div className="card thin-scrollbar" id="sidebar-card">
+        
         {/* Box containing the logo and a dark/light mode toggle button. */}
         <div id="sb-logo-container">
           <img src={logoImg} className="not-icon" style={{ height: "3rem" }} alt="Logo" />
@@ -46,27 +48,13 @@ function Sidebar(semesterList, courseList) {
         </div>
         <div className="horizontal-line" />
 
-        {/* Semester list */}
-        <div className="sb-choice" id="semesters-container">
-          {/* List header (img, name, +) */}
-          <div className="sb-choice-header">
-            <img className="sb-choice-header-ico" src={semestersIco} alt="Semester icon" />
-            <div className="sb-choice-header-name">Semesters</div>
-            <img className="sb-choice-header-plus sb-selectable" src={plusIco} alt="Plus icon" />
-          </div>
-          {/* List of semesters */}
-          <div className="sb-choice-list thin-scrollbar">
-            <div className="sb-choice-list-element sb-selectable">Winter 2023</div>
-            <div className="sb-choice-list-element sb-selectable">Summer 2023</div>
-            <div className="sb-choice-list-element sb-selectable">Fall 2023</div>
-            <div className="sb-choice-list-element sb-selectable">Winter 2024</div>
-            <div className="sb-choice-list-element sb-selectable sb-selected">Summer 2024</div>
-            <div className="sb-choice-list-element sb-selectable">Fall 2024</div>
-            <div className="sb-choice-list-element sb-selectable">Winter 2025</div>
-            <div className="sb-choice-list-element sb-selectable">Summer 2025</div>
-            <div className="sb-choice-list-element sb-selectable">Fall 2025</div>
-          </div>
-        </div>
+        {/* Courses list */}
+        {<SidebarChoice
+          name='Semesters'
+          icon={semestersIco}
+          id='semesters-container'
+          fetchMetrics={semesterFetchMetrics} />}
+        
         <div className="horizontal-line" />
 
         {/* Courses list */}

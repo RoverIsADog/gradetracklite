@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 function useFetch(url) {
   // State declarations
   const [data, setData] = useState(null);
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -53,18 +53,18 @@ function useFetch(url) {
         console.log("Response JSON content is");
         console.log(json);
         setError(null); // Reset error in case of future requests
-        setLoaded(true);
+        setLoading(false);
         setData(json);
       })
       .catch((err) => {
         console.log("Error with request");
         console.log(err);
         setError(err);
-        setLoaded(true);
+        setLoading(false);
       });
   }, [url]); // Empty dependency array = runs on mount only
 
-  return { data, loaded, error };
+  return { data, loading, error };
 }
 
 export default useFetch;

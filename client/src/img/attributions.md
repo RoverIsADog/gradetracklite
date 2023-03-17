@@ -85,13 +85,13 @@ Sun icon:
 * MIT license
 * https://www.svgrepo.com/svg/507434/sun
 * scarlab at svgrepo.com
-* Modifications: background removed, retextured to pure black
+* Modifications: background removed, retextured to orange
 
 Moon icon:
 * MIT license
 * https://www.svgrepo.com/svg/507373/moon
 * scarlab at svgrepo.com
-* Modifications: background removed, retextured to pure black
+* Modifications: background removed, retextured to blue
 
 ## Licenses
 

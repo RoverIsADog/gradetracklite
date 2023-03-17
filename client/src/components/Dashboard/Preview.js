@@ -80,7 +80,7 @@ function Preview(previewItem) {
             <img className="preview-item-ico" src={descriptionIco} alt='description' />
             <div className="preview-item-name">Description</div>
           </div>
-          <textarea name="grade-description" rows={6} defaultValue={"Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long."} />
+          <textarea className="thin-scrollbar" style={{transition: 0}} name="grade-description" rows={6} defaultValue={"Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long."} />
         </div>
       </div>
     </div>
