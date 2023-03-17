@@ -123,12 +123,32 @@ module.exports = (app, db) => {
     }
 
     // Decode the JWT token
+    const JWT_SECRET = process.env.JWT_SECRET;
     const token = authHeader.split(' ')[1];
     let decodedToken;
 
     try {
       decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
     } catch (err) {
+      // Check if token is expired
+      try {
+        const { exp } = jwt.decode(token);
+        if (exp * 1000 < Date.now()) {
+          res.status(401).json({
+            error: 5,
+            message: 'Invalid or missing token',
+            semester_list: []
+          });
+          return;
+        }
+      } catch (err) {
+        res.status(401).json({
+          error: 3,
+          message: 'Invalid or missing token',
+          semester_list: []
+        });
+        return;
+      }
       res.status(401).json({
         error: 3,
         message: 'Invalid or missing token',

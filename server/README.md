@@ -152,6 +152,7 @@ The error code corresponds to 0 for a successful fetch, otherwise it failed.
 | 2          | Missing token                         |
 | 3          | Token decoding or verification failed |
 | 4          | Invalid or missing token              |
+| 5          | Expired token                         |
 | -1         | Internal server error                 |
 
 Here is a sample success response:
