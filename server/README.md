@@ -6,6 +6,13 @@ It outlines what information is expected in the `req.body` for each POST request
 
 By referencing this document, users of our application can ensure that they are making requests with the correct syntax and can better understand any errors they encounter.
 
+List of all requests:
+
+- [POST /login](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#login-post-login)
+- [POST /register](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#register-post-register)
+- [GET /semesters](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#semesters-get-semesters)
+- [GET /courses](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#courses-get-courses)
+
 # Authentication
 
 This section pertains to the API requests related to authentication (login and register).
@@ -184,7 +191,7 @@ Here is a sample fail response:
 }
 ```
 
-## Semesters (GET `/courses`)
+## Courses (GET `/courses`)
 
 ### Request
 
@@ -261,5 +268,63 @@ Here is a sample fail response:
     "error": 3,
     "message": "User does not have authorized access to the specified semester",
     "course_list": []
+}
+```
+
+## Create a Semester (POST `/semester`)
+
+### Request
+
+On the dashboard page, the user can add a new semester by providing a semester name, and the frontend will send a POST request with the following content:
+
+- semester_name
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```JSON
+{
+    "semester_name": "Winter 2023"
+}
+```
+
+### Response
+
+The server verifies the JWT token, and creates a new semester with the given name.
+It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful registration, otherwise it failed.
+
+| Error Code | Code Meaning                               |
+| :--------- | :----------------------------------------- |
+| 0          | Semester added successfully                |
+| 1          | Semester already exists                    |
+| 2          | Missing token                              |
+| 3          | Token decoding or verification failed      |
+| 4          | Invalid token (invalid or no 'uuid' param) |
+| 5          | Expired token                              |
+| -1         | Internal server error                      |
+
+Here is a sample success response:
+
+```JSON
+{
+    "error": 0,
+    "message": "Semester added successfully"
+}
+```
+
+Here is a sample fail response:
+
+```JSON
+{
+    "error": 1,
+    "message": "Semester already exists"
 }
 ```
