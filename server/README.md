@@ -145,14 +145,14 @@ It then sends a response with the following content:
 
 The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
-| Error Code | Code Meaning                   |
-| :--------- | :----------------------------- |
-| 0          | Semesters successfully fetched |
-| 1          | User does not exist            |
-| 2          | Missing token                  |
-| 3          | Token decoding failed          |
-| 4          | Invalid or missing token       |
-| -1         | Internal server error          |
+| Error Code | Code Meaning                          |
+| :--------- | :------------------------------------ |
+| 0          | Semesters successfully fetched        |
+| 1          | User does not exist                   |
+| 2          | Missing token                         |
+| 3          | Token decoding or verification failed |
+| 4          | Invalid or missing token              |
+| -1         | Internal server error                 |
 
 Here is a sample success response:
 
@@ -187,7 +187,7 @@ Here is a sample fail response:
 
 ### Request
 
-On the dashboard page, whenever the user selects a semester, and the frontend will send a GET request with the following URL search parameter:
+On the dashboard page, whenever the user selects a semester, the frontend will send a GET request with the following URL search parameter:
 
 - `semester_id=<SEMESTER_UUID>`
 
@@ -197,7 +197,7 @@ The JWT token is included in the header as follows:
 
 ### Response
 
-The server checks if the JWT token is valid. Then, it checks if it does contain the 'uuid' parameter in its payload. It then extracts the user's UUID and checks if the UUID exists in the database and if the semester belongs to the user, and gets all courses from that semester.
+The server checks if the JWT token is valid. Then, it checks if it does contain the 'uuid' parameter in its payload. It then extracts the user's UUID and checks if the UUID exists in the database, and if the semester belongs to the user (matching foreign key). Finally, it gets all courses from that semester.
 It then sends a response with the following content:
 
 - error
@@ -206,14 +206,14 @@ It then sends a response with the following content:
 
 The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
-| Error Code | Code Meaning                 |
-| :--------- | :--------------------------- |
-| 0          | Courses successfully fetched |
-| 1          | User does not exist          |
-| 2          | Missing token                |
-| 3          | Token decoding failed        |
-| 4          | Invalid or missing token     |
-| -1         | Internal server error        |
+| Error Code | Code Meaning                          |
+| :--------- | :------------------------------------ |
+| 0          | Semesters successfully fetched        |
+| 1          | User does not exist                   |
+| 2          | Missing token                         |
+| 3          | Token decoding or verification failed |
+| 4          | Invalid or missing token              |
+| -1         | Internal server error                 |
 
 Here is a sample success response:
 

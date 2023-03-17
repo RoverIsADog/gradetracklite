@@ -127,7 +127,7 @@ module.exports = (app, db) => {
     let decodedToken;
 
     try {
-      decodedToken = jwt.decode(token);
+      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
     } catch (err) {
       res.status(401).json({
         error: 3,
@@ -201,6 +201,7 @@ module.exports = (app, db) => {
     });
   });
 
+  // To remove later
   app.get('/test', (req, res) => {
     db.all('SELECT * FROM semesters', (err, rows) => {
       if (err) {
@@ -216,6 +217,7 @@ module.exports = (app, db) => {
     });
   });
 
+  // To remove later
   app.post('/test', (req, res) => {
     const { user_uuid, semester_name } = req.body;
     db.run(
