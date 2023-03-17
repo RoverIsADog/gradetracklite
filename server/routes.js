@@ -260,23 +260,43 @@ module.exports = (app, db) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       res.status(401).json({
-        error: 2,
-        error_message: 'Invalid or missing token',
+        error: 4,
+        message: 'Invalid or missing token',
         semester_list: []
       });
       return;
     }
 
     // Decode the JWT token
+    const JWT_SECRET = process.env.JWT_SECRET;
     const token = authHeader.split(' ')[1];
     let decodedToken;
 
     try {
-      decodedToken = jwt.decode(token);
+      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
     } catch (err) {
+      // Check if token is expired
+      try {
+        const { exp } = jwt.decode(token);
+        if (exp * 1000 < Date.now()) {
+          res.status(401).json({
+            error: 7,
+            message: 'Invalid or missing token',
+            semester_list: []
+          });
+          return;
+        }
+      } catch (err) {
+        res.status(401).json({
+          error: 5,
+          message: 'Invalid or missing token',
+          semester_list: []
+        });
+        return;
+      }
       res.status(401).json({
-        error: 3,
-        error_message: 'Invalid or missing token',
+        error: 5,
+        message: 'Invalid or missing token',
         semester_list: []
       });
       return;
@@ -285,133 +305,103 @@ module.exports = (app, db) => {
     // Get the user's UUID from the JWT token
     if (!decodedToken || !decodedToken.uuid) {
       res.status(401).json({
-        error: 4,
-        error_message: 'Invalid or missing token',
-        semester_list: []
+        error: 6,
+        message: 'Invalid or missing token',
+        course_list: []
       });
       return;
     }
 
     const userUuid = decodedToken.uuid;
+    const semesterUuid = req.query.semester_id;
 
     // Check that user exists
-    db.get('SELECT * FROM users WHERE uuid =?', [userUuid], async (err, row) => {
+    db.get('SELECT * FROM users WHERE uuid =?', [userUuid], async (err, userRow) => {
       if (err) {
         console.error('Error selecting user:', err);
         res.status(500).json({
           error: -1,
-          error_message: 'Internal server error',
-          semester_list: []
+          message: 'Internal server error',
+          course_list: []
         });
         return;
       }
 
-      if (!row) {
+      if (!userRow) {
         res.json({
           error: 1,
-          error_message: 'User does not exist',
-          semester_list: []
+          message: 'User does not exist',
+          course_list: []
         });
         return;
       }
 
-      // Get all semesters
-      db.all(
-        'SELECT uuid, semester_name FROM semesters WHERE user_uuid = ?',
-        [userUuid],
-        (err, rows) => {
-          if (err) {
-            console.error('Error fetching semesters:', err);
-            res.status(500).json({
-              error: -1,
-              error_message: 'Internal server error',
-              semester_list: []
-            });
-            return;
-          }
-
-          // Create semester list
-          const semesterList = rows.map((row) => ({
-            uuid: row.uuid,
-            semester_name: row.semester_name,
-          }));
-
-          // Success response
-          res.json({
-            error: 0,
-            error_message: 'Semesters successfully fetched',
-            semester_list: semesterList,
+      // Check that semester exists
+      db.get('SELECT * FROM semesters WHERE uuid =?', [semesterUuid], (err, semesterRow) => {
+        if (err) {
+          console.error('Error selecting semester:', err);
+          res.status(500).json({
+            error: -1,
+            message: 'Internal server error',
+            course_list: []
           });
-        });
-    });
-  });
+          return;
+        }
 
-  // /course-list GET request
-  app.get('/course-list', (req, res) => {
-    // Get user UUID
-    if (!req.user) {
-      res.status(401).json({ error: 3, error_message: 'Invalid or missing token' });
-      return;
-    }
-
-    const userUuid = req.user.uuid;
-
-    // Get semester UUID
-    const semesterUuid = req.query.semester_uuid;
-
-    // Check that semester exists
-    db.get('SELECT user_uuid FROM semesters WHERE uuid = ?', [semesterUuid], (err, row) => {
-      if (err) {
-        console.error('Error selecting semester:', err);
-        res.status(500).json({ error: -1, error_message: 'Internal server error' });
-        return;
-      }
-
-      if (!row) {
-        res.json({
-          error: 1,
-          error_message: 'Semester does not exist',
-          course_list: []
-        });
-        return;
-      } else if (row.user_uuid !== userUuid) {
-        res.json({
-          error: 2,
-          error_message: 'User does not have access to this semester',
-          course_list: []
-        });
-        return;
-      }
-
-      // SQL query
-      db.all(
-        'SELECT uuid, course_name, course_credits, course_description FROM courses WHERE semester_uuid = ?',
-        [semesterUuid],
-        (err, rows) => {
-          if (err) {
-            console.error('Error fetching courses:', err);
-            res.status(500).json({ error: -1, error_message: 'Internal server error' });
-            return;
-          }
-
-          // Create semester list
-          const courseList = rows.map((row) => ({
-            uuid: row.uuid,
-            course_name: row.course_name,
-            course_credits: row.course_credits,
-            course_description: row.course_description || 'None',
-          }));
-
-          // Success response
+        if (!semesterRow) {
           res.json({
-            error: 0,
-            error_message: 'Courses successfully fetched',
-            course_list: courseList,
+            error: 2,
+            message: 'Semester does not exist',
+            course_list: []
           });
         }
-      );
+
+        if (semesterRow.user_uuid !== userUuid) {
+          res.json({
+            error: 3,
+            message: 'User does not have authorized access to the specified semester',
+            course_list: []
+          });
+        }
+
+        // Get all courses
+        db.all(
+          'SELECT uuid, course_name, course_credits, course_description FROM courses WHERE semester_uuid = ?',
+          [semesterUuid],
+          (err, rows) => {
+            if (err) {
+              console.error('Error fetching courses:', err);
+              res.status(500).json({
+                error: -1,
+                message: 'Internal server error',
+                course_list: []
+              });
+              return;
+            }
+  
+            // Create course list
+            const courseList = rows.map((row) => ({
+              uuid: row.uuid,
+              course_name: row.course_name,
+              course_credits: row.course_credits,
+              course_description: row.course_description || 'No Description.'
+            }));
+  
+            // Success response
+            res.json({
+              error: 0,
+              message: 'Courses successfully fetched',
+              course_list: courseList,
+            });
+          }
+        );
+      });
     });
   });
+
+  // /semesters POST request
+
+  // /courses POST request
 
   // / request
 };

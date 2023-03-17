@@ -145,15 +145,15 @@ It then sends a response with the following content:
 
 The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
-| Error Code | Code Meaning                          |
-| :--------- | :------------------------------------ |
-| 0          | Semesters successfully fetched        |
-| 1          | User does not exist                   |
-| 2          | Missing token                         |
-| 3          | Token decoding or verification failed |
-| 4          | Invalid or missing token              |
-| 5          | Expired token                         |
-| -1         | Internal server error                 |
+| Error Code | Code Meaning                               |
+| :--------- | :----------------------------------------- |
+| 0          | Semesters successfully fetched             |
+| 1          | User does not exist                        |
+| 2          | Missing token                              |
+| 3          | Token decoding or verification failed      |
+| 4          | Invalid token (invalid or no 'uuid' param) |
+| 5          | Expired token                              |
+| -1         | Internal server error                      |
 
 Here is a sample success response:
 
@@ -207,29 +207,48 @@ It then sends a response with the following content:
 
 The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
-| Error Code | Code Meaning                          |
-| :--------- | :------------------------------------ |
-| 0          | Semesters successfully fetched        |
-| 1          | User does not exist                   |
-| 2          | Missing token                         |
-| 3          | Token decoding or verification failed |
-| 4          | Invalid or missing token              |
-| -1         | Internal server error                 |
+| Error Code | Code Meaning                                         |
+| :--------- | :--------------------------------------------------- |
+| 0          | Courses successfully fetched                         |
+| 1          | User does not exist                                  |
+| 2          | Semester does not exist                              |
+| 3          | User does not have authorized access to the semester |
+| 4          | Missing token                                        |
+| 5          | Token decoding or verification failed                |
+| 6          | Invalid token (invalid or no 'uuid' param)           |
+| 7          | Expired token                                        |
+| -1         | Internal server error                                |
 
 Here is a sample success response:
 
 ```JSON
 {
     "error": 0,
-    "message": "Semesters successfully fetched",
-    "semester_list": [
+    "message": "Courses successfully fetched",
+    "course_list": [
         {
-            "uuid": "uuidv4()",
-            "semester_name": "Winter 2023"
+            "uuid": "ToJxpr77WuuQog4y",
+            "course_name": "COMP 547",
+            "course_credits": 4,
+            "course_description": "Best class ever ong"
         },
         {
-            "uuid": "uuidv4()",
-            "semester_name": "Fall 2022"
+            "uuid": "ZIn4H0RzJUjq7gnZ",
+            "course_name": "COMP 202",
+            "course_credits": 3,
+            "course_description": "When everything was still peaceful"
+        },
+        {
+            "uuid": "vmXLXQziOjQuKO5r",
+            "course_name": "COMP 547",
+            "course_credits": 4,
+            "course_description": "I dropped this class instantly"
+        },
+        {
+            "uuid": "Ofjtibul4QdNos3l",
+            "course_name": "COMP 111",
+            "course_credits": 3,
+            "course_description": "No Description"
         }
     ]
 }
@@ -239,8 +258,8 @@ Here is a sample fail response:
 
 ```JSON
 {
-    "error": 1,
-    "message": "User does not exist",
-    "semesterList": []
+    "error": 3,
+    "message": "User does not have authorized access to the specified semester",
+    "course_list": []
 }
 ```
