@@ -73,11 +73,11 @@ db.run(
 db.run(
   `CREATE TABLE IF NOT EXISTS grade_categories (
     uuid TEXT PRIMARY KEY,
-    semester_uuid TEXT NOT NULL,
+    course_uuid TEXT NOT NULL,
     category_type TEXT NOT NULL,
     category_weight INTEGER NOT NULL,
     category_description TEXT,
-    FOREIGN KEY(semester_uuid) REFERENCES semesters(uuid)
+    FOREIGN KEY(course_uuid) REFERENCES courses(uuid)
   );`, (err) => {
     if (err) {
       console.error('Error creating grade_categories table:', err);

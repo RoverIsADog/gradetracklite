@@ -407,7 +407,7 @@ Here is a sample fail response:
 
 On the dashboard page, the user can add a new grade category by providing a category type, its weight and its description, and the frontend will send a POST request with the following content:
 
-- semesterUuid
+- courseUuid
 - categoryType
 - categoryWeight
 - categoryDescription (optional)
@@ -420,7 +420,7 @@ Here is a sample request:
 
 ```JSON
 {
-    "semesterUuid": "47d4c077-45d2-49be-be29-7c57193a4f31",
+    "courseUuid": "47d4c077-45d2-49be-be29-7c57193a4f31",
     "categoryType": "Assignments",
     "categoryWeight": 30,
     "categoryDescription": "these things i always do last sec"
@@ -429,7 +429,7 @@ Here is a sample request:
 
 ### Response
 
-The server verifies the JWT token and checks if the semester exists and belongs to the user. Then, it checks if the grade category type does not already exist. Then, it creates a new category of the given type, with the given weight and description. If the description is omitted, the default description is set to 'No Description.'.
+The server verifies the JWT token and checks if the course exists and belongs to the user. Then, it checks if the grade category type does not already exist. Then, it creates a new category of the given type, with the given weight and description. If the description is omitted, the default description is set to 'No Description.'.
 It then sends a response with the following content:
 
 - error
@@ -441,13 +441,14 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 | :--------- | :------------------------------------------------------------- |
 | 0          | Grade category created successfully                            |
 | 1          | User does not exist                                            |
-| 2          | Semester does not exist                                        |
-| 3          | User does not have authorized access to the specified semester |
-| 4          | Grade category already exists                                  |
-| 5          | Missing token                                                  |
-| 6          | Token decoding or verification failed                          |
-| 7          | Invalid token (invalid or no 'uuid' param)                     |
-| 8          | Expired token                                                  |
+| 2          | Course does not exist                                          |
+| 3          | Semester does not exist                                        |
+| 4          | User does not have authorized access to the specified semester |
+| 5          | Grade category already exists                                  |
+| 6          | Missing token                                                  |
+| 7          | Token decoding or verification failed                          |
+| 8          | Invalid token (invalid or no 'uuid' param)                     |
+| 9          | Expired token                                                  |
 | -1         | Internal server error                                          |
 
 Here is a sample success response:
@@ -515,13 +516,14 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 | 0          | Grade item created successfully                                |
 | 1          | User does not exist                                            |
 | 2          | Grade category does not exist                                  |
-| 3          | Semester does not exist                                        |
-| 4          | User does not have authorized access to the specified semester |
-| 5          | Grade item already exists                                      |
-| 6          | Missing token                                                  |
-| 7          | Token decoding or verification failed                          |
-| 8          | Invalid token (invalid or no 'uuid' param)                     |
-| 9          | Expired token                                                  |
+| 3          | Course does not exist                                          |
+| 4          | Semester does not exist                                        |
+| 5          | User does not have authorized access to the specified semester |
+| 6          | Grade item already exists                                      |
+| 7          | Missing token                                                  |
+| 8          | Token decoding or verification failed                          |
+| 9          | Invalid token (invalid or no 'uuid' param)                     |
+| 10         | Expired token                                                  |
 | -1         | Internal server error                                          |
 
 Here is a sample success response:

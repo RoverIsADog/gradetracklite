@@ -221,39 +221,6 @@ module.exports = (app, db) => {
     });
   });
 
-  // To remove later
-  app.get('/test', (req, res) => {
-    db.all('SELECT * FROM semesters', (err, rows) => {
-      if (err) {
-        console.error('Error fetching all semesters:', err);
-        res.status(500).json({ error: -1, error_message: 'Internal server error' });
-      }
-
-      const semesterList = rows.map((row) => ({
-        uuid: row.uuid,
-        semester_name: row.semester_name,
-      }));
-      res.json(semesterList);
-    });
-  });
-
-  // To remove later
-  app.post('/test', (req, res) => {
-    const { user_uuid, semester_name } = req.body;
-    db.run(
-      'INSERT INTO semesters (uuid, user_uuid, semester_name) VALUES (?, ?, ?)',
-      [uuidv4(), user_uuid, semester_name],
-      (err) => {
-        if (err) {
-          console.error('Error inserting semester:', err);
-          res.status(500).json({ error: -1, error_message: 'Internal server error' });
-        } else {
-          res.status(200).json({ error: 0, error_message: 'Semester created successfully' });
-        }
-      }
-    );
-  });
-
   // /courses GET request
   app.get('/courses', (req, res) => {
     // Get JWT token
@@ -458,7 +425,9 @@ module.exports = (app, db) => {
     const userUuid = decodedToken.uuid;
 
     // Check that user exists
-    db.get('SELECT * FROM users WHERE uuid = ?', [userUuid], async (err, userRow) => {
+    db.get('SELECT * FROM users WHERE uuid = ?',
+    [userUuid],
+    (err, userRow) => {
       if (err) {
         console.error('Error selecting user:', err);
         res.status(500).json({
@@ -537,12 +506,11 @@ module.exports = (app, db) => {
     }
 
     // Decode the JWT token
-    const JWT_SECRET = process.env.JWT_SECRET;
     const token = authHeader.split(' ')[1];
     let decodedToken;
 
     try {
-      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
+      decodedToken = jwt.verify(token, process.env.JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
     } catch (err) {
       // Check if token is expired
       try {
@@ -676,159 +644,7 @@ module.exports = (app, db) => {
   // /add-category POST request
   app.post('/add-category', async (req, res) => {
     // Get request body
-    const { semesterUuid, categoryType, categoryWeight, categoryDescription } = req.body;
-
-    // Get JWT token
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      res.status(401).json({
-        error: 5,
-        message: 'Invalid or missing token'
-      });
-      return;
-    }
-
-    // Decode the JWT token
-    const JWT_SECRET = process.env.JWT_SECRET;
-    const token = authHeader.split(' ')[1];
-    let decodedToken;
-
-    try {
-      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
-    } catch (err) {
-      // Check if token is expired
-      try {
-        const { exp } = jwt.decode(token);
-        if (exp * 1000 < Date.now()) {
-          res.status(401).json({
-            error: 8,
-            message: 'Expired token'
-          });
-          return;
-        }
-      } catch (err) {
-        res.status(401).json({
-          error: 6,
-          message: 'Invalid or missing token'
-        });
-        return;
-      }
-      res.status(401).json({
-        error: 6,
-        message: 'Invalid or missing token'
-      });
-      return;
-    }
-
-    // Get the user's UUID from the JWT token
-    if (!decodedToken || !decodedToken.uuid) {
-      res.status(401).json({
-        error: 7,
-        message: 'Invalid or missing token'
-      });
-      return;
-    }
-
-    const userUuid = decodedToken.uuid;
-
-    // Check that user exists
-    db.get('SELECT * FROM users WHERE uuid = ?', [userUuid], async (err, userRow) => {
-      if (err) {
-        console.error('Error selecting user:', err);
-        res.status(500).json({
-          error: -1,
-          message: 'Internal server error'
-        });
-        return;
-      }
-
-      if (!userRow) {
-        res.json({
-          error: 1,
-          message: 'User does not exist'
-        });
-        return;
-      }
-
-      // Check that semester exists
-      db.get('SELECT * FROM semesters WHERE uuid = ?',
-      [semesterUuid],
-      (err, semesterRow) => {
-        if (err) {
-          console.error('Error selecting semester:', err);
-          res.status(500).json({
-            error: -1,
-            message: 'Internal server error'
-          });
-          return;
-        }
-
-        if (!semesterRow) {
-          res.json({
-            error: 2,
-            message: 'Semester does not exist'
-          });
-          return;
-        }
-
-        // Check that user is authorized to access the specified semester
-        if (semesterRow.user_uuid !== userUuid) {
-          res.json({
-            error: 3,
-            message: 'User does not have authorized access to the specified semester'
-          });
-        }
-
-        // Check that grade category does not already exist
-        db.get('SELECT * FROM grade_categories WHERE semester_uuid = ? AND category_type = ?',
-        [semesterUuid, categoryType],
-        (err, categoryRow) => {
-          if (err) {
-            console.error('Error selecting category:', err);
-            res.status(500).json({
-              error: -1,
-              message: 'Internal server error'
-            });
-            return;
-          }
-
-          if (categoryRow) {
-            res.json({
-              error: 4,
-              message: 'Grade category already exists'
-            });
-            return;
-          }
-
-          // SQL query
-          db.run(
-            'INSERT INTO grade_categories (uuid, semester_uuid, category_type, category_weight, category_description) VALUES (?, ?, ?, ?, ?)',
-            [uuidv4(), semesterUuid, categoryType, categoryWeight, categoryDescription || 'No Description.'],
-            (err) => {
-              if (err) {
-                console.error('Error inserting grade category:', err);
-                res.status(500).json({
-                  error: -1,
-                  message: 'Internal server error'
-                });
-                return;
-              } else {
-                res.status(200).json({
-                  error: 0,
-                  message: 'Grade category created successfully'
-                });
-              }
-            }
-          );
-        });
-      });
-    });
-  });
-
-  // /add-grade POST request
-  app.post('/add-grade', async (req, res) => {
-    // Get request body
-    const { categoryUuid, itemName, itemWeight, itemMark, itemTotal, itemDescription, itemDate } = req.body;
+    const { courseUuid, categoryType, categoryWeight, categoryDescription } = req.body;
 
     // Get JWT token
     const authHeader = req.headers.authorization;
@@ -841,12 +657,11 @@ module.exports = (app, db) => {
     }
 
     // Decode the JWT token
-    const JWT_SECRET = process.env.JWT_SECRET;
     const token = authHeader.split(' ')[1];
     let decodedToken;
 
     try {
-      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
+      decodedToken = jwt.verify(token, process.env.JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
     } catch (err) {
       // Check if token is expired
       try {
@@ -876,6 +691,182 @@ module.exports = (app, db) => {
     if (!decodedToken || !decodedToken.uuid) {
       res.status(401).json({
         error: 8,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    const userUuid = decodedToken.uuid;
+
+    // Check that user exists
+    db.get('SELECT * FROM users WHERE uuid = ?',
+    [userUuid],
+    (err, userRow) => {
+      if (err) {
+        console.error('Error selecting user:', err);
+        res.status(500).json({
+          error: -1,
+          message: 'Internal server error'
+        });
+        return;
+      }
+
+      if (!userRow) {
+        res.json({
+          error: 1,
+          message: 'User does not exist'
+        });
+        return;
+      }
+
+      // Check that course exists
+      db.get('SELECT * FROM courses WHERE uuid = ?',
+      [courseUuid],
+      (err, courseRow) => {
+        if (err) {
+          console.error('Error selecting course:', err);
+          res.status(500).json({
+            error: -1,
+            message: 'Internal server error'
+          });
+          return;
+        }
+
+        if (!courseRow) {
+          res.json({
+            error: 2,
+            message: 'Course does not exist'
+          });
+          return;
+        }
+
+        // Check that semester exists
+        db.get('SELECT * FROM semesters WHERE uuid = ?',
+        [courseRow.semester_uuid],
+        (err, semesterRow) => {
+          if (err) {
+            console.error('Error selecting semester:', err);
+            res.status(500).json({
+              error: -1,
+              message: 'Internal server error'
+            });
+            return;
+          }
+
+          if (!semesterRow) {
+            res.json({
+              error: 3,
+              message: 'Semester does not exist'
+            });
+            return;
+          }
+
+          // Check that user is authorized to access the specified semester
+          if (semesterRow.user_uuid !== userUuid) {
+            res.json({
+              error: 4,
+              message: 'User does not have authorized access to the specified semester'
+            });
+          }
+
+          // Check that grade category does not already exist
+          db.get('SELECT * FROM grade_categories WHERE course_uuid = ? AND category_type = ?',
+          [courseUuid, categoryType],
+          (err, categoryRow) => {
+            if (err) {
+              console.error('Error selecting category:', err);
+              res.status(500).json({
+                error: -1,
+                message: 'Internal server error'
+              });
+              return;
+            }
+
+            if (categoryRow) {
+              res.json({
+                error: 5,
+                message: 'Grade category already exists'
+              });
+              return;
+            }
+
+            // SQL query
+            db.run(
+              'INSERT INTO grade_categories (uuid, course_uuid, category_type, category_weight, category_description) VALUES (?, ?, ?, ?, ?)',
+              [uuidv4(), courseUuid, categoryType, categoryWeight, categoryDescription || 'No Description.'],
+              (err) => {
+                if (err) {
+                  console.error('Error inserting grade category:', err);
+                  res.status(500).json({
+                    error: -1,
+                    message: 'Internal server error'
+                  });
+                  return;
+                } else {
+                  res.status(200).json({
+                    error: 0,
+                    message: 'Grade category created successfully'
+                  });
+                }
+              }
+            );
+          });
+        });
+      });
+    });
+  });
+
+  // /add-grade POST request
+  app.post('/add-grade', async (req, res) => {
+    // Get request body
+    const { categoryUuid, itemName, itemWeight, itemMark, itemTotal, itemDescription, itemDate } = req.body;
+
+    // Get JWT token
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      res.status(401).json({
+        error: 7,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    // Decode the JWT token
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const token = authHeader.split(' ')[1];
+    let decodedToken;
+
+    try {
+      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
+    } catch (err) {
+      // Check if token is expired
+      try {
+        const { exp } = jwt.decode(token);
+        if (exp * 1000 < Date.now()) {
+          res.status(401).json({
+            error: 10,
+            message: 'Expired token'
+          });
+          return;
+        }
+      } catch (err) {
+        res.status(401).json({
+          error: 8,
+          message: 'Invalid or missing token'
+        });
+        return;
+      }
+      res.status(401).json({
+        error: 8,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    // Get the user's UUID from the JWT token
+    if (!decodedToken || !decodedToken.uuid) {
+      res.status(401).json({
+        error: 9,
         message: 'Invalid or missing token'
       });
       return;
@@ -923,12 +914,12 @@ module.exports = (app, db) => {
           return;
         }
 
-        // Check that semester exists
-        db.get('SELECT * FROM semesters WHERE uuid =?',
-        [categoryRow.semester_uuid],
-        (err, semesterRow) => {
+        // Check that course exists
+        db.get('SELECT * FROM courses WHERE uuid = ?',
+        [categoryRow.course_uuid],
+        (err, courseRow) => {
           if (err) {
-            console.error('Error selecting semester:', err);
+            console.error('Error selecting course:', err);
             res.status(500).json({
               error: -1,
               message: 'Internal server error'
@@ -936,28 +927,20 @@ module.exports = (app, db) => {
             return;
           }
 
-          if (!semesterRow) {
+          if (!courseRow) {
             res.json({
               error: 3,
-              message: 'Semester does not exist'
+              message: 'Course does not exist'
             });
             return;
           }
 
-          // Check that user is authorized to access the specified semester
-          if (semesterRow.user_uuid !== userUuid) {
-            res.json({
-              error: 4,
-              message: 'User does not have authorized access to the specified semester'
-            });
-          }
-
-          // Check that grade item does not already exist
-          db.get('SELECT * FROM grade_items WHERE category_uuid = ? AND item_name = ?',
-          [categoryUuid, itemName],
-          (err, itemRow) => {
+          // Check that semester exists
+          db.get('SELECT * FROM semesters WHERE uuid =?',
+          [courseRow.semester_uuid],
+          (err, semesterRow) => {
             if (err) {
-              console.error('Error selecting grade item:', err);
+              console.error('Error selecting semester:', err);
               res.status(500).json({
                 error: -1,
                 message: 'Internal server error'
@@ -965,34 +948,64 @@ module.exports = (app, db) => {
               return;
             }
 
-            if (itemRow) {
+            if (!semesterRow) {
               res.json({
-                error: 5,
-                message: 'Grade item already exists'
+                error: 4,
+                message: 'Semester does not exist'
               });
               return;
             }
 
-            // SQL query
-            db.run(
-              'INSERT INTO grade_items (uuid, category_uuid, item_name, item_weight, item_mark, item_total, item_description, item_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-              [uuidv4(), categoryUuid, itemName, itemWeight, itemMark, itemTotal, itemDescription || 'No Description.', itemDate],
-              (err) => {
-                if (err) {
-                  console.error('Error inserting grade item:', err);
-                  res.status(500).json({
-                    error: -1,
-                    message: 'Internal server error'
-                  });
-                  return;
-                } else {
-                  res.status(200).json({
-                    error: 0,
-                    message: 'Grade item created successfully'
-                  });
-                }
+            // Check that user is authorized to access the specified semester
+            if (semesterRow.user_uuid !== userUuid) {
+              res.json({
+                error: 5,
+                message: 'User does not have authorized access to the specified semester'
+              });
+            }
+
+            // Check that grade item does not already exist
+            db.get('SELECT * FROM grade_items WHERE category_uuid = ? AND item_name = ?',
+            [categoryUuid, itemName],
+            (err, itemRow) => {
+              if (err) {
+                console.error('Error selecting grade item:', err);
+                res.status(500).json({
+                  error: -1,
+                  message: 'Internal server error'
+                });
+                return;
               }
-            );
+
+              if (itemRow) {
+                res.json({
+                  error: 6,
+                  message: 'Grade item already exists'
+                });
+                return;
+              }
+
+              // SQL query
+              db.run(
+                'INSERT INTO grade_items (uuid, category_uuid, item_name, item_weight, item_mark, item_total, item_description, item_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                [uuidv4(), categoryUuid, itemName, itemWeight, itemMark, itemTotal, itemDescription || 'No Description.', itemDate],
+                (err) => {
+                  if (err) {
+                    console.error('Error inserting grade item:', err);
+                    res.status(500).json({
+                      error: -1,
+                      message: 'Internal server error'
+                    });
+                    return;
+                  } else {
+                    res.status(200).json({
+                      error: 0,
+                      message: 'Grade item created successfully'
+                    });
+                  }
+                }
+              );
+            });
           });
         });
       });
