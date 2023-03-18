@@ -136,7 +136,7 @@ module.exports = (app, db) => {
         if (exp * 1000 < Date.now()) {
           res.status(401).json({
             error: 5,
-            message: 'Invalid or missing token',
+            message: 'Expired token',
             semester_list: []
           });
           return;
@@ -170,7 +170,7 @@ module.exports = (app, db) => {
     const userUuid = decodedToken.uuid;
 
     // Check that user exists
-    db.get('SELECT * FROM users WHERE uuid =?', [userUuid], async (err, row) => {
+    db.get('SELECT * FROM users WHERE uuid = ?', [userUuid], async (err, row) => {
       if (err) {
         console.error('Error selecting user:', err);
         res.status(500).json({
@@ -281,7 +281,7 @@ module.exports = (app, db) => {
         if (exp * 1000 < Date.now()) {
           res.status(401).json({
             error: 7,
-            message: 'Invalid or missing token',
+            message: 'Expired token',
             semester_list: []
           });
           return;
@@ -316,7 +316,7 @@ module.exports = (app, db) => {
     const semesterUuid = req.query.semester_id;
 
     // Check that user exists
-    db.get('SELECT * FROM users WHERE uuid =?', [userUuid], async (err, userRow) => {
+    db.get('SELECT * FROM users WHERE uuid = ?', [userUuid], async (err, userRow) => {
       if (err) {
         console.error('Error selecting user:', err);
         res.status(500).json({
@@ -337,7 +337,7 @@ module.exports = (app, db) => {
       }
 
       // Check that semester exists
-      db.get('SELECT * FROM semesters WHERE uuid =?', [semesterUuid], (err, semesterRow) => {
+      db.get('SELECT * FROM semesters WHERE uuid = ?', [semesterUuid], (err, semesterRow) => {
         if (err) {
           console.error('Error selecting semester:', err);
           res.status(500).json({
@@ -399,7 +399,127 @@ module.exports = (app, db) => {
     });
   });
 
-  // /semesters POST request
+  // /semester POST request
+  app.post('/semester', async (req, res) => {
+    // Get request body
+    const { semester_name } = req.body;
+
+    // Get JWT token
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      res.status(401).json({
+        error: 3,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    // Decode the JWT token
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const token = authHeader.split(' ')[1];
+    let decodedToken;
+
+    try {
+      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
+    } catch (err) {
+      // Check if token is expired
+      try {
+        const { exp } = jwt.decode(token);
+        if (exp * 1000 < Date.now()) {
+          res.status(401).json({
+            error: 6,
+            message: 'Expired token'
+          });
+          return;
+        }
+      } catch (err) {
+        res.status(401).json({
+          error: 4,
+          message: 'Invalid or missing token'
+        });
+        return;
+      }
+      res.status(401).json({
+        error: 4,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    // Get the user's UUID from the JWT token
+    if (!decodedToken || !decodedToken.uuid) {
+      res.status(401).json({
+        error: 5,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    const userUuid = decodedToken.uuid;
+
+    // Check that user exists
+    db.get('SELECT * FROM users WHERE uuid = ?', [userUuid], async (err, userRow) => {
+      if (err) {
+        console.error('Error selecting user:', err);
+        res.status(500).json({
+          error: -1,
+          message: 'Internal server error'
+        });
+        return;
+      }
+
+      if (!userRow) {
+        res.json({
+          error: 1,
+          message: 'User does not exist'
+        });
+        return;
+      }
+
+      // Check that semester does not already exist
+      db.get('SELECT * FROM semesters WHERE semester_name = ? AND user_uuid = ?',
+      [semester_name, userUuid],
+      (err, semesterRow) => {
+        if (err) {
+          console.error('Error selecting semester:', err);
+          res.status(500).json({
+            error: -1,
+            message: 'Internal server error'
+          });
+          return;
+        }
+
+        if (semesterRow) {
+          res.json({
+            error: 2,
+            message: 'Semester already exists'
+          });
+          return;
+        }
+
+        // SQL query
+        db.run(
+          'INSERT INTO semesters (uuid, user_uuid, semester_name) VALUES (?, ?, ?)',
+          [uuidv4(), userUuid, semester_name],
+          (err) => {
+            if (err) {
+              console.error('Error inserting semester:', err);
+              res.status(500).json({
+                error: -1,
+                message: 'Internal server error'
+              });
+              return;
+            } else {
+              res.status(200).json({
+                error: 0,
+                message: 'Semester created successfully'
+              });
+            }
+          }
+        );
+      });
+    });
+  });
 
   // /courses POST request
 

@@ -303,12 +303,13 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 
 | Error Code | Code Meaning                               |
 | :--------- | :----------------------------------------- |
-| 0          | Semester added successfully                |
-| 1          | Semester already exists                    |
-| 2          | Missing token                              |
-| 3          | Token decoding or verification failed      |
-| 4          | Invalid token (invalid or no 'uuid' param) |
-| 5          | Expired token                              |
+| 0          | Semester created successfully              |
+| 1          | User does not exist                        |
+| 2          | Semester already exists                    |
+| 3          | Missing token                              |
+| 4          | Token decoding or verification failed      |
+| 5          | Invalid token (invalid or no 'uuid' param) |
+| 6          | Expired token                              |
 | -1         | Internal server error                      |
 
 Here is a sample success response:
@@ -316,7 +317,7 @@ Here is a sample success response:
 ```JSON
 {
     "error": 0,
-    "message": "Semester added successfully"
+    "message": "Semester created successfully"
 }
 ```
 

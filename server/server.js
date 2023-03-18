@@ -40,7 +40,7 @@ db.run(
   `CREATE TABLE IF NOT EXISTS semesters (
     uuid TEXT PRIMARY KEY,
     user_uuid TEXT NOT NULL,
-    semester_name TEXT NOT NULL,
+    semester_name TEXT NOT NULL UNIQUE,
     FOREIGN KEY(user_uuid) REFERENCES users(uuid)
   );`, (err) => {
     if (err) {
