@@ -357,7 +357,7 @@ Here is a sample request:
 
 ```JSON
 {
-    "semesterUuid": "47d4c077-45d2-49be-be29-7c57193a4f31",
+    "semesterUuid": "332458a6-8b50-432b-a6ca-f2cbeccec6fc",
     "courseName": "COMP 555",
     "courseCredits": 4,
     "courseDescription": "Best class ever ong"
@@ -425,10 +425,10 @@ Here is a sample request:
 
 ```JSON
 {
-    "courseUuid": "47d4c077-45d2-49be-be29-7c57193a4f31",
-    "categoryType": "Assignments",
-    "categoryWeight": 30,
-    "categoryDescription": "these things i always do last sec"
+    "courseUuid": "6147596e-b868-40cb-a729-00ccace921ab",
+    "categoryType": "Quizzes",
+    "categoryWeight": 10,
+    "categoryDescription": "these things i always fail"
 }
 ```
 
@@ -497,7 +497,7 @@ Here is a sample request:
 
 ```JSON
 {
-    "categoryUuid": "05692824-84d1-4d22-8c7a-44b6682d3902",
+    "categoryUuid": "c981a9d2-53aa-4efd-b5a4-9be99827935e",
     "itemName": "COMP 555 Quiz 7",
     "itemWeight": 12.5,
     "itemMark": 3,

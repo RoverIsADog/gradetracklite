@@ -351,6 +351,7 @@ module.exports = (app, db) => {
             message: 'Semester does not exist',
             course_list: []
           });
+          return;
         }
 
         if (semesterRow.user_uuid !== userUuid) {
@@ -359,6 +360,7 @@ module.exports = (app, db) => {
             message: 'User does not have authorized access to the specified semester',
             course_list: []
           });
+          return;
         }
 
         // Get all courses
@@ -643,6 +645,7 @@ module.exports = (app, db) => {
             error: 3,
             message: 'User does not have authorized access to the specified semester'
           });
+          return;
         }
 
         // Check that course does not already exist
@@ -827,6 +830,7 @@ module.exports = (app, db) => {
               error: 4,
               message: 'User does not have authorized access to the specified semester'
             });
+            return;
           }
 
           // Check that grade category does not already exist
@@ -1032,6 +1036,7 @@ module.exports = (app, db) => {
                 error: 5,
                 message: 'User does not have authorized access to the specified semester'
               });
+              return;
             }
 
             // Check that grade item does not already exist
