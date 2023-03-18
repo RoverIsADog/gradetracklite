@@ -12,8 +12,8 @@ List of all requests:
 - [POST /register](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#register-post-register)
 - [GET /semesters](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#semesters-get-semesters)
 - [GET /courses](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#courses-get-courses)
-- [POST /semester](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-semester-post-semester)
-- [POST /course](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-course-post-course)
+- [POST /add-semester](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-semester-post-add-semester)
+- [POST /add-course](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-course-post-add-course)
 
 # Authentication
 
@@ -273,7 +273,7 @@ Here is a sample fail response:
 }
 ```
 
-## Create a Semester (POST `/semester`)
+## Create a Semester (POST `/add-semester`)
 
 ### Request
 
@@ -332,7 +332,7 @@ Here is a sample fail response:
 }
 ```
 
-## Create a Course (POST `/course`)
+## Create a Course (POST `/add-course`)
 
 ### Request
 

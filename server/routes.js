@@ -399,8 +399,8 @@ module.exports = (app, db) => {
     });
   });
 
-  // /semester POST request
-  app.post('/semester', async (req, res) => {
+  // /add-semester POST request
+  app.post('/add-semester', async (req, res) => {
     // Get request body
     const { semester_name } = req.body;
 
@@ -521,8 +521,8 @@ module.exports = (app, db) => {
     });
   });
 
-  // /course POST request
-  app.post('/course', async (req, res) => {
+  // /add-course POST request
+  app.post('/add-course', async (req, res) => {
     // Get request body
     const { semesterUuid, courseName, courseCredits, courseDescription } = req.body;
 
