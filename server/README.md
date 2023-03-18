@@ -50,12 +50,13 @@ It then sends a response with the following content:
 
 The error code corresponds to 0 for a successful login, otherwise the login failed.
 
-| Error Code | Code Meaning          |
-| :--------- | :-------------------- |
-| 0          | Successful login      |
-| 1          | Invalid password      |
-| 2          | Invalid username      |
-| -1         | Internal server error |
+| Error Code | Code Meaning            |
+| :--------- | :---------------------- |
+| 0          | Successful login        |
+| 1          | Invalid password        |
+| 2          | Invalid username        |
+| -1         | Internal server error   |
+| -2         | Missing required fields |
 
 In case of success, the server sends the username, the email and the user's UUID back to the frontend. This information is protected in a signed [JWT token](https://jwt.io/introduction) that expires one hour after the user has logged in.
 
@@ -114,6 +115,7 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 | 0          | Successful registration |
 | 1          | Username already exists |
 | -1         | Internal server error   |
+| -2         | Missing required fields |
 
 Here is a sample success response:
 
@@ -229,6 +231,7 @@ The error code corresponds to 0 for a successful fetch, otherwise it failed.
 | 6          | Invalid token (invalid or no 'uuid' param)           |
 | 7          | Expired token                                        |
 | -1         | Internal server error                                |
+| -2         | Missing required query parameters                    |
 
 Here is a sample success response:
 
@@ -315,6 +318,7 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 | 5          | Invalid token (invalid or no 'uuid' param) |
 | 6          | Expired token                              |
 | -1         | Internal server error                      |
+| -2         | Missing required fields                    |
 
 Here is a sample success response:
 
@@ -382,6 +386,7 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 | 7          | Invalid token (invalid or no 'uuid' param)                     |
 | 8          | Expired token                                                  |
 | -1         | Internal server error                                          |
+| -2         | Missing required fields                                        |
 
 Here is a sample success response:
 
@@ -450,6 +455,7 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 | 8          | Invalid token (invalid or no 'uuid' param)                     |
 | 9          | Expired token                                                  |
 | -1         | Internal server error                                          |
+| -2         | Missing required fields                                        |
 
 Here is a sample success response:
 
@@ -525,6 +531,7 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 | 9          | Invalid token (invalid or no 'uuid' param)                     |
 | 10         | Expired token                                                  |
 | -1         | Internal server error                                          |
+| -2         | Missing required fields                                        |
 
 Here is a sample success response:
 

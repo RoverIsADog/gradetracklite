@@ -12,6 +12,16 @@ module.exports = (app, db) => {
     // Get request body
     const { username, password } = req.body;
 
+    // Check if request body contains the required fields
+    if (!username || !password) {
+      res.status(400).json({
+        error: -2,
+        message: 'Missing required fields',
+        token: null
+      });
+      return;
+    }
+
     // SQL query
     db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
       if (err) {
@@ -66,6 +76,17 @@ module.exports = (app, db) => {
   app.post('/register', async (req, res) => {
     // Get request body
     const { username, password, email } = req.body;
+
+    // Check if request body contains the required fields
+    if (!username || !password) {
+      res.status(400).json({
+        error: -2,
+        message: 'Missing required fields',
+        token: null
+      });
+      return;
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // SQL query
@@ -235,12 +256,11 @@ module.exports = (app, db) => {
     }
 
     // Decode the JWT token
-    const JWT_SECRET = process.env.JWT_SECRET;
     const token = authHeader.split(' ')[1];
     let decodedToken;
 
     try {
-      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
+      decodedToken = jwt.verify(token, process.env.JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
     } catch (err) {
       // Check if token is expired
       try {
@@ -281,6 +301,16 @@ module.exports = (app, db) => {
 
     const userUuid = decodedToken.uuid;
     const semesterUuid = req.query.semester_id;
+
+    // Check if query contains the required parameters
+    if (!semesterUuid) {
+      res.status(400).json({
+        error: -2,
+        message: 'Missing required query parameters',
+        token: null
+      });
+      return;
+    }
 
     // Check that user exists
     db.get('SELECT * FROM users WHERE uuid = ?', [userUuid], async (err, userRow) => {
@@ -370,6 +400,16 @@ module.exports = (app, db) => {
   app.post('/add-semester', async (req, res) => {
     // Get request body
     const { semester_name } = req.body;
+
+    // Check if request body contains the required fields
+    if (!semester_name) {
+      res.status(400).json({
+        error: -2,
+        message: 'Missing required fields',
+        token: null
+      });
+      return;
+    }
 
     // Get JWT token
     const authHeader = req.headers.authorization;
@@ -494,6 +534,16 @@ module.exports = (app, db) => {
   app.post('/add-course', async (req, res) => {
     // Get request body
     const { semesterUuid, courseName, courseCredits, courseDescription } = req.body;
+
+    // Check if request body contains the required fields
+    if (!semesterUuid || !courseName || !courseCredits || !courseDescription) {
+      res.status(400).json({
+        error: -2,
+        message: 'Missing required fields',
+        token: null
+      });
+      return;
+    }
 
     // Get JWT token
     const authHeader = req.headers.authorization;
@@ -645,6 +695,16 @@ module.exports = (app, db) => {
   app.post('/add-category', async (req, res) => {
     // Get request body
     const { courseUuid, categoryType, categoryWeight, categoryDescription } = req.body;
+
+    // Check if request body contains the required fields
+    if (!courseUuid || !categoryType || !categoryWeight || !categoryDescription) {
+      res.status(400).json({
+        error: -2,
+        message: 'Missing required fields',
+        token: null
+      });
+      return;
+    }
 
     // Get JWT token
     const authHeader = req.headers.authorization;
@@ -820,6 +880,16 @@ module.exports = (app, db) => {
   app.post('/add-grade', async (req, res) => {
     // Get request body
     const { categoryUuid, itemName, itemWeight, itemMark, itemTotal, itemDescription, itemDate } = req.body;
+
+    // Check if request body contains the required fields
+    if (!categoryUuid || !itemName || !itemWeight || !itemMark || !itemTotal || !itemDescription || !itemDate) {
+      res.status(400).json({
+        error: -2,
+        message: 'Missing required fields',
+        token: null
+      });
+      return;
+    }
 
     // Get JWT token
     const authHeader = req.headers.authorization;
