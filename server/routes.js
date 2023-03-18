@@ -521,7 +521,157 @@ module.exports = (app, db) => {
     });
   });
 
-  // /courses POST request
+  // /course POST request
+  app.post('/course', async (req, res) => {
+    // Get request body
+    const { semesterUuid, courseName, courseCredits, courseDescription } = req.body;
+
+    // Get JWT token
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      res.status(401).json({
+        error: 5,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    // Decode the JWT token
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const token = authHeader.split(' ')[1];
+    let decodedToken;
+
+    try {
+      decodedToken = jwt.verify(token, JWT_SECRET || 'not_having_a_secret_key_is_bad_bad_bad_smh');
+    } catch (err) {
+      // Check if token is expired
+      try {
+        const { exp } = jwt.decode(token);
+        if (exp * 1000 < Date.now()) {
+          res.status(401).json({
+            error: 8,
+            message: 'Expired token'
+          });
+          return;
+        }
+      } catch (err) {
+        res.status(401).json({
+          error: 6,
+          message: 'Invalid or missing token'
+        });
+        return;
+      }
+      res.status(401).json({
+        error: 6,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    // Get the user's UUID from the JWT token
+    if (!decodedToken || !decodedToken.uuid) {
+      res.status(401).json({
+        error: 7,
+        message: 'Invalid or missing token'
+      });
+      return;
+    }
+
+    const userUuid = decodedToken.uuid;
+
+    // Check that user exists
+    db.get('SELECT * FROM users WHERE uuid = ?', [userUuid], async (err, userRow) => {
+      if (err) {
+        console.error('Error selecting user:', err);
+        res.status(500).json({
+          error: -1,
+          message: 'Internal server error'
+        });
+        return;
+      }
+
+      if (!userRow) {
+        res.json({
+          error: 1,
+          message: 'User does not exist'
+        });
+        return;
+      }
+
+      // Check that semester exists
+      db.get('SELECT * FROM semesters WHERE uuid = ?',
+      [semesterUuid],
+      (err, semesterRow) => {
+        if (err) {
+          console.error('Error selecting semester:', err);
+          res.status(500).json({
+            error: -1,
+            message: 'Internal server error'
+          });
+          return;
+        }
+
+        if (!semesterRow) {
+          res.json({
+            error: 2,
+            message: 'Semester does not exist'
+          });
+          return;
+        }
+
+        // Check that user is authorized to access the specified semester
+        if (semesterRow.user_uuid !== userUuid) {
+          res.json({
+            error: 3,
+            message: 'User does not have authorized access to the specified semester'
+          });
+        }
+
+        // Check that course does not already exist
+        db.get('SELECT * FROM courses WHERE semester_uuid = ? AND course_name = ?',
+        [semesterUuid, courseName],
+        (err, courseRow) => {
+          if (err) {
+            console.error('Error selecting course:', err);
+            res.status(500).json({
+              error: -1,
+              message: 'Internal server error'
+            });
+            return;
+          }
+
+          if (courseRow) {
+            res.json({
+              error: 4,
+              message: 'Course already exists'
+            });
+            return;
+          }
+
+          // SQL query
+          db.run(
+            'INSERT INTO courses (uuid, semester_uuid, course_name, course_credits, course_description) VALUES (?, ?, ?, ?, ?)',
+            [uuidv4(), semesterUuid, courseName, courseCredits, courseDescription],
+            (err) => {
+              if (err) {
+                console.error('Error inserting course:', err);
+                res.status(500).json({
+                  error: -1,
+                  message: 'Internal server error'
+                });
+                return;
+              } else {
+                res.status(200).json({
+                  error: 0,
+                  message: 'Course created successfully'
+                });
+              }
+            }
+          );
+        });
+      });
+    });
+  });
 
   // / request
 };

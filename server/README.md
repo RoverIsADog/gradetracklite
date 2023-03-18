@@ -329,3 +329,70 @@ Here is a sample fail response:
     "message": "Semester already exists"
 }
 ```
+
+## Create a Course (POST `/course`)
+
+### Request
+
+On the dashboard page, the user can add a new course by providing a course name and description, and the number of credits, and the frontend will send a POST request with the following content:
+
+- semesterUuid
+- courseName
+- courseCredits
+- courseDescription
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```JSON
+{
+    "semesterUuid": "47d4c077-45d2-49be-be29-7c57193a4f31",
+    "courseName": "COMP 555",
+    "courseCredits": 4,
+    "courseDescription": "Best class ever ong"
+}
+```
+
+### Response
+
+The server verifies the JWT token and checks if the a course with the same name does not already exist. Then, it creates a new course with the given name, description and number of credits.
+It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful registration, otherwise it failed.
+
+| Error Code | Code Meaning                                                   |
+| :--------- | :------------------------------------------------------------- |
+| 0          | Course created successfully                                    |
+| 1          | User does not exist                                            |
+| 2          | Semester does not exist                                        |
+| 3          | User does not have authorized access to the specified semester |
+| 4          | Course already exists                                          |
+| 5          | Missing token                                                  |
+| 6          | Token decoding or verification failed                          |
+| 7          | Invalid token (invalid or no 'uuid' param)                     |
+| 8          | Expired token                                                  |
+| -1         | Internal server error                                          |
+
+Here is a sample success response:
+
+```JSON
+{
+    "error": 0,
+    "message": "Course created successfully"
+}
+```
+
+Here is a sample fail response:
+
+```JSON
+{
+    "error": 3,
+    "message": "User does not have authorized access to the specified semester"
+}
+```
