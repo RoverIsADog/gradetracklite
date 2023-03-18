@@ -14,6 +14,8 @@ List of all requests:
 - [GET /courses](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#courses-get-courses)
 - [POST /add-semester](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-semester-post-add-semester)
 - [POST /add-course](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-course-post-add-course)
+- [POST /add-category](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-grade-category-post-add-category)
+- [POST /add-grade](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-grade-item-post-add-grade)
 
 # Authentication
 
@@ -360,7 +362,7 @@ Here is a sample request:
 
 ### Response
 
-The server verifies the JWT token and checks if a course with the same name does not already exist. Then, it creates a new course with the given name, description and number of credits. If the description is omitted, the default description is 'No Description.'.
+The server verifies the JWT token and checks if a course with the same name does not already exist. Then, it creates a new course with the given name, description and number of credits. If the description is omitted, the default description is set to 'No Description.'.
 It then sends a response with the following content:
 
 - error
@@ -427,7 +429,7 @@ Here is a sample request:
 
 ### Response
 
-The server verifies the JWT token and checks if the grade category type does not already exist. Then, it creates a new category of the given type, with the given weight and description. If the description is omitted, the default description is 'No Description.'.
+The server verifies the JWT token and checks if the semester exists and belongs to the user. Then, it checks if the grade category type does not already exist. Then, it creates a new category of the given type, with the given weight and description. If the description is omitted, the default description is set to 'No Description.'.
 It then sends a response with the following content:
 
 - error
@@ -463,5 +465,79 @@ Here is a sample fail response:
 {
     "error": 4,
     "message": "Grade category already exists"
+}
+```
+
+## Create a Grade Item (POST `/add-grade`)
+
+### Request
+
+On the dashboard page, the user can add a new grade item by providing the item name, its weight, its mark and its total mark, its description, and its date, and the frontend will send a POST request with the following content:
+
+- categoryUuid
+- itemName
+- itemWeight
+- itemMark
+- itemTotal
+- itemDescription (optional)
+- itemDate
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```JSON
+{
+    "categoryUuid": "05692824-84d1-4d22-8c7a-44b6682d3902",
+    "itemName": "COMP 555 Quiz 7",
+    "itemWeight": 12.5,
+    "itemMark": 3,
+    "itemTotal": 10,
+    "itemDescription": "VPN Quiz",
+    "itemDate": "2023-03-16"
+}
+```
+
+### Response
+
+The server verifies the JWT token and checks if the semester and grade category exist and belongs to the user. Then, it checks if the grade item does not already exist. Then, it creates a new grade item of the given name, with the given weight, mark and total mark, description and date. If the description is omitted, the default description is set to 'No Description.'.
+It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful registration, otherwise it failed.
+
+| Error Code | Code Meaning                                                   |
+| :--------- | :------------------------------------------------------------- |
+| 0          | Grade item created successfully                                |
+| 1          | User does not exist                                            |
+| 2          | Grade category does not exist                                  |
+| 3          | Semester does not exist                                        |
+| 4          | User does not have authorized access to the specified semester |
+| 5          | Grade item already exists                                      |
+| 6          | Missing token                                                  |
+| 7          | Token decoding or verification failed                          |
+| 8          | Invalid token (invalid or no 'uuid' param)                     |
+| 9          | Expired token                                                  |
+| -1         | Internal server error                                          |
+
+Here is a sample success response:
+
+```JSON
+{
+    "error": 0,
+    "message": "Grade item created successfully"
+}
+```
+
+Here is a sample fail response:
+
+```JSON
+{
+    "error": 5,
+    "message": "Grade item already exists"
 }
 ```
