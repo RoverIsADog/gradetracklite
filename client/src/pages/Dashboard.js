@@ -1,7 +1,5 @@
 // @ts-check
 import React, { createContext, useState } from "react";
-import Course from "../components/Dashboard/Course";
-import Preview from "../components/Dashboard/Preview";
 import Sidebar from "../components/Dashboard/Sidebar";
 import "../css/dashboard/styles.css";
 import "../css/dashboard/input.css";
@@ -42,8 +40,6 @@ function Dashboard() {
     <contextTheme.Provider value={{ theme, toggleTheme }}>
       <div id="dashboard-container" data-theme={theme}>
         <Sidebar />
-        <Course />
-        <Preview />
       </div>
     </contextTheme.Provider>
   );

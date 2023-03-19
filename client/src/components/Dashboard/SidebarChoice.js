@@ -1,21 +1,47 @@
 import React, { useState } from "react";
 import plusIco from "../../img/plus-svgrepo-com.svg";
 
-function SidebarChoice(props) {
-  let { name, icon, id, fetchMetrics } = props;
-
+/**
+ * A component that is responsible for displaying a list of things to select
+ * in the sidebar. Used to display a list of semesters and courses.
+ *
+ * Props required for displaying UI:
+ * name, icon and id (of the list for CSS purposes)
+ *
+ * Props relating to the list
+ * list: list of things to display. Can be null if override is true.
+ * valueToName: function that takes an element in the list and returns its
+ *              name and id for display
+ *
+ * Callbacks for when a user selects one of the options
+ * onSelect: fn ((selectedID) => ...)
+ * onPlus: fn (() => ...)
+ *
+ * Override: If this is set to true, then it the list will be replaced by the
+ * component's children.
+ */
+function SidebarChoice({ name, icon, id, list, valueToName, onSelect, onPlus, override = false, children }) {
   /* Current selection manager */
   const [curSelection, setCurSelection] = useState(null);
   const handleClick = (selectedID) => {
     console.log(`Selected: ${curSelection} for choice ${name}`);
     setCurSelection(selectedID);
+    if (onSelect != null) onSelect(selectedID);
   };
 
-  // console.log(`SidebarChoice initialized with name: ${name}, id: ${id}`);
-  // console.log(choicesList);
+  let displayed;
+  if (override) displayed = children;
+  else {
+    displayed = list.map((value, idx) => {
+      const [elID, elName] = valueToName(value);
+      return <ChoiceElement isSelected={curSelection === elID} name={elName} key={elID} onClick={() => handleClick(elID)} />;
+    });
+  }
 
-  const { data, error, loading } = fetchMetrics;
-  console.log("Sidebar choice is loading: " + loading)
+  if (!override) {
+    console.log(name + " SC displayed: VV");
+    console.log(displayed);
+  }
 
   return (
     <>
@@ -24,29 +50,19 @@ function SidebarChoice(props) {
         <div className="sb-choice-header">
           <img className="sb-choice-header-ico" src={icon} alt="Semester icon" />
           <div className="sb-choice-header-name">{name}</div>
-          <img className="sb-choice-header-plus sb-selectable" src={plusIco} alt="Plus icon" />
+          <img className="sb-choice-header-plus sb-selectable" src={plusIco} alt="Plus icon" onClick={onPlus} />
         </div>
 
         {/* actually display the list */}
         <div className="sb-choice-list thin-scrollbar">
-          
-          {loading && <div>LOADING...</div>}
-          {data && data.semesterList.map((value, idx) => (
-            <ChoiceElement
-              isSelected={curSelection === value.semID}
-              onClick={() => handleClick(value.semID)}
-              name={value.semName}
-              key={value.semID} />
-          ))}
-          {error && <div style={{color: 'red'}}>Something went wrong!</div>}
+          {displayed}
         </div>
       </div>
     </>
   );
 }
 
-function ChoiceElement(props) {
-  let { isSelected, name, onClick } = props;
+function ChoiceElement({ isSelected, name, onClick }) {
   const selected = isSelected ? "sb-selected" : "";
   return (
     <div className={`sb-choice-list-element sb-selectable ${selected}`} onClick={onClick}>

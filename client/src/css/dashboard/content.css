@@ -25,7 +25,7 @@
 .course-name {
   /* Override .cap-text's display: -webkit-box as it doesn't work well
   if the div is a flex child for whatever reason. */
-  display: block;
+  display: block !important;
 
   font-size: xxx-large;
   font-weight: bold;

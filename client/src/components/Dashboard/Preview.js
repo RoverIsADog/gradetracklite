@@ -9,7 +9,7 @@ import descriptionIco from "../../img/open-book-svgrepo-com.svg";
 
 function Preview(previewItem) {
   return (
-    <div id="preview-container">
+    <>
       <div className="card thin-scrollbar" id="preview-card">
         <div className="preview-name">Quiz 1 and more text to test overflow</div>
         <div className="horizontal-line" />
@@ -83,7 +83,7 @@ function Preview(previewItem) {
           <textarea className="thin-scrollbar" style={{transition: 0}} name="grade-description" rows={6} defaultValue={"Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long."} />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
