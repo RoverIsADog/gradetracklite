@@ -550,3 +550,104 @@ Here is a sample fail response:
     "message": "Grade item already exists"
 }
 ```
+
+## Course Items (GET `/course`)
+
+### Request
+
+On the dashboard page, whenever the user selects a course, the frontend will send a GET request with the following URL search parameter:
+
+- `course_id=<COURSE_UUID>`
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+### Response
+
+The server checks if the JWT token is valid. Then, it checks if it does contain the 'uuid' parameter in its payload. It then extracts the user's UUID and checks if the UUID exists in the database, and if the semester belongs to the user (matching foreign key). Then, it checks if the course exists and if the user has access to that course. Finally, it gets all course items from that course.
+It then sends a response with the following content:
+
+- error
+- message
+- category_list
+
+The error code corresponds to 0 for a successful fetch, otherwise it failed.
+
+| Error Code | Code Meaning                                         |
+| :--------- | :--------------------------------------------------- |
+| 0          | Course items successfully fetched                    |
+| 1          | User does not exist                                  |
+| 2          | Course does not exist                                |
+| 3          | Semester does not exist                              |
+| 4          | User does not have authorized access to the semester |
+| 5          | Missing token                                        |
+| 6          | Token decoding or verification failed                |
+| 7          | Invalid token (invalid or no 'uuid' param)           |
+| 8          | Expired token                                        |
+| -1         | Internal server error                                |
+| -2         | Missing required query parameters                    |
+
+Here is a sample success response:
+
+```JSON
+{
+    "error": 0,
+    "message": "Course information successfully fetched",
+    "category_list": [
+        {
+            "uuid": "884bbdeb-5542-47ad-88ae-5a2491f8590d",
+            "category_type": "Quizzes",
+            "category_weight": 10,
+            "category_description": "these things i always fail",
+            "category_grade_list": [
+                {
+                    "uuid": "d64eafc2-52dd-4936-8c9e-374bd2a95175",
+                    "item_name": "COMP 555 Quiz 7",
+                    "item_weight": 12.5,
+                    "item_mark": 3,
+                    "item_total": 10,
+                    "item_description": "VPN Quiz",
+                    "item_date": "2023-03-16"
+                },
+                {
+                    "uuid": "b9388bad-f245-4d2e-b0b9-0960699795fb",
+                    "item_name": "COMP 555 Quiz 6",
+                    "item_weight": 12.5,
+                    "item_mark": 5,
+                    "item_total": 10,
+                    "item_description": "Identity Quiz",
+                    "item_date": "2023-03-09"
+                }
+            ]
+        },
+        {
+            "uuid": "235f08aa-bdb8-43aa-b014-2ebf4d2d2dc9",
+            "category_type": "Projects",
+            "category_weight": 60,
+            "category_description": "No Description.",
+            "category_grade_list": [
+                {
+                    "uuid": "5c2a2ac3-366c-4620-946d-18a56641ae70",
+                    "item_name": "COMP 555 Assignment",
+                    "item_weight": 30,
+                    "item_mark": 82,
+                    "item_total": 100,
+                    "item_description": "Analysis on Ring's Privacy Compliance",
+                    "item_date": "2023-02-23"
+                }
+            ]
+        }
+    ]
+}
+```
+
+Here is a sample fail response:
+
+```JSON
+{
+    "error": 1,
+    "message": "User does not exist",
+    "category_list": []
+}
+```
