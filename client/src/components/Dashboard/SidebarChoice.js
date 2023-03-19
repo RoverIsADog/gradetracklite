@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import plusIco from "../../img/plus-svgrepo-com.svg";
 
 /**
@@ -23,10 +23,10 @@ import plusIco from "../../img/plus-svgrepo-com.svg";
 function SidebarChoice({ name, icon, id, list, valueToName, onSelect, onPlus, override = false, children }) {
   /* Current selection manager */
   const [curSelection, setCurSelection] = useState(null);
-  const handleClick = (selectedID) => {
-    console.log(`Selected: ${curSelection} for choice ${name}`);
-    setCurSelection(selectedID);
-    if (onSelect != null) onSelect(selectedID);
+  const handleClick = (sel) => {
+    console.log(`Selected ${sel.name} ${curSelection}`);
+    setCurSelection(sel.id);
+    if (onSelect) onSelect(sel);
   };
 
   let displayed;
@@ -34,7 +34,7 @@ function SidebarChoice({ name, icon, id, list, valueToName, onSelect, onPlus, ov
   else {
     displayed = list.map((value, idx) => {
       const [elID, elName] = valueToName(value);
-      return <ChoiceElement isSelected={curSelection === elID} name={elName} key={elID} onClick={() => handleClick(elID)} />;
+      return <ChoiceElement isSelected={curSelection === elID} name={elName} key={elID} onClick={() => handleClick({id: elID, name: elName})} />;
     });
   }
 
@@ -42,6 +42,10 @@ function SidebarChoice({ name, icon, id, list, valueToName, onSelect, onPlus, ov
     console.log(name + " SC displayed: VV");
     console.log(displayed);
   }
+
+  useEffect(() => {
+    console.log(name + " was mounted!");
+  }, []);
 
   return (
     <>

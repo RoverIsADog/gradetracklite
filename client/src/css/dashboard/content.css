@@ -114,7 +114,7 @@ ellipse. */
 }
 
 .category-name {
-  display: block;
+  display: block !important;
   font-weight: bold;
   flex-grow: 1;
   /* Push back weight */

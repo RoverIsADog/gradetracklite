@@ -45,9 +45,9 @@ function Sidebar() {
   So, fetch hook for courses only called on change of selectedSemester.
    */
   const [selectedSemester, setSelectedSemester] = useState(null);
-  console.log("Currently selected semester is " + selectedSemester);
+  console.log("Currently selected semester is " + (selectedSemester ? `${selectedSemester.name}: ${selectedSemester.id}` : selectedSemester));
   const selectSemester = (sem) => {
-    if (sem === selectedSemester) return;
+    if (selectedSemester && sem.id === selectedSemester.id) return;
     setSelectedCourse(null);
     setSelectedSemester(sem);
   }
@@ -56,9 +56,9 @@ function Sidebar() {
   select a semester and, once they selected a semester, as long as they
   didn't select an entry in the list. */
   const [selectedCourse, setSelectedCourse] = useState(null);
-  console.log("Currently selected course is " + selectedCourse);
+  console.log("Currently selected course is " + (selectedCourse ? `${selectedCourse.name}: ${selectedCourse.id}` : selectedCourse));
   const selectCourse = (course) => {
-    if (course === selectedCourse) return;
+    if (selectedCourse && course.id === selectedCourse.id) return;
     setSelectedCourse(course);
   }
 
@@ -69,13 +69,14 @@ function Sidebar() {
   /* Set the URL of the fetch request for the course to null if no semester
   have been selected (useFetch does nothing if they are null). Values of
   course fetch metrics are meaningless if selectedSemester == null. */
-  const courseURL = selectedSemester != null ? `${apiURL}/courses` : null;
+  const courseURL = selectedSemester != null ? `${apiURL}/courses?semID=${selectedSemester.id}&singular=1` : null; // Remove singular for production
   const { data: courseData, loading: courseLoading, error: courseError } = useFetch(courseURL);
   const courseToName = (val) => { return [val.courseID, val.courseName]; }
   
-  
   console.log("Sem data... " + (semData ? 'exist' : 'dne'));
+  console.log(`Sem status... ${semLoading ? 'loading' : 'loaded'} / ${semError ? 'err' : 'ok'}`);
   console.log("Course data... " + (courseData ? 'exist' : 'dne'));
+  console.log(`Course status... ${courseLoading ? 'loading' : 'loaded'} / ${courseError ? 'err' : 'ok'}`);
   
 
   return (
@@ -99,7 +100,7 @@ function Sidebar() {
               list={semData && semData.semesterList}
               valueToName={semToName}
               onSelect={selectSemester}
-              override={semLoading || semError}
+              override={semError || semLoading}
             >
               {semError && <div style={{color: 'red'}}>Error</div>}
               {semLoading && <div>Loading</div>}
@@ -117,7 +118,7 @@ function Sidebar() {
               list={courseData && courseData.courseList}
               valueToName={courseToName}
               onSelect={selectCourse}
-              override={!selectedSemester || courseLoading || courseError}
+              override={!selectedSemester || courseError || courseLoading}
             >
               {!selectedSemester && <div>Please select a semester</div>}
               {selectedSemester && semError && <div style={{color: 'red'}}>Error</div>}
@@ -177,7 +178,11 @@ function Sidebar() {
         </div>
       </div>
       <div id='sidebar-display'>
-        <Course />
+        {
+          (selectedSemester && selectedCourse) ?
+            <Course course={selectedCourse} semester={selectedSemester} /> :
+            <div style={{flexGrow: 1, fontSize: 'xx-large', height: '100%', width: '100%',display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Please select a course and semester</div>
+        }
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
  * @param {string} url
  * @returns Object containing the 3 monitoring fields.
  */
-function useFetch(url, urlParams = null) {
+function useFetch(url) {
   // State declarations
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -46,12 +46,9 @@ function useFetch(url, urlParams = null) {
       signal: abortController.signal // stop request on unmount
     };
 
-    // Build URL if appropriate
-    const completeURL = url + (urlParams != null ? "?" + new URLSearchParams(urlParams) : '');
-
-    console.log("Fetching from " + completeURL);
+    console.log("Fetching from " + url);
     // We make a fetch request, returning a promise
-    fetch(completeURL, requestInit)
+    fetch(url, requestInit)
       /* .then: We wait until the promise resolves (AKA the response arrives), then run
         the function defined below with the response as argument that will do some
         error checking and convert it into JSON (another promise). */
@@ -85,7 +82,7 @@ function useFetch(url, urlParams = null) {
       });
     
     return () => abortController.abort();
-  }, [url, urlParams]); // Empty dependency array = runs on mount only
+  }, [url]); // Empty dependency array = runs on mount only
 
   return { data, loading, error };
 }

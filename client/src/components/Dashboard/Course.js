@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
+import { apiLocation } from "../../App";
 import "../../css/dashboard/content.css";
+import useFetch from "../../hooks/useFetch";
 import plusIco from "../../img/plus-svgrepo-com.svg";
 import Preview from "./Preview";
 
-function Course(courseData) {
+function Course({ semester, course }) {
+  const apiURL = useContext(apiLocation);
+  
+  console.log("Render course with: " + (semester ? `${semester.name}: ${semester.id}` : semester) + ", " + (course ? `${course.name}: ${course.id}` : course));
+
+  const courseURL = (course) ? `${apiURL}/course?courseID=${course.id}&singular=1` : null;
+  const fetchMetrics = useFetch(courseURL);
+
+  // TODO actually use the fetched data to display the course information
+
+
   return (
     <div id="course-container">
       <div id="course-itself">
