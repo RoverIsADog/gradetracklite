@@ -16,6 +16,7 @@ List of all requests:
 - [POST /add-course](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-course-post-add-course)
 - [POST /add-category](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-grade-category-post-add-category)
 - [POST /add-grade](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-grade-item-post-add-grade)
+- [GET /course](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#course-items-get-course)
 
 # Authentication
 

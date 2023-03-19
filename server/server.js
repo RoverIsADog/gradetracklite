@@ -109,7 +109,10 @@ db.run(
 );
 
 // Routes
-require('./routes')(app, db);
+require('./routes/authentication')(app, db);
+require('./routes/semesters')(app, db);
+require('./routes/courses')(app, db);
+require('./routes/grades')(app, db);
 
 const PORT = process.env.PORT || 8000;
 
