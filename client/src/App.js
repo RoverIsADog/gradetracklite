@@ -1,8 +1,18 @@
-import React from "react";
+import React, { createContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import Attributions from "./pages/Attributions";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard"; // Path: /app
+
+/**
+ * "Global" context to give all pages access to the API's domain (and port).
+ * Components should append their requests to this instead of hardcoding
+ * the link since we don't know where the API will be hosted.
+ *
+ * TOOD: Get this from a file or env variable or something (1 hardcode is
+ * still better than many though)
+ */
+const apiLocation = createContext(null);
 
 function App() {
   /* 
@@ -21,12 +31,15 @@ function App() {
   components.
   */
   return (
-    <Routes>
-      <Route path="/" element={<AuthPage />}></Route>
-      <Route path="/app" element={<Dashboard />}></Route>
-      <Route path="/attributions" element={<Attributions />}></Route>
-    </Routes>
+    <apiLocation.Provider value='http://localhost:8000'>
+      <Routes>
+        <Route path="/" element={<AuthPage />}></Route>
+        <Route path="/app" element={<Dashboard />}></Route>
+        <Route path="/attributions" element={<Attributions />}></Route>
+      </Routes>
+    </apiLocation.Provider>
   );
 }
 
+export { apiLocation };
 export default App;

@@ -1,0 +1,75 @@
+#preview-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* A property to preview */
+.preview-item {
+  padding: 0.5rem 0;
+}
+
+/* The name of the thing to preview. */
+.preview-name {
+  padding: 0.5rem 0;
+  font-size: xx-large;
+  font-weight: bold;
+  /* Just let this one overflow all it wants */
+}
+
+/* ################## PREVIEW PROPERTY HEADER ################## */
+
+.preview-item-name {
+  padding-left: 0.5rem;
+  font-size: large;
+  font-weight: bold;
+}
+
+.preview-item-ico {
+  height: 2rem;
+  width: 2rem;
+}
+
+/* ################## INLINE PROPERTY ################## */
+/* These properties should be displayed in a single line,
+with the property icon and name on the left and the property
+itself on the right */
+.preview-inline {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Name & ico */
+.preview-inline-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.preview-inline-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: large;
+  text-align: right;
+}
+
+/* ################## VERTICAL PROPERTY ################## */
+/* These properties are too big to fit in one line, so they
+are instead distributed vertically, with the top being the
+name and icon and the bottom being the property itself.
+Mostly just text areas. */
+
+.preview-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Name & ico */
+.preview-vertical-about {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem 0;
+}

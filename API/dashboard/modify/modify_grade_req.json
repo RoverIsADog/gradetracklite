@@ -1,0 +1,12 @@
+{
+  "mode": "modify or delete",
+  "gradeID": "Hn538SBUe3Gew4h1",
+  "newState": {
+    "name": "Quiz 1",
+    "weight": 5,
+    "points": 4,
+    "maxPoints": 8,
+    "date": 12315125,
+    "description": "Lorem Ipsum"
+  }
+}

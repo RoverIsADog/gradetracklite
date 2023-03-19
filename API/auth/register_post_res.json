@@ -1,0 +1,5 @@
+{
+  "success": "false",
+  "error": "1",
+  "errorMessage": "Password is not strong enough."
+}

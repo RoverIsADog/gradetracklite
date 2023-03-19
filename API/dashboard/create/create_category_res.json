@@ -1,0 +1,11 @@
+{
+  "createdCategory": {
+    "catID": "b567jYYmKVUYmdbo",
+    "catName": "Assignments",
+    "catWeight": 20,
+    "catDescription": "Thursday every week"
+  },
+  "success": true,
+  "error": null,
+  "errorMessage": null
+}

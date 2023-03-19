@@ -1,0 +1,9 @@
+{
+  "mode": "modify or delete",
+  "categoryID": "Ofjtibul4QdNos3l",
+  "newState": {
+    "name": "Quizzes",
+    "weight": 20,
+    "description": "Lorem Ipsum"
+  }
+}

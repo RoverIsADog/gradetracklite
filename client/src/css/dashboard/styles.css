@@ -1,0 +1,131 @@
+/* Stuff relating to the entire page only here */
+
+body {
+  /* Reset values just in case */
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  width: 100vw;
+  height: 100vh;
+
+  /* Fallback fonts copied from create-react-app */
+  font-family: 'Segoe UI', 'Verdana', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* #################### Scrollbar related ####################  */
+.thin-scrollbar {
+  /* Only works with Firefox right now :( */
+  scrollbar-width: thin;
+}
+/* Other than Firefox */
+::-webkit-scrollbar { width: 8px; }
+
+/* #################### Shared utils #################### */
+
+.horizontal-line {
+  height: 2px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  flex-shrink: 0;
+}
+
+.horizontal-line-bold {
+  height: 3px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.cap-text {
+  /* Using https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
+  instead of raw text-overflow: ellipsis because that option only works for
+  one line. Doesn't work for the 2 ppl still using edge but whatever.
+  Class members should override -webkit-line-clamp for more than one line. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; /* Override me */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* #################### Pane container related ####################  */
+
+#dashboard-container {
+  height: 100vh;
+  width: 100vw;
+  /* Separate the 3 screen panes horizontally */
+  display: flex;
+  flex-direction: row;
+}
+
+.card {
+  /* Box properties for the sidebar and preview panes. */
+  border-radius: 1rem;
+  
+  overflow: auto; /* Just in case */
+
+  padding: 1rem;
+  margin: 1rem;
+  /* Prevent overflowing (2 x (mar + pad)) */
+  max-height: calc(100% - 4rem);
+  height: calc(100% - 4rem);
+
+}
+
+
+/* 
+Because of React data flowing down, separate the panes into areas
+of control.
+
+The sidebar's state controls the content of the course and preview
+panes, so make them children of the sidebar-container.
+
+The course content's state controls the content of the preview
+pane, so make the preview pane child of the course-container.
+
+x-container: Flexbox containing x itself and the area x controls.
+x-itself: Displays the x element itself.
+x-display: Defines the area whose display depends on x's state.
+*/
+
+#sidebar-container {
+  display: flex;
+  flex-direction: row;
+  max-width: 100vw;
+  width: 100vw;
+}
+
+#sidebar-itself {
+  width: 25%;
+  min-width: 18.5rem;
+  max-width: 22rem;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+#sidebar-display {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+#course-container {
+  display: flex;
+  flex-direction: row;
+  max-width: 100%;
+}
+
+#course-itself {
+  width: 50%;
+  max-height: 100vh;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+#course-display {
+  min-width: 25rem;
+  width: 25%;
+  height: 100vh;
+}

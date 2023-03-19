@@ -1,0 +1,12 @@
+{
+  "semesterList": [
+    { "semID": "zhCntneHobtTC3ui", "semName": "Winter 2023" },
+    { "semID": "MwyLHWWEl6dMglQT", "semName": "Summer 2023" },
+    { "semID": "eF9ulA4snIOslXha", "semName": "Fall 2023" },
+    { "semID": "zvfexUk4dDaJXI3g", "semName": "Winter 2024" },
+    { "semID": "ChabjAOoVHcRyP5j", "semName": "Summer 2024" },
+    { "semID": "5ud6fPSDPEn0I0Ng", "semName": "Fall 2024" }
+  ],
+  "error": null,
+  "errorMessage": null
+}

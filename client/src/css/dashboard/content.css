@@ -1,0 +1,167 @@
+#course-area {
+  padding: 2rem;
+  max-height: calc(100% - 4rem);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.selectable-item {
+  padding: 0.5rem;
+  transition: 0.15s;
+  border-radius: 0.5rem;
+}
+
+/* ################## COURSE INFO ################## */
+
+/* Horiz flexbox containing name | grow | GPA+credit */
+.course-info {
+  display: flex;
+  flex-direction: row;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.course-name {
+  /* Override .cap-text's display: -webkit-box as it doesn't work well
+  if the div is a flex child for whatever reason. */
+  display: block !important;
+
+  font-size: xxx-large;
+  font-weight: bold;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Vertical flexbox containing GPA and credit */
+.course-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.course-gpa {
+  font-size: x-large;
+}
+
+.category-list {
+  /* Unstick scrollbar from select outline */
+  padding: 0.1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+/* ################## ONE CATEGORY CONTAINER ################## */
+/* Each are a list element in category-list */
+.category-item {
+  width: 100%;
+}
+
+/* ========== HEADER ========== */
+/* Flexbox containing category-header-box and the plus
+so that the formatting doesn't break when the plus appears
+also contains all the logic so that the plus appears on
+hover */
+.category-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.category-header img {
+  height: 1.5rem;
+
+  /* Relating to appearing on hover */
+  transition: 0.05s ease-in-out;
+  width: 0;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Only display plus if selected */
+.category-header:hover img {
+  margin: 0.4rem;
+  padding: 0.5rem;
+  /* Make hitbox bigger */
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Child of category-header as said above. Mostly here
+so that its children don't break */
+.category-header-box {
+  /* max-width & min-width are here to constrain its
+  children from overflowing rather than ellipsing. */
+  max-width: 100%;
+  min-width: 0;
+  /* flex-grow to push back the plus (recall this is
+  a flex-element) */
+  flex-grow: 1;
+}
+
+/* Flexbox containing the name and weight. Name and
+points are in separate flex-tems so that the name can
+ellipse. */
+.category-header-top {
+  white-space: nowrap;
+  font-size: x-large;
+
+  display: flex;
+  flex-direction: row;
+}
+
+.category-name {
+  display: block !important;
+  font-weight: bold;
+  flex-grow: 1;
+  /* Push back weight */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-description {
+  /* Overrides cap-text line limit */
+  -webkit-line-clamp: 2;
+}
+
+/* ################## ONE GRADE CONTAINER ################## */
+/* Container for one grade item. Each is an element in
+the grade-list (itself part of a category) */
+
+/* Horiz flexbox with grade name/desc | points/weight */
+.grade-item {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Contains either the grade name/desc or points/weight */
+.grade-vert-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.grade-vert-box:first-child {
+  /* First one is always name/desc:
+  allow pushing back points/weight */
+  flex-grow: 1;
+}
+
+.grade-name {
+  font-size: x-large;
+}
+
+.grade-score,
+.grade-weight {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.grade-score {
+  font-size: x-large;
+}

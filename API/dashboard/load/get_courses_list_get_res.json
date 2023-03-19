@@ -1,0 +1,11 @@
+{
+  "courseList": [
+    { "courseID": "ToJxpr77WuuQog4y", "courseName": "COMP 111" },
+    { "courseID": "ZIn4H0RzJUjq7gnZ", "courseName": "COMP 222" },
+    { "courseID": "vmXLXQziOjQuKO5r", "courseName": "COMP 333" },
+    { "courseID": "ikQO0G50sF1gSAFC", "courseName": "COMP 444" },
+    { "courseID": "TM4LTUTXOm1jV6lv", "courseName": "COMP 555" }
+  ],
+  "error": null,
+  "errorMessage": null
+}
