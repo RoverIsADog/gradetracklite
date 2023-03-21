@@ -22,10 +22,10 @@ function Preview(previewItem) {
           <div className="preview-inline-right">
             <div>(50%)&nbsp;</div>
             <label htmlFor="points-actual" />
-            <input className="input-small" type="text" name="points-actual" defaultValue={4} />
+            <input className="input-small dash-input" type="text" name="points-actual" defaultValue={4} />
             <div>&nbsp;/&nbsp;</div>
             <label htmlFor="points-max" />
-            <input className="input-small" type="text" name="points-max" defaultValue={8} />
+            <input className="input-small dash-input" type="text" name="points-max" defaultValue={8} />
           </div>
         </div>
         {/* Weight entry */}
@@ -36,7 +36,7 @@ function Preview(previewItem) {
           </div>
           <div className="preview-inline-right">
             <label htmlFor="weight" />
-            <input className="input-small" type="text" name="weight" defaultValue={5} />
+            <input className="input-small dash-input" type="text" name="weight" defaultValue={5} />
           </div>
         </div>
         {/* Date entry */}
@@ -47,7 +47,7 @@ function Preview(previewItem) {
           </div>
           <div className="preview-inline-right">
             <label htmlFor="weight" />
-            <input className="input-large" type="date" name="date" defaultValue="2023-01-22" />
+            <input className="input-large dash-input" type="date" name="date" defaultValue="2023-01-22" />
           </div>
         </div>
         {/* Category entry */}
@@ -80,7 +80,7 @@ function Preview(previewItem) {
             <img className="preview-item-ico" src={descriptionIco} alt='description' />
             <div className="preview-item-name">Description</div>
           </div>
-          <textarea className="thin-scrollbar" style={{transition: 0}} name="grade-description" rows={6} defaultValue={"Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long."} />
+          <textarea className="thin-scrollbar dash-textarea" style={{transition: 0}} name="grade-description" rows={6} defaultValue={"Once again, a super long description that will definitely not fit in the tiny space reserved for it in the course pane but that will still be made so that we get the opportunity to tweak the CSS so that it doesn't break in the event we do get a description that long."} />
         </div>
       </div>
     </>

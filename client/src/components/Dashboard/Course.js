@@ -15,6 +15,14 @@ function Course({ semester, course }) {
 
   // TODO actually use the fetched data to display the course information
 
+  // TEMPORARY FOR TESTING TEMPORARY FOR TESTING TEMPORARY FOR TESTING TEMPORARY FOR TESTING 
+  if (fetchMetrics.loading) {
+    return (
+      <div style={{ flexGrow: 1, fontSize: 'xx-large', height: '100%', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div id="course-container">
@@ -23,7 +31,7 @@ function Course({ semester, course }) {
         <div id="course-area">
           {/* Course information */}
           <div className="course-info selectable-item">
-            <div className="course-name cap-text">COMP 444</div>
+            <div className="course-name cap-text">{course.name}</div>
             <div style={{ flexGrow: 1 }} /> {/* Grow to push away L and R sides */}
             <div className="course-data">
               <div className="course-gpa">

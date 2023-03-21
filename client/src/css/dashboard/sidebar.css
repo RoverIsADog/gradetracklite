@@ -78,17 +78,17 @@ elements, and a list of selectable content. */
   flex-direction: column;
   /* Display max 5 courses
   5 x ( 2x0.5padding + 1.5largetxt ) = 12.5 */
-  max-height: 12.5rem;
+  max-height: min(12.5rem, 20vh);
 
   /* Make list scrollable */
   overflow: auto;
 }
 
 .sb-choice-list-element {
-  padding: 0.5rem;
+  padding: 0.35rem;
   padding-left: 1rem;
   font-size: large;
-  border-radius: 0.5rem;
+  border-radius: 0.3rem;
   text-align: left;
 }
 

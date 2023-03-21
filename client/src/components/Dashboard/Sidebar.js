@@ -15,6 +15,7 @@ import { apiLocation } from "../../App";
 import useFetch from "../../hooks/useFetch";
 import SidebarChoice from "./SidebarChoice";
 import Course from "./Course";
+import Settings from "./Settings";
 
 /**
  * Component displaying the sidebar (#sidebar-itself) and the area controlled
@@ -36,6 +37,8 @@ function Sidebar() {
   // Theme toggle button
   const { theme, toggleTheme } = useContext(contextTheme);
 
+  const [selectedAccSetting, setSelectedAccSettings] = useState(false); // FIXME TESTING ONLY
+
   /*
   The selected semester state remains null until the user actually chooses
   one through the list (we give the list a callback to set state). Once it
@@ -48,6 +51,7 @@ function Sidebar() {
   console.log("Currently selected semester is " + (selectedSemester ? `${selectedSemester.name}: ${selectedSemester.id}` : selectedSemester));
   const selectSemester = (sem) => {
     if (selectedSemester && sem.id === selectedSemester.id) return;
+    setSelectedAccSettings(false);  // FIXME TESTING ONLY
     setSelectedCourse(null);
     setSelectedSemester(sem);
   }
@@ -59,6 +63,7 @@ function Sidebar() {
   console.log("Currently selected course is " + (selectedCourse ? `${selectedCourse.name}: ${selectedCourse.id}` : selectedCourse));
   const selectCourse = (course) => {
     if (selectedCourse && course.id === selectedCourse.id) return;
+    setSelectedAccSettings(false); // FIXME TESTING ONLY
     setSelectedCourse(course);
   }
 
@@ -86,7 +91,7 @@ function Sidebar() {
         <div className="card thin-scrollbar" id="sidebar-card">
           {/* Box containing the logo and a theme toggle button. */}
           <div id="sb-logo-container">
-            <img src={logoImg} className="not-icon" style={{ height: "3rem" }} alt="Logo" />
+            <img src={logoImg} className="not-icon" style={{ height: "2.5rem" }} alt="Logo" />
             <div style={{ flexGrow: 1 }} /> {/* Push apart logo & theme toggle */}
             <img src={theme === "light" ? moonIco : sunIco} className="toggle-dark sb-selectable not-icon" alt="Dark mode icon" onClick={(e) => toggleTheme()} />
           </div>
@@ -121,8 +126,8 @@ function Sidebar() {
               override={!selectedSemester || courseError || courseLoading}
             >
               {!selectedSemester && <div>Please select a semester</div>}
-              {selectedSemester && semError && <div style={{color: 'red'}}>Error</div>}
-              {selectedSemester && semLoading && <div>Loading</div>}
+              {selectedSemester && courseError && <div style={{color: 'red'}}>Error</div>}
+              {selectedSemester && courseLoading && <div>Loading</div>}
               
             </SidebarChoice>
           }
@@ -154,8 +159,8 @@ function Sidebar() {
           </div>
           {/* Padding */}
           <div style={{ flexGrow: 1 }} />
-          {/* User */}
-          <div className="sb-selectable" id="user-container">
+          {/* User (FIXME FIXME FIXME TESTING ONLY SELECTION LOGIC) */}
+          <div className={`sb-selectable ${selectedAccSetting ? 'sb-selected' : ''}`} id="user-container" onClick={() => (setSelectedAccSettings(true))}> {/* FIXME TESTING ONLY */}
             {/* We're not actually storing any user pfp this just is just a random gravatar. */}
             <img src={identicon} className="not-icon" alt="identicon" />
             <div>
@@ -173,15 +178,23 @@ function Sidebar() {
           {/* Sign out */}
           <div className="sb-item sb-selectable" id="privacy">
             <img src={privacyIco} alt="privacy" />
-            <div>Privacy and Terms</div>
+            <div>About and Privacy</div>
           </div>
         </div>
       </div>
       <div id='sidebar-display'>
         {
-          (selectedSemester && selectedCourse) ?
-            <Course course={selectedCourse} semester={selectedSemester} /> :
-            <div style={{flexGrow: 1, fontSize: 'xx-large', height: '100%', width: '100%',display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Please select a course and semester</div>
+          // FIXME FIXME FIXME selectedAccSettings is bad, just for testing
+          (!selectedAccSetting &&
+            (
+              (selectedSemester && selectedCourse && !courseLoading) ?
+              <Course course={selectedCourse} semester={selectedSemester} /> :
+              <div style={{ flexGrow: 1, fontSize: 'xx-large', height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Please select a course and semester</div>
+            )
+          )
+        }
+        {
+          (selectedAccSetting && <Settings />) // FIXME TESTING ONLY
         }
       </div>
     </div>

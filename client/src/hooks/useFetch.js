@@ -33,6 +33,13 @@ function useFetch(url) {
       return; // If no URL, then simply return a loading state. 
     }
 
+    // Recall, this only runs when the URL changes. So, reset metrics when
+    // we start fetching again so that components relying on us know that
+    // we're loading again.
+    setData(null);
+    setLoading(true);
+    setError(null);
+
     const abortController = new AbortController();
 
     // Append token to headers if appropriate

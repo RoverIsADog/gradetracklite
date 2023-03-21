@@ -96,8 +96,8 @@ the dark theme variables take precedence.
   color: var(--text-color);
 }
 
-input,
-textarea {
+.dash-input,
+.dash-textarea {
   color: var(--text-color);
 }
 
@@ -164,13 +164,13 @@ the category's select colour */
 }
 
 /* #################### FROM INPUT.CSS ####################  */
-input,
-textarea {
+.dash-input,
+.dash-textarea {
   border-bottom-color: var(--input-bottom-line);
 }
 
-input:focus,
-input:hover {
+.dash-input:focus,
+.dash-input:hover {
   /* To make the bottom of the text-box thicker while focussed
   without changing the bottom-border (which would cause the text
   to jump), use a linear gradient from top to bottom, where the
@@ -180,10 +180,10 @@ input:hover {
   background: var(--input-bottom-background)
 }
 
-input:focus,
-input:hover,
-textarea:focus,
-textarea:hover {
+.dash-input:focus,
+.dash-input:hover,
+.dash-textarea:focus,
+.dash-textarea:hover {
   background-color: var(--input-hover);
 }
 

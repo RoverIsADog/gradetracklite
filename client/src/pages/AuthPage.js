@@ -17,7 +17,7 @@ function AuthPage() {
   return (
     <main>
       <div className="top-bar">
-        <h2 className="top-bar-text">Grade Tracker</h2>
+        <h2 className="top-bar-text">GradeTrackLite</h2>
       </div>
       <div className="auth-page">
         <br />
