@@ -9,6 +9,7 @@
   with standardised colour, transition and border roundings. */
   transition: 0.15s;
   border-radius: 0.4rem;
+  cursor: pointer;
 }
 
 #sb-logo-container {
@@ -134,6 +135,9 @@ elements, and a list of selectable content. */
   flex-direction: row;
   padding: 0.5rem;
   height: 2rem;
+  /* In case it's a link */
+  text-decoration: none;
+  color: inherit; 
 }
 
 .sb-item>img {

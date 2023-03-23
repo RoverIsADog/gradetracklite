@@ -1,6 +1,6 @@
 import React, { createContext } from "react";
 import { Routes, Route } from "react-router-dom";
-import Attributions from "./pages/Attributions";
+import About from "./pages/About";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard"; // Path: /app
 
@@ -35,7 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AuthPage />}></Route>
         <Route path="/app" element={<Dashboard />}></Route>
-        <Route path="/attributions" element={<Attributions />}></Route>
+        <Route path="/about" element={<About />}></Route>
       </Routes>
     </apiLocation.Provider>
   );

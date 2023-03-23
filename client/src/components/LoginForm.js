@@ -6,14 +6,12 @@ import axios from 'axios';
 export const LoginForm = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [token, setToken]=useState(null);
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(username);
     try {
       const response = await axios.post('http://localhost:8000/login', {
         username,
@@ -22,13 +20,14 @@ export const LoginForm = (props) => {
       
       if (response.data.error === 0) {
         console.log('Login successful');
-        setToken(response.data.token);
+        document.cookie = `token=${response.data.token}`;
         navigate("/app");
       } else {
         console.log('Login failed');
         setError('Error: invalid username or password');
       }
     } catch (err) {
+      console.log("Error while logging in!")
       console.log(err);
     }
     

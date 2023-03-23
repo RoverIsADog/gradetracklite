@@ -93,6 +93,12 @@ Moon icon:
 * scarlab at svgrepo.com
 * Modifications: background removed, retextured to blue
 
+Book emoji icons (favicon-xx, android-chrome-xx, apple-touch-icon):
+* Attribution CC BY license
+* https://twemoji.twitter.com/ and https://github.com/twitter/twemoji
+* Twitter, Inc and other contributors
+* Generated into icons at https://favicon.io/emoji-favicons/books
+
 ## Licenses
 
 Some licenses require a copy of the license to be included with the resource. They are included below.

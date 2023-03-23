@@ -1,7 +1,7 @@
 .auth-page {
   text-align: center;
   display: flex;
-  min-height: 95vh;
+  height: 95vh;
   align-items: center;
   justify-content: center;
   background-image: linear-gradient(180deg, #33332e, #364655,#837f83 70%  );
@@ -33,11 +33,12 @@
   overflow: hidden;
   border: black;
   box-shadow: 0 8px 6px -6px black;
+  height: 5vh;
 }
 
 .top-bar-text{
   text-align: right;
-  margin-right: 1rem;
+  margin: 0.5rem 1rem 0 0;
 }
 
 label {

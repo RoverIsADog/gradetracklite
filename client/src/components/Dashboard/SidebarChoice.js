@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import plusIco from "../../img/plus-svgrepo-com.svg";
 
 /**
@@ -43,10 +43,6 @@ function SidebarChoice({ name, icon, id, list, valueToName, onSelect, onPlus, ov
     console.log(displayed);
   }
 
-  useEffect(() => {
-    console.log(name + " was mounted!");
-  }, []);
-
   return (
     <>
       <div className="sb-choice" id={id}>
@@ -54,7 +50,7 @@ function SidebarChoice({ name, icon, id, list, valueToName, onSelect, onPlus, ov
         <div className="sb-choice-header">
           <img className="sb-choice-header-ico" src={icon} alt="Semester icon" />
           <div className="sb-choice-header-name">{name}</div>
-          <img className="sb-choice-header-plus sb-selectable" src={plusIco} alt="Plus icon" onClick={onPlus} />
+          <img className="sb-choice-header-plus sb-selectable" src={plusIco} alt="Plus icon" onClick={onPlus} title={'Add ' + name.toLowerCase()} />
         </div>
 
         {/* actually display the list */}

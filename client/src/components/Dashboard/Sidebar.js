@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import "../../css/dashboard/sidebar.css";
 import logoImg from "../../img/logo.png";
 import sunIco from "../../img/sun-svgrepo-com.svg";
 import moonIco from "../../img/moon-svgrepo-com.svg";
 import semestersIco from "../../img/calendar-svgrepo-com.svg";
 import coursesIco from "../../img/education-books-apple-svgrepo-com.svg";
-import plusIco from "../../img/plus-svgrepo-com.svg";
 import identicon from "../../img/identicon.png"; // TODO procedurally generate based on username??
 import logoutIco from "../../img/sign-out-2-svgrepo-com.svg";
 import privacyIco from "../../img/contract-line-svgrepo-com.svg";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { contextTheme } from "../../pages/Dashboard";
 import { apiLocation } from "../../App";
 import useFetch from "../../hooks/useFetch";
@@ -27,11 +26,9 @@ function Sidebar() {
   const apiURL = useContext(apiLocation);
 
   // Logout button
-  const navigate = useNavigate();
   const handleLogout = () => {
     console.log("Logging out");
     console.log("TODO: clear session cookie/storage");
-    navigate("/");
   };
 
   // Theme toggle button
@@ -50,8 +47,8 @@ function Sidebar() {
   const [selectedSemester, setSelectedSemester] = useState(null);
   console.log("Currently selected semester is " + (selectedSemester ? `${selectedSemester.name}: ${selectedSemester.id}` : selectedSemester));
   const selectSemester = (sem) => {
+    if (selectedAccSetting) setSelectedAccSettings(false);  // FIXME TESTING ONLY
     if (selectedSemester && sem.id === selectedSemester.id) return;
-    setSelectedAccSettings(false);  // FIXME TESTING ONLY
     setSelectedCourse(null);
     setSelectedSemester(sem);
   }
@@ -62,8 +59,8 @@ function Sidebar() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   console.log("Currently selected course is " + (selectedCourse ? `${selectedCourse.name}: ${selectedCourse.id}` : selectedCourse));
   const selectCourse = (course) => {
+    if (setSelectedAccSettings) setSelectedAccSettings(false); // FIXME TESTING ONLY
     if (selectedCourse && course.id === selectedCourse.id) return;
-    setSelectedAccSettings(false); // FIXME TESTING ONLY
     setSelectedCourse(course);
   }
 
@@ -170,16 +167,16 @@ function Sidebar() {
           </div>
 
           {/* Sign out */}
-          <div className="sb-item sb-selectable" id="logout" onClick={handleLogout}>
+          <Link to='/' className="sb-item sb-selectable" id="logout" onClick={handleLogout}>
             <img src={logoutIco} alt="logout" />
             <div>Sign out</div>
-          </div>
+          </Link>
           {/* Privacy */}
           {/* Sign out */}
-          <div className="sb-item sb-selectable" id="privacy">
+          <Link to='/about' className="sb-item sb-selectable" id="privacy">
             <img src={privacyIco} alt="privacy" />
             <div>About and Privacy</div>
-          </div>
+          </Link>
         </div>
       </div>
       <div id='sidebar-display'>

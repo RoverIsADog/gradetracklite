@@ -10,6 +10,7 @@
   padding: 0.5rem;
   transition: 0.15s;
   border-radius: 0.5rem;
+  cursor: pointer;
 }
 
 /* ################## COURSE INFO ################## */
