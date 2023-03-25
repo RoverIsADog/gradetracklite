@@ -16,11 +16,13 @@ import { useEffect, useState } from "react";
  *
  * Errors include both network failures and any response that is not "ok"
  * (response.ok). I think it means status != 200 but don't quote me on that.
+ * 
+ * TEMPORARY? Also throws an error if the response's error code is not 0.
  *
  * TODO modify this hook to be able to use POST aswell.
- *
- * @param {string} url
- * @returns Object containing the 3 monitoring fields.
+ * 
+ * @param {string | null} url
+ * @returns {{data: any, loading: boolean, error: Error}} Object containing the 3 monitoring fields.
  */
 function useFetch(url) {
   // State declarations
@@ -75,6 +77,12 @@ function useFetch(url) {
       .then((json) => {
         console.log("Response JSON content is");
         console.log(json);
+
+        // In the event of a nonfatal error
+        if (json.error && json.error !== 0) {
+          throw new Error(json.message);
+        }
+
         setError(null); // Reset error in case of future requests
         setLoading(false);
         setData(json);
@@ -86,9 +94,13 @@ function useFetch(url) {
         console.log(err);
         setError(err);
         setLoading(false);
+        setData(null);
       });
     
-    return () => abortController.abort();
+    return (() => {
+      abortController.abort()
+      console.log("Cancelled request to " + url);
+    });
   }, [url]); // Empty dependency array = runs on mount only
 
   return { data, loading, error };

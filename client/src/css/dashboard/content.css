@@ -13,14 +13,32 @@
   cursor: pointer;
 }
 
+.content-message {
+  /* To be displayed if the content area is
+  displaying one singular message */
+  font-size: xx-large;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ################## COURSE INFO ################## */
 
-/* Horiz flexbox containing name | grow | GPA+credit */
 .course-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Horiz flexbox containing name | grow | GPA+credit */
+.course-info-box {
   display: flex;
   flex-direction: row;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  flex-grow: 1;
 }
 
 .course-name {
@@ -72,7 +90,7 @@ hover */
   align-items: center;
 }
 
-.category-header img {
+.content-plus {
   height: 1.5rem;
 
   /* Relating to appearing on hover */
@@ -83,12 +101,12 @@ hover */
 }
 
 /* Only display plus if selected */
-.category-header:hover img {
+.category-header:hover>.content-plus, 
+.course-info:hover>.content-plus{
   margin: 0.4rem;
   padding: 0.5rem;
   /* Make hitbox bigger */
-  width: 1.5rem;
-  height: 1.5rem;
+  width: auto;
 }
 
 /* Child of category-header as said above. Mostly here
@@ -126,7 +144,7 @@ ellipse. */
 
 .category-description {
   /* Overrides cap-text line limit */
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 2 !important;
 }
 
 /* ################## ONE GRADE CONTAINER ################## */
@@ -151,10 +169,15 @@ the grade-list (itself part of a category) */
   /* First one is always name/desc:
   allow pushing back points/weight */
   flex-grow: 1;
+  min-width: 0; /*In case weight starts pushing*/
 }
 
 .grade-name {
   font-size: x-large;
+}
+
+.grade-description {
+  -webkit-line-clamp: 2 !important;
 }
 
 .grade-score,

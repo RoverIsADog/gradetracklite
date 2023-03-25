@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { apiLocation } from "../App";
 
 
 export const LoginForm = (props) => {
@@ -10,10 +11,12 @@ export const LoginForm = (props) => {
 
   const navigate = useNavigate();
 
+  const apiURL = useContext(apiLocation);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/login', {
+      const response = await axios.post(`${apiURL}/login`, {
         username,
         password,
       });

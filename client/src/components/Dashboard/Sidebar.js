@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import "../../css/dashboard/sidebar.css";
+import "../../css/dashboard/content.css";
 import logoImg from "../../img/logo.png";
 import sunIco from "../../img/sun-svgrepo-com.svg";
 import moonIco from "../../img/moon-svgrepo-com.svg";
@@ -13,7 +14,7 @@ import { contextTheme } from "../../pages/Dashboard";
 import { apiLocation } from "../../App";
 import useFetch from "../../hooks/useFetch";
 import SidebarChoice from "./SidebarChoice";
-import Course from "./Course";
+import { ContentPane } from "./ContentPane";
 import Settings from "./Settings";
 
 /**
@@ -34,7 +35,9 @@ function Sidebar() {
   // Theme toggle button
   const { theme, toggleTheme } = useContext(contextTheme);
 
+  // States
   const [selectedAccSetting, setSelectedAccSettings] = useState(false); // FIXME TESTING ONLY
+
 
   /*
   The selected semester state remains null until the user actually chooses
@@ -90,7 +93,11 @@ function Sidebar() {
           <div id="sb-logo-container">
             <img src={logoImg} className="not-icon" style={{ height: "2.5rem" }} alt="Logo" />
             <div style={{ flexGrow: 1 }} /> {/* Push apart logo & theme toggle */}
-            <img src={theme === "light" ? moonIco : sunIco} className="toggle-dark sb-selectable not-icon" alt="Dark mode icon" onClick={(e) => toggleTheme()} />
+            <img
+              src={theme === "light" ? moonIco : sunIco}
+              className="toggle-dark sb-selectable not-icon"
+              alt="Dark mode icon" onClick={(e) => toggleTheme()}
+              title="Toggle theme" />
           </div>
           <div className="horizontal-line" />
 
@@ -104,8 +111,8 @@ function Sidebar() {
               onSelect={selectSemester}
               override={semError || semLoading}
             >
-              {semError && <div style={{color: 'red'}}>Error</div>}
-              {semLoading && <div>Loading</div>}
+              {semError && <div className='sb-choice-list-message' style={{color: 'red'}}>Error</div>}
+              {semLoading && <div className='sb-choice-list-message'>Loading</div>}
               
             </SidebarChoice>
           }
@@ -122,42 +129,29 @@ function Sidebar() {
               onSelect={selectCourse}
               override={!selectedSemester || courseError || courseLoading}
             >
-              {!selectedSemester && <div>Please select a semester</div>}
+              {!selectedSemester && <div className='sb-choice-list-message'>Please select a semester</div>}
               {selectedSemester && courseError && <div style={{color: 'red'}}>Error</div>}
-              {selectedSemester && courseLoading && <div>Loading</div>}
+              {selectedSemester && courseLoading && <div className='sb-choice-list-message'>Loading</div>}
               
             </SidebarChoice>
           }
 
-          {/* Semester list */}
-
-          {/* Courses list */}
-          {/* <div className="sb-choice" id="courses-container"> */}
-            {/* List header (img, name, +) */}
-            {/* <div className="sb-choice-header">
-              <img className="sb-choice-header-ico" src={coursesIco} alt="Courses icon" />
-              <div className="sb-choice-header-name">Courses</div>
-              <img className="sb-choice-header-plus sb-selectable" src={plusIco} alt="Plus icon" />
-            </div>
-            <div className="sb-choice-list thin-scrollbar">
-              <div className="sb-choice-list-element sb-selectable">COMP 111</div>
-              <div className="sb-choice-list-element sb-selectable">COMP 222</div>
-              <div className="sb-choice-list-element sb-selectable">COMP 333</div>
-              <div className="sb-choice-list-element sb-selectable sb-selected">COMP 444</div>
-              <div className="sb-choice-list-element sb-selectable">COMP 555</div>
-              <div className="sb-choice-list-element sb-selectable">COMP 666</div>
-              <div className="sb-choice-list-element sb-selectable">COMP 777</div>
-            </div>
-          </div> */}
           <div className="horizontal-line" />
+          
           {/* GPA container */}
           <div className="sidebar-item" id="gpa-container">
             <span className="color-good">3.3</span>&nbsp;CGPA
           </div>
+          
           {/* Padding */}
           <div style={{ flexGrow: 1 }} />
+          
           {/* User (FIXME FIXME FIXME TESTING ONLY SELECTION LOGIC) */}
-          <div className={`sb-selectable ${selectedAccSetting ? 'sb-selected' : ''}`} id="user-container" onClick={() => (setSelectedAccSettings(true))}> {/* FIXME TESTING ONLY */}
+          <div
+            className={`sb-selectable ${selectedAccSetting ? 'sb-selected' : ''}`}
+            id="user-container"
+            onClick={() => (setSelectedAccSettings(prev => !prev))}
+          >
             {/* We're not actually storing any user pfp this just is just a random gravatar. */}
             <img src={identicon} className="not-icon" alt="identicon" />
             <div>
@@ -171,8 +165,8 @@ function Sidebar() {
             <img src={logoutIco} alt="logout" />
             <div>Sign out</div>
           </Link>
+
           {/* Privacy */}
-          {/* Sign out */}
           <Link to='/about' className="sb-item sb-selectable" id="privacy">
             <img src={privacyIco} alt="privacy" />
             <div>About and Privacy</div>
@@ -181,12 +175,19 @@ function Sidebar() {
       </div>
       <div id='sidebar-display'>
         {
-          // FIXME FIXME FIXME selectedAccSettings is bad, just for testing
+          /*
+          Display the currently selected course's content on the condition that:
+          1. The user did not select account settings
+          2. Both a course and semester were selected, and the selected course isn't currently loading.
+              2.1 If loading, display loading.
+          */
           (!selectedAccSetting &&
             (
               (selectedSemester && selectedCourse && !courseLoading) ?
-              <Course course={selectedCourse} semester={selectedSemester} /> :
-              <div style={{ flexGrow: 1, fontSize: 'xx-large', height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Please select a course and semester</div>
+              <ContentPane course={selectedCourse} semester={selectedSemester} /> :
+              <div className="content-message">
+                Please select a course and semester
+              </div>
             )
           )
         }

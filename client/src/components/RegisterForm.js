@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import Popup from "./Popup";
+import { apiLocation } from "../App";
 
 export const RegisterForm = (props) => {
   const [username, setUsername] = useState("");
@@ -10,11 +11,13 @@ export const RegisterForm = (props) => {
   const [buttonPopup, setButtonPopup] = useState(false);
   const [error, setError] = useState('');
 
+  const apiURL = useContext(apiLocation);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(username);
     try {
-      const response = await axios.post('http://localhost:8000/register', {
+      const response = await axios.post(`${apiURL}/register`, {
         username,
         password,
         email

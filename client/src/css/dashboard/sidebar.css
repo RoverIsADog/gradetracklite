@@ -85,6 +85,15 @@ elements, and a list of selectable content. */
   overflow: auto;
 }
 
+.sb-choice-list-message {
+  /* If no items / other message */
+  height: min(12.5rem, 20vh);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: large;
+}
+
 .sb-choice-list-element {
   padding: 0.35rem;
   padding-left: 1rem;

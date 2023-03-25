@@ -159,7 +159,7 @@ the dark theme variables take precedence.
 
 /* When the plus is selected, we want it to be darker than
 the category's select colour */
-.category-header:hover img:hover {
+.content-plus:hover {
   background-color: var(--content-hover-img);
 }
 

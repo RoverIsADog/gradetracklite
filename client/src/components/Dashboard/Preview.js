@@ -8,6 +8,7 @@ import courseIco from "../../img/education-books-apple-svgrepo-com.svg";
 import descriptionIco from "../../img/open-book-svgrepo-com.svg";
 
 function Preview(previewItem) {
+  // FIXME Replace with dynamically generated using preview component
   return (
     <>
       <div className="card thin-scrollbar" id="preview-card">
