@@ -2,7 +2,9 @@ import React, { useContext } from "react";
 import plusIco from "../../img/plus-svgrepo-com.svg";
 import { ColoredPercent, floatToDecimalStr } from "../../utils/Util";
 import { contextCourse, contextSelectedItem, contextSemester } from "./ContentPane";
-import GradeList from "./GradeList";
+import ContentGradeList from "./ContentGradeList";
+import PreviewCategoryModify from "./PreviewCategoryModify";
+import PreviewGradeAdd from "./PreviewGradeAdd";
 
 /**
  * Component responsible for displaying a list of categories, and each's contained courses
@@ -36,10 +38,7 @@ import GradeList from "./GradeList";
  * @param {{categoryList: Array<Category>}} props
  * @returns
  */
-function CategoryList({ categoryList }) {
-  // Use context to get information about currenly semester, course.
-  const semester = useContext(contextSemester);
-  const course = useContext(contextCourse);
+function ContentCategoryList({ categoryList }) {
   const { selectedItem, setSelectedItem } = useContext(contextSelectedItem);
 
   /* For every category in the category list, convert into JSX using the below code. */
@@ -69,7 +68,7 @@ function CategoryList({ categoryList }) {
       const previewModify = () => {
         // TODO, maybe put in useMemo
         return (
-          <div>Previewing modifying {category.category_type} for {course.name}/{semester.name}</div>
+          <PreviewCategoryModify category={category} />
         );
       };
 
@@ -83,7 +82,7 @@ function CategoryList({ categoryList }) {
       const previewAdd = () => {
         // TODO, maybe put in useMemo
         return (
-          <div>Previewing adding a grade to {category.category_type} for {course.name}/{semester.name}</div>
+          <PreviewGradeAdd category={category} />
         );
       };
 
@@ -112,7 +111,7 @@ function CategoryList({ categoryList }) {
         <div className="horizontal-line" />
 
         {/* Grades in that category */}
-        <GradeList category={{id: category.uuid, name: category.name}} gradeList={category.category_grade_list} />
+        <ContentGradeList category={{id: category.uuid, name: category.name}} gradeList={category.category_grade_list} />
       </div>
     );
   });
@@ -121,4 +120,4 @@ function CategoryList({ categoryList }) {
   return <div className="category-list thin-scrollbar">{categoryListJSX}</div>;
 }
 
-export default CategoryList;
+export default ContentCategoryList;

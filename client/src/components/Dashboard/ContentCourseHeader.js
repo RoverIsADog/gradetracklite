@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import plusIco from "../../img/plus-svgrepo-com.svg";
 import { contextCourse, contextSelectedItem } from "./ContentPane";
+import PreviewCourseModify from "./PreviewCourseModify";
+import PreviewCategoryAdd from "./PreviewCategoryAdd";
 
 /**
  * Component that is responsible for rendering a course's header containing it name, overall
@@ -9,17 +11,19 @@ import { contextCourse, contextSelectedItem } from "./ContentPane";
  * As a child of the ContentPane, it itself is selectable and it provides previewers for both
  * modifying the course information and creating a new category in the course (plus).
  */
-function CourseHeader() {
+function ContentCourseHeader() {
   const course = useContext(contextCourse);
   const { selectedItem, setSelectedItem } = useContext(contextSelectedItem);
 
   /* Preview pane component allowing modifying a course. */
   const previewModify = () => {
-    return <div>Previewing modifying {course.name}</div>;
+    // TODO maybe put this in a memo
+    return <PreviewCourseModify />;
   };
   /* Peview pane component allowing adding a category to a course. */
   const previewAdd = () => {
-    return <div>Previewing adding a category to {course.name}</div>;
+    // TODO maybe put this in a memo
+    return <PreviewCategoryAdd />;
   };
   /* Set the content pane's selected to itself and preview pane to modify the course. */
   const handleClickModify = () => {
@@ -62,4 +66,4 @@ function CourseHeader() {
   );
 }
 
-export default CourseHeader;
+export default ContentCourseHeader;

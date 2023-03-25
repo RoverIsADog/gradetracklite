@@ -7,14 +7,29 @@ import categoryIco from "../../img/bookshelf-library-svgrepo-com.svg";
 import courseIco from "../../img/education-books-apple-svgrepo-com.svg";
 import descriptionIco from "../../img/open-book-svgrepo-com.svg";
 
-function Preview(previewItem) {
-  // FIXME Replace with dynamically generated using preview component
+/**
+ * FIXME This file is only a template. It should only be used as a base to
+ * start working on the various specific preview panes.
+ * 
+ * AKA PreviewCategoryAdd, PreviewCategoryModify, PreviewCourseModify,
+ *  PreviewGradeAdd, PreviewGradeModify
+ * 
+ * These specific preview panes should keep the overall div structure as this
+ * template so that the CSS works propertly.
+ * 
+ * Basically, when building the specific panes, reuse "items" from this
+ * template such as preview-inline and preview-vertical.
+ 
+ * @returns {React.Component}
+ */
+function PlaceholderPreview() {
   return (
     <>
       <div className="card thin-scrollbar" id="preview-card">
         <div className="preview-name">Quiz 1 and more text to test overflow</div>
         <div className="horizontal-line" />
-        {/* Grade entry */}
+
+        {/* Grade preview entry */}
         <div className="preview-item preview-inline">
           <div className="preview-inline-left">
             <img className="preview-item-ico" src={gradeIco} alt='grade' />
@@ -29,7 +44,8 @@ function Preview(previewItem) {
             <input className="input-small dash-input" type="text" name="points-max" defaultValue={8} />
           </div>
         </div>
-        {/* Weight entry */}
+
+        {/* Weight preview entry */}
         <div className="preview-item preview-inline">
           <div className="preview-inline-left">
             <img className="preview-item-ico" src={weightIco} alt='weight' />
@@ -40,7 +56,8 @@ function Preview(previewItem) {
             <input className="input-small dash-input" type="text" name="weight" defaultValue={5} />
           </div>
         </div>
-        {/* Date entry */}
+
+        {/* Date preview entry */}
         <div className="preview-item preview-inline">
           <div className="preview-inline-left">
             <img className="preview-item-ico" src={dateIco} alt='date' />
@@ -51,7 +68,8 @@ function Preview(previewItem) {
             <input className="input-large dash-input" type="date" name="date" defaultValue="2023-01-22" />
           </div>
         </div>
-        {/* Category entry */}
+
+        {/* Category preview entry */}
         <div className="preview-item preview-inline">
           <div className="preview-inline-left">
             <img className="preview-item-ico" src={categoryIco} alt='category' />
@@ -63,7 +81,8 @@ function Preview(previewItem) {
             </div>
           </div>
         </div>
-        {/* Course entry */}
+
+        {/* Course preview entry */}
         <div className="preview-item preview-inline">
           <div className="preview-inline-left">
             <img className="preview-item-ico" src={courseIco} alt='course' />
@@ -75,7 +94,8 @@ function Preview(previewItem) {
             </div>
           </div>
         </div>
-        {/* Course entry */}
+
+        {/* Description preview entry */}
         <div className="preview-item preview-vertical">
           <div className="preview-vertical-about">
             <img className="preview-item-ico" src={descriptionIco} alt='description' />
@@ -88,4 +108,4 @@ function Preview(previewItem) {
   );
 }
 
-export default Preview;
+export default PlaceholderPreview;

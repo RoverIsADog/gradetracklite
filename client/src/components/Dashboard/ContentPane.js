@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState } from "react";
 import { apiLocation } from "../../App";
 import "../../css/dashboard/content.css";
 import useFetch from "../../hooks/useFetch";
-import Preview from "./Preview";
-import CategoryList from "./CategoryList";
-import CourseHeader from "./CourseHeader";
+import PlaceholderPreview from "./PlaceholderPreview";
+import ContentCategoryList from "./ContentCategoryList";
+import ContentCourseHeader from "./ContentCourseHeader";
 
 
 /**
@@ -107,21 +107,21 @@ function ContentPane({ semester, course }) {
             <div id="course-itself">
               {/* Another div level here to prevent weird padding/margin problems */}
               <div id="course-area">
-                
-                {/* Header is its own component. */}
-                <CourseHeader />
-
+                {/* A course's header (name, grade, credits) */}
+                <ContentCourseHeader />
                 <div className="horizontal-line-bold" />
-
                 {/* Each course has its list of categories. */}
-                <CategoryList categoryList={fetchMetrics.data.category_list} />
+                <ContentCategoryList categoryList={fetchMetrics.data.category_list} />
               </div>
             </div>
+            
             <div id="course-display">
-              {/* We preview whatever is currently selected. Hence why when setting the selected
-              element, we also give a function to generate its previewer. */}
+              {/* We preview whatever thing is currently selected. Hence why
+              when setting the selected, the selected element must also provide
+              a function to generate its previewer. For now, also display template
+              previewer, but remove once all specific previewers are done*/}
               {selectedItem.preview && selectedItem.preview()}
-              <Preview />
+              <PlaceholderPreview />
             </div>
           </div>
         </contextCourse.Provider>

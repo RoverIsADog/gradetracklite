@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { ColoredPercent } from "../../utils/Util";
 import { contextCourse, contextSelectedItem, contextSemester } from "./ContentPane";
+import PreviewGradeModify from "./PreviewGradeModify";
 
 /**
  * Component that is responsible for displaying a list of grades belonging to some
@@ -22,7 +23,7 @@ import { contextCourse, contextSelectedItem, contextSemester } from "./ContentPa
  * @param {{category: {id: string, name: string}, gradeList: Array<Grade>}} props
  * @returns
  */
-function GradeList({ gradeList }) {
+function ContentGradeList({ category, gradeList }) {
   const semester = useContext(contextSemester);
   const course = useContext(contextCourse);
   const { selectedItem, setSelectedItem } = useContext(contextSelectedItem);
@@ -31,7 +32,7 @@ function GradeList({ gradeList }) {
     const handleClick = () => {
       /* Renders the current grade's editing page */
       const preview = () => {
-        return <div>{`Selected grade ${grade.uuid} : ${grade.item_name} at ${semester.name}/${course.name}`}</div>;
+        return <PreviewGradeModify category={category} grade={grade} />;
       };
 
       console.log(`Selected grade ${grade.uuid} : ${grade.item_name} at ${semester.name}/${course.name}`);
@@ -57,4 +58,4 @@ function GradeList({ gradeList }) {
   return <div className="grade-list">{lst}</div>;
 }
 
-export default GradeList;
+export default ContentGradeList;
