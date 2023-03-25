@@ -27,3 +27,16 @@ export function ColoredPercent({ number, decimals = 1 }) {
 export function floatToDecimalStr(number, decimals = 1) {
   return parseFloat( Math.round((number) * (Math.pow(10, decimals))) / Math.pow(10, decimals) );
 }
+
+/**
+ * Returns the value of the specified cookie.
+ * @param {string} name 
+ * @returns 
+ */
+export function readCookie(name) {
+  // Credit https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1];
+}

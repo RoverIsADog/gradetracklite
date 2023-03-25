@@ -1,5 +1,6 @@
 // @ts-check
 import { useEffect, useState } from "react";
+import { readCookie } from "../utils/Util";
 
 /**
  * Hook that uses fetch API to do a GET request to some given address, and
@@ -45,7 +46,7 @@ function useFetch(url) {
     const abortController = new AbortController();
 
     // Append token to headers if appropriate
-    const token = "12344321"; // TODO get the actual authentication cookie
+    const token = readCookie("token");
     const requestInit = {
       method: "GET",
       headers: {

@@ -12,8 +12,8 @@ const db = new sqlite3.Database(path.join(__dirname, "database.db"));
 // Middleware
 const corsOptions = {
   origin: "http://localhost:3000",
-  methods: ["GET", "PUT", "POST", "DELETE"],
-  allowedHeaders: ["Content-Type"],
+  methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 app.use(bodyParser.json());
