@@ -1,20 +1,20 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const dotenv = require('dotenv');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
-const db = new sqlite3.Database(path.join(__dirname, 'database.db'));
+const db = new sqlite3.Database(path.join(__dirname, "database.db"));
 
 // Middleware
 const corsOptions = {
-  origin: 'http://localhost:3000',
-  methods: ['GET', 'PUT', 'POST', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true
+  origin: "http://localhost:3000",
+  methods: ["GET", "PUT", "POST", "DELETE"],
+  allowedHeaders: ["Content-Type"],
+  credentials: true,
 };
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
@@ -26,11 +26,12 @@ db.run(
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     email TEXT
-  );`, (err) => {
+  );`,
+  (err) => {
     if (err) {
-      console.error('Error creating users table:', err);
+      console.error("Error creating users table:", err);
     } else {
-      console.log('Users table created');
+      console.log("Users table created");
     }
   }
 );
@@ -42,11 +43,12 @@ db.run(
     user_uuid TEXT NOT NULL,
     semester_name TEXT NOT NULL,
     FOREIGN KEY(user_uuid) REFERENCES users(uuid)
-  );`, (err) => {
+  );`,
+  (err) => {
     if (err) {
-      console.error('Error creating semesters table:', err);
+      console.error("Error creating semesters table:", err);
     } else {
-      console.log('Semesters table created');
+      console.log("Semesters table created");
     }
   }
 );
@@ -60,11 +62,12 @@ db.run(
     course_credits INTEGER NOT NULL,
     course_description TEXT,
     FOREIGN KEY(semester_uuid) REFERENCES semesters(uuid)
-  );`, (err) => {
+  );`,
+  (err) => {
     if (err) {
-      console.error('Error creating courses table:', err);
+      console.error("Error creating courses table:", err);
     } else {
-      console.log('Courses table created');
+      console.log("Courses table created");
     }
   }
 );
@@ -78,11 +81,12 @@ db.run(
     category_weight INTEGER NOT NULL,
     category_description TEXT,
     FOREIGN KEY(course_uuid) REFERENCES courses(uuid)
-  );`, (err) => {
+  );`,
+  (err) => {
     if (err) {
-      console.error('Error creating grade_categories table:', err);
+      console.error("Error creating grade_categories table:", err);
     } else {
-      console.log('grade_categories table created');
+      console.log("grade_categories table created");
     }
   }
 );
@@ -99,17 +103,21 @@ db.run(
     item_description TEXT,
     item_date TEXT NOT NULL,
     FOREIGN KEY (category_uuid) REFERENCES grade_categories(uuid)
-  );`, (err) => {
+  );`,
+  (err) => {
     if (err) {
-      console.error('Error creating grade_items table:', err);
+      console.error("Error creating grade_items table:", err);
     } else {
-      console.log('grade_items table created');
+      console.log("grade_items table created");
     }
   }
 );
 
 // Routes
-require('./routes')(app, db);
+require("./routes/authentication")(app, db);
+require("./routes/semesters")(app, db);
+require("./routes/courses")(app, db);
+require("./routes/grades")(app, db);
 
 const PORT = process.env.PORT || 8000;
 
