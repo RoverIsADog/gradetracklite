@@ -11,7 +11,7 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 2,
         message: "Invalid or missing token",
-        semester_list: [],
+        semesterList: [],
       });
       return;
     }
@@ -30,7 +30,7 @@ module.exports = (app, db) => {
           res.status(401).json({
             error: 5,
             message: "Expired token",
-            semester_list: [],
+            semesterList: [],
           });
           return;
         }
@@ -38,14 +38,14 @@ module.exports = (app, db) => {
         res.status(401).json({
           error: 3,
           message: "Invalid or missing token",
-          semester_list: [],
+          semesterList: [],
         });
         return;
       }
       res.status(401).json({
         error: 3,
         message: "Invalid or missing token",
-        semester_list: [],
+        semesterList: [],
       });
       return;
     }
@@ -55,7 +55,7 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 4,
         message: "Invalid or missing token",
-        semester_list: [],
+        semesterList: [],
       });
       return;
     }
@@ -69,7 +69,7 @@ module.exports = (app, db) => {
         res.status(500).json({
           error: -1,
           message: "Internal server error",
-          semester_list: [],
+          semesterList: [],
         });
         return;
       }
@@ -78,7 +78,7 @@ module.exports = (app, db) => {
         res.json({
           error: 1,
           message: "User does not exist",
-          semester_list: [],
+          semesterList: [],
         });
         return;
       }
@@ -90,22 +90,22 @@ module.exports = (app, db) => {
           res.status(500).json({
             error: -1,
             message: "Internal server error",
-            semester_list: [],
+            semesterList: [],
           });
           return;
         }
 
         // Create semester list
         const semesterList = rows.map((row) => ({
-          uuid: row.uuid,
-          semester_name: row.semester_name,
+          semesterID: row.uuid,
+          semesterName: row.semester_name,
         }));
 
         // Success response
         res.json({
           error: 0,
           message: "Semesters successfully fetched",
-          semester_list: semesterList,
+          semesterList: semesterList,
         });
       });
     });
@@ -114,13 +114,15 @@ module.exports = (app, db) => {
   // /add-semester POST request
   app.post("/add-semester", async (req, res) => {
     // Get request body
-    const { semester_name } = req.body;
+    const { candidateSemester } = req.body;
+    const { semesterName } = candidateSemester;
 
     // Check if request body contains the required fields
-    if (!semester_name) {
+    if (!semesterName) {
       res.status(400).json({
         error: -2,
         message: "Missing required fields",
+        newSemester: null,
       });
       return;
     }
@@ -131,6 +133,7 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 3,
         message: "Invalid or missing token",
+        newSemester: null,
       });
       return;
     }
@@ -149,6 +152,7 @@ module.exports = (app, db) => {
           res.status(401).json({
             error: 6,
             message: "Expired token",
+            newSemester: null,
           });
           return;
         }
@@ -156,12 +160,14 @@ module.exports = (app, db) => {
         res.status(401).json({
           error: 4,
           message: "Invalid or missing token",
+          newSemester: null,
         });
         return;
       }
       res.status(401).json({
         error: 4,
         message: "Invalid or missing token",
+        newSemester: null,
       });
       return;
     }
@@ -171,6 +177,7 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 5,
         message: "Invalid or missing token",
+        newSemester: null,
       });
       return;
     }
@@ -184,6 +191,7 @@ module.exports = (app, db) => {
         res.status(500).json({
           error: -1,
           message: "Internal server error",
+          newSemester: null,
         });
         return;
       }
@@ -192,17 +200,19 @@ module.exports = (app, db) => {
         res.json({
           error: 1,
           message: "User does not exist",
+          newSemester: null,
         });
         return;
       }
 
       // Check that semester does not already exist
-      db.get("SELECT * FROM semesters WHERE semester_name = ? AND user_uuid = ?", [semester_name, userUuid], (err, semesterRow) => {
+      db.get("SELECT * FROM semesters WHERE semester_name = ? AND user_uuid = ?", [semesterName, userUuid], (err, semesterRow) => {
         if (err) {
           console.error("Error selecting semester:", err);
           res.status(500).json({
             error: -1,
             message: "Internal server error",
+            newSemester: null,
           });
           return;
         }
@@ -211,12 +221,14 @@ module.exports = (app, db) => {
           res.json({
             error: 2,
             message: "Semester already exists",
+            newSemester: null,
           });
           return;
         }
 
         // SQL query
-        db.run("INSERT INTO semesters (uuid, user_uuid, semester_name) VALUES (?, ?, ?)", [uuidv4(), userUuid, semester_name], (err) => {
+        const newSemesterID = uuidv4();
+        db.run("INSERT INTO semesters (uuid, user_uuid, semester_name) VALUES (?, ?, ?)", [newSemesterID, userUuid, semesterName], (err) => {
           if (err) {
             console.error("Error inserting semester:", err);
             res.status(500).json({
@@ -228,6 +240,7 @@ module.exports = (app, db) => {
             res.status(200).json({
               error: 0,
               message: "Semester created successfully",
+              newSemester: {...candidateSemester, semesterID: newSemesterID},
             });
           }
         });

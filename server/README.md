@@ -1,22 +1,42 @@
 # API Requests
 
+__This document now supersedes the Word document. The Word document will no longer be kept to date.__
+
 This document serves as a guide to the various API requests that can be made to the server of the web application.
 
-It outlines what information is expected in the `req.body` for each POST request, and what information is expected in the header for each GET request. Additionally, it provides details on the JSON output that will be returned in the event of success or error.
+It outlines what information is expected in the payload for each POST request, and what URL parameters are expected for each GET request. Additionally, it provides details on the JSON output that will be returned in the event of success or error.
 
 By referencing this document, users of our application can ensure that they are making requests with the correct syntax and can better understand any errors they encounter.
 
-List of all requests:
+## List of all requests:
 
-- [POST /login](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#login-post-login)
-- [POST /register](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#register-post-register)
-- [GET /semesters](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#semesters-get-semesters)
-- [GET /courses](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#courses-get-courses)
-- [POST /add-semester](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-semester-post-add-semester)
-- [POST /add-course](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-course-post-add-course)
-- [POST /add-category](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-grade-category-post-add-category)
-- [POST /add-grade](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#create-a-grade-item-post-add-grade)
-- [GET /course](https://gitlab.cs.mcgill.ca/yzhou131/react-js-tests2/-/blob/feat/server/server/README.md#course-items-get-course)
+Authentication
+
+- [POST /login](#login-post-login)
+- [POST /register](#register-post-register)
+
+Dashboard loading
+
+- [GET /semesters](#semesters-get-semesters)
+- [GET /courses](#courses-get-courses)
+- [GET /course](#course-items-get-course)
+
+Adding things
+- [POST /add-semester](#create-a-semester-post-add-semester)
+- [POST /add-course](#create-a-course-post-add-course)
+- [POST /add-category](#create-a-grade-category-post-add-category)
+- [POST /add-grade](#create-a-grade-item-post-add-grade)
+
+Modifying things
+- Modify semester (WIP)
+- Modify course (WIP)
+- Modify category (WIP)
+- Modify grade (WIP)
+
+Account administration
+- Modify account credentials (WIP)
+- Request data download (WIP)
+- Delete account
 
 # Authentication
 
@@ -33,7 +53,7 @@ On the login page, the user enters their username and password, and the frontend
 
 Here is a sample request:
 
-```JSON
+```json
 {
     "username": "JDoe",
     "password": "123456"
@@ -63,7 +83,7 @@ In case of success, the server sends the username, the email and the user's UUID
 
 Here is a sample success response:
 
-```JSON
+```json
 {
     "error": 0,
     "message": "Successful login",
@@ -73,7 +93,7 @@ Here is a sample success response:
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
     "error": 1,
     "message": "Invalid username or password",
@@ -93,7 +113,7 @@ On the register page, the user enters their username and password, and an option
 
 Here is a sample request:
 
-```JSON
+```json
 {
     "username": "JDoe",
     "password": "123456",
@@ -120,7 +140,7 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 
 Here is a sample success response:
 
-```JSON
+```json
 {
     "error": 0,
     "message": "User created successfully"
@@ -129,7 +149,7 @@ Here is a sample success response:
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
     "error": 1,
     "message": "Username already exists"
@@ -155,7 +175,7 @@ It then sends a response with the following content:
 
 - error
 - message
-- semester_list
+- semesterList: List of semester
 
 The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
@@ -171,18 +191,18 @@ The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
 Here is a sample success response:
 
-```JSON
+```json
 {
     "error": 0,
     "message": "Semesters successfully fetched",
-    "semester_list": [
+    "semesterList": [
         {
-            "uuid": "uuidv4()",
-            "semester_name": "Winter 2023"
+            "semesterID": "uuidv4()",
+            "semesterName": "Winter 2023"
         },
         {
-            "uuid": "uuidv4()",
-            "semester_name": "Fall 2022"
+            "semesterID": "uuidv4()",
+            "semesterName": "Fall 2022"
         }
     ]
 }
@@ -190,7 +210,7 @@ Here is a sample success response:
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
     "error": 1,
     "message": "User does not exist",
@@ -204,7 +224,7 @@ Here is a sample fail response:
 
 On the dashboard page, whenever the user selects a semester, the frontend will send a GET request with the following URL search parameter:
 
-- `semester_id=<SEMESTER_UUID>`
+- `semesterID=<SEMESTER_UUID>`
 
 The JWT token is included in the header as follows:
 
@@ -217,7 +237,7 @@ It then sends a response with the following content:
 
 - error
 - message
-- course_list
+- courseList: List of course objects
 
 The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
@@ -236,34 +256,34 @@ The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
 Here is a sample success response:
 
-```JSON
+```json
 {
     "error": 0,
     "message": "Courses successfully fetched",
-    "course_list": [
+    "courseList": [
         {
-            "uuid": "ToJxpr77WuuQog4y",
-            "course_name": "COMP 547",
-            "course_credits": 4,
-            "course_description": "Best class ever ong"
+            "courseID": "ToJxpr77WuuQog4y",
+            "courseName": "COMP 547",
+            "courseCredits": 4,
+            "courseDescription": "Best class ever ong"
         },
         {
-            "uuid": "ZIn4H0RzJUjq7gnZ",
-            "course_name": "COMP 202",
-            "course_credits": 3,
-            "course_description": "When everything was still peaceful"
+            "courseID": "ZIn4H0RzJUjq7gnZ",
+            "courseName": "COMP 202",
+            "courseCredits": 3,
+            "courseDescription": "When everything was still peaceful"
         },
         {
-            "uuid": "vmXLXQziOjQuKO5r",
-            "course_name": "COMP 547",
-            "course_credits": 4,
-            "course_description": "I dropped this class instantly"
+            "courseID": "vmXLXQziOjQuKO5r",
+            "courseName": "COMP 547",
+            "courseCredits": 4,
+            "courseDescription": "I dropped this class instantly"
         },
         {
-            "uuid": "Ofjtibul4QdNos3l",
-            "course_name": "COMP 111",
-            "course_credits": 3,
-            "course_description": "No Description"
+            "courseID": "Ofjtibul4QdNos3l",
+            "courseName": "COMP 111",
+            "courseCredits": 3,
+            "courseDescription": "No Description"
         }
     ]
 }
@@ -271,7 +291,7 @@ Here is a sample success response:
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
     "error": 3,
     "message": "User does not have authorized access to the specified semester",
@@ -285,7 +305,7 @@ Here is a sample fail response:
 
 On the dashboard page, the user can add a new semester by providing a semester name, and the frontend will send a POST request with the following content:
 
-- semester_name
+- candidateSemester: A semester with all required fields filled out except the ID.
 
 The JWT token is included in the header as follows:
 
@@ -293,9 +313,11 @@ The JWT token is included in the header as follows:
 
 Here is a sample request:
 
-```JSON
+```json
 {
-    "semester_name": "Winter 2023"
+	"candidateSemester": {
+		"semesterName": "Summer 2023"
+	}
 }
 ```
 
@@ -306,6 +328,7 @@ It then sends a response with the following content:
 
 - error
 - message
+- newSemester: The candidate semester, as it was inserted into the database (with ID).
 
 The error code corresponds to 0 for a successful registration, otherwise it failed.
 
@@ -323,19 +346,24 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 
 Here is a sample success response:
 
-```JSON
+```json
 {
-    "error": 0,
-    "message": "Semester created successfully"
+	"error": 0,
+	"message": "Semester created successfully",
+	"newSemester": {
+		"semesterName": "Summer 2023",
+		"semesterID": "554d2bee-30a5-4484-b095-227fc35b4071"
+	}
 }
 ```
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
-    "error": 1,
-    "message": "Semester already exists"
+	"error": 2,
+	"message": "Semester already exists",
+	"newSemester": null
 }
 ```
 
@@ -345,10 +373,8 @@ Here is a sample fail response:
 
 On the dashboard page, the user can add a new course by providing a course name and description, and the number of credits, and the frontend will send a POST request with the following content:
 
-- semesterUuid
-- courseName
-- courseCredits
-- courseDescription (optional)
+- semesterID
+- candidateCourse: A course with all required fields filled out except the ID.
 
 The JWT token is included in the header as follows:
 
@@ -356,12 +382,14 @@ The JWT token is included in the header as follows:
 
 Here is a sample request:
 
-```JSON
+```json
 {
-    "semesterUuid": "332458a6-8b50-432b-a6ca-f2cbeccec6fc",
-    "courseName": "COMP 555",
-    "courseCredits": 4,
-    "courseDescription": "Best class ever ong"
+    "semesterID": "332458a6-8b50-432b-a6ca-f2cbeccec6fc",
+    "candidateCourse": {
+        "courseName": "COMP 555",
+        "courseCredits": 4,
+        "courseDescription": "Best class ever ong"
+    }
 }
 ```
 
@@ -372,6 +400,7 @@ It then sends a response with the following content:
 
 - error
 - message
+- newCourse: The candidate course, as it was inserted into the database (with ID).
 
 The error code corresponds to 0 for a successful registration, otherwise it failed.
 
@@ -391,19 +420,26 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 
 Here is a sample success response:
 
-```JSON
+```json
 {
-    "error": 0,
-    "message": "Course created successfully"
+	"error": 0,
+	"message": "Course created successfully",
+	"newCourse": {
+		"courseName": "COMP 666",
+		"courseCredits": 3,
+		"courseDescription": "Third best class",
+		"courseID": "d3c7e3b1-a845-4b9b-ae3b-aab89ff4257b"
+	}
 }
 ```
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
-    "error": 3,
-    "message": "User does not have authorized access to the specified semester"
+	"error": 4,
+	"message": "Course already exists",
+	"newCourse": null
 }
 ```
 
@@ -413,10 +449,8 @@ Here is a sample fail response:
 
 On the dashboard page, the user can add a new grade category by providing a category type, its weight and its description, and the frontend will send a POST request with the following content:
 
-- courseUuid
-- categoryType
-- categoryWeight
-- categoryDescription (optional)
+- courseID
+- candidateCategory: A category with all required fields filled out except the ID.
 
 The JWT token is included in the header as follows:
 
@@ -424,12 +458,14 @@ The JWT token is included in the header as follows:
 
 Here is a sample request:
 
-```JSON
+```json
 {
-    "courseUuid": "6147596e-b868-40cb-a729-00ccace921ab",
-    "categoryType": "Quizzes",
-    "categoryWeight": 10,
-    "categoryDescription": "these things i always fail"
+	"courseID": "1d09255a-a33b-472b-89e2-5beed929fabd",
+	"candidateCategory": {
+		"categoryName": "Assignments",
+		"categoryWeight": 20,
+		"categoryDescription": "Repeating every week"
+	}
 }
 ```
 
@@ -440,6 +476,7 @@ It then sends a response with the following content:
 
 - error
 - message
+- newCategory: The candidate category, as it was inserted into the database (with ID).
 
 The error code corresponds to 0 for a successful registration, otherwise it failed.
 
@@ -460,19 +497,26 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 
 Here is a sample success response:
 
-```JSON
+```json
 {
-    "error": 0,
-    "message": "Grade category created successfully"
+	"error": 0,
+	"message": "Grade category created successfully",
+	"newCategory": {
+		"categoryName": "Assignments",
+		"categoryWeight": 20,
+		"categoryDescription": "Repeating every week",
+		"categoryID": "d16eb95f-e3b7-45f0-bede-3fca1402bceb"
+	}
 }
 ```
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
-    "error": 4,
-    "message": "Grade category already exists"
+	"error": 5,
+	"message": "Grade category already exists",
+	"newCategory": null
 }
 ```
 
@@ -482,13 +526,8 @@ Here is a sample fail response:
 
 On the dashboard page, the user can add a new grade item by providing the item name, its weight, its mark and its total mark, its description, and its date, and the frontend will send a POST request with the following content:
 
-- categoryUuid
-- itemName
-- itemWeight
-- itemMark
-- itemTotal
-- itemDescription (optional)
-- itemDate
+- categoryID
+- candidateGrade: A grade with all required fields filled out except the ID.
 
 The JWT token is included in the header as follows:
 
@@ -496,15 +535,17 @@ The JWT token is included in the header as follows:
 
 Here is a sample request:
 
-```JSON
+```json
 {
-    "categoryUuid": "c981a9d2-53aa-4efd-b5a4-9be99827935e",
-    "itemName": "COMP 555 Quiz 7",
-    "itemWeight": 12.5,
-    "itemMark": 3,
-    "itemTotal": 10,
-    "itemDescription": "VPN Quiz",
-    "itemDate": "2023-03-16"
+    "categoryID": "c981a9d2-53aa-4efd-b5a4-9be99827935e",
+    "candidateGrade": {
+        "gradeName": "COMP 555 Quiz 7",
+        "gradeWeight": 12.5,
+        "gradePointsAct": 3,
+        "gradePointsMax": 10,
+        "gradeDescription": "VPN Quiz",
+        "gradeDate": "2023-03-16"
+    }
 }
 ```
 
@@ -515,6 +556,7 @@ It then sends a response with the following content:
 
 - error
 - message
+- newGrade: The candidate grade, as it was inserted into the database (with ID).
 
 The error code corresponds to 0 for a successful registration, otherwise it failed.
 
@@ -536,19 +578,29 @@ The error code corresponds to 0 for a successful registration, otherwise it fail
 
 Here is a sample success response:
 
-```JSON
+```json
 {
-    "error": 0,
-    "message": "Grade item created successfully"
+	"error": 0,
+	"message": "Grade item created successfully",
+	"newGrade": {
+		"gradeName": "COMP 555 Quiz 7",
+		"gradeWeight": 12.5,
+		"gradePointsAct": 3,
+		"gradePointsMax": 10,
+		"gradeDescription": "VPN Quiz",
+		"gradeDate": "2023-03-16",
+		"gradeID": "59fb5718-235e-4e72-88ee-867c7783c52d"
+	}
 }
 ```
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
-    "error": 5,
-    "message": "Grade item already exists"
+	"error": 6,
+	"message": "Grade item already exists",
+	"newGrade": null
 }
 ```
 
@@ -558,7 +610,7 @@ Here is a sample fail response:
 
 On the dashboard page, whenever the user selects a course, the frontend will send a GET request with the following URL search parameter:
 
-- `course_id=<COURSE_UUID>`
+- `courseID=<COURSE_UUID>`
 
 The JWT token is included in the header as follows:
 
@@ -571,7 +623,7 @@ It then sends a response with the following content:
 
 - error
 - message
-- category_list
+- categoryList: A list of categories, each having a list of grades
 
 The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
@@ -591,51 +643,51 @@ The error code corresponds to 0 for a successful fetch, otherwise it failed.
 
 Here is a sample success response:
 
-```JSON
+```json
 {
     "error": 0,
     "message": "Course information successfully fetched",
-    "category_list": [
+    "categoryList": [
         {
-            "uuid": "884bbdeb-5542-47ad-88ae-5a2491f8590d",
-            "category_type": "Quizzes",
-            "category_weight": 10,
-            "category_description": "these things i always fail",
-            "category_grade_list": [
+            "categoryID": "884bbdeb-5542-47ad-88ae-5a2491f8590d",
+            "categoryName": "Quizzes",
+            "categoryWeight": 10,
+            "categoryDescription": "these things i always fail",
+            "categoryGradeList": [
                 {
-                    "uuid": "d64eafc2-52dd-4936-8c9e-374bd2a95175",
-                    "item_name": "COMP 555 Quiz 7",
-                    "item_weight": 12.5,
-                    "item_mark": 3,
-                    "item_total": 10,
-                    "item_description": "VPN Quiz",
-                    "item_date": "2023-03-16"
+                    "gradeID": "d64eafc2-52dd-4936-8c9e-374bd2a95175",
+                    "gradeName": "COMP 555 Quiz 7",
+                    "gradeWeight": 12.5,
+                    "gradePointsAct": 3,
+                    "gradePointsMax": 10,
+                    "gradeDescription": "VPN Quiz",
+                    "gradeDate": "2023-03-16"
                 },
                 {
-                    "uuid": "b9388bad-f245-4d2e-b0b9-0960699795fb",
-                    "item_name": "COMP 555 Quiz 6",
-                    "item_weight": 12.5,
-                    "item_mark": 5,
-                    "item_total": 10,
-                    "item_description": "Identity Quiz",
-                    "item_date": "2023-03-09"
+                    "gradeID": "b9388bad-f245-4d2e-b0b9-0960699795fb",
+                    "gradeName": "COMP 555 Quiz 6",
+                    "gradeWeight": 12.5,
+                    "gradePointsAct": 5,
+                    "gradePointsMax": 10,
+                    "gradeDescription": "Identity Quiz",
+                    "gradeDate": "2023-03-09"
                 }
             ]
         },
         {
-            "uuid": "235f08aa-bdb8-43aa-b014-2ebf4d2d2dc9",
-            "category_type": "Projects",
-            "category_weight": 60,
-            "category_description": "No Description.",
-            "category_grade_list": [
+            "categoryID": "235f08aa-bdb8-43aa-b014-2ebf4d2d2dc9",
+            "categoryName": "Projects",
+            "categoryWeight": 60,
+            "categoryDescription": "No Description.",
+            "categoryGradeList": [
                 {
-                    "uuid": "5c2a2ac3-366c-4620-946d-18a56641ae70",
-                    "item_name": "COMP 555 Assignment",
-                    "item_weight": 30,
-                    "item_mark": 82,
-                    "item_total": 100,
-                    "item_description": "Analysis on Ring's Privacy Compliance",
-                    "item_date": "2023-02-23"
+                    "gradeID": "5c2a2ac3-366c-4620-946d-18a56641ae70",
+                    "gradeName": "COMP 555 Assignment",
+                    "gradeWeight": 30,
+                    "gradePointsAct": 82,
+                    "gradePointsMax": 100,
+                    "gradeDescription": "Analysis on Ring's Privacy Compliance",
+                    "gradeDate": "2023-02-23"
                 }
             ]
         }
@@ -645,10 +697,10 @@ Here is a sample success response:
 
 Here is a sample fail response:
 
-```JSON
+```json
 {
     "error": 1,
     "message": "User does not exist",
-    "category_list": []
+    "categoryList": []
 }
 ```

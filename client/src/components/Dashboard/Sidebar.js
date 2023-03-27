@@ -22,6 +22,11 @@ import Settings from "./Settings";
  * by the sidebar (#sidebar-display).
  * The sidebar should control how elements in its control area are displayed,
  * in this case, the course and item panes.
+ * 
+ * @typedef Semester
+ * @prop {string} uuid
+ * @prop {string} semesterName
+ * 
  */
 function Sidebar() {
   const apiURL = useContext(apiLocation);
@@ -29,7 +34,7 @@ function Sidebar() {
   // Logout button
   const handleLogout = () => {
     console.log("Logging out");
-    console.log("TODO: clear session cookie/storage");
+    document.cookie = "token=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;"; // Set expiration to long ago
   };
 
   // Theme toggle button
@@ -68,13 +73,17 @@ function Sidebar() {
   }
 
   // Always initially fetch a list of semesters (userID included in token)
+  /**
+   * @type {{loading: boolean, error: Error, data: {error: number, message: string, semesterList: Array<{semesterID: string, semesterName: string}>}}}
+   */
   const { data: semData, loading: semLoading, error: semError } = useFetch(`${apiURL}/semesters`);
-  const semToName = (val) => { return [val.semID, val.semName]; }
+  const semToName = (val) => { return [val.semesterID, val.semesterName]; }
   
   /* Set the URL of the fetch request for the course to null if no semester
   have been selected (useFetch does nothing if they are null). Values of
   course fetch metrics are meaningless if selectedSemester == null. */
-  const courseURL = selectedSemester != null ? `${apiURL}/courses?semID=${selectedSemester.id}&singular=1` : null; // Remove singular for production
+  const courseURL = selectedSemester != null ? `${apiURL}/courses?semesterID=${selectedSemester.id}&singular=1` : null; // Remove singular for production
+  /** @type {{loading: boolean, error: Error, data: {error: number, message: string, courseList: Array<{courseID: string, courseName: string}>}}} */
   const { data: courseData, loading: courseLoading, error: courseError } = useFetch(courseURL);
   const courseToName = (val) => { return [val.courseID, val.courseName]; }
   
@@ -109,10 +118,11 @@ function Sidebar() {
               list={semData && semData.semesterList}
               valueToName={semToName}
               onSelect={selectSemester}
-              override={semError || semLoading}
+              override={semError || semLoading || semData.semesterList.length === 0}
             >
-              {semError && <div className='sb-choice-list-message' style={{color: 'red'}}>Error</div>}
+              {semError && <div className='sb-choice-list-message' style={{ color: 'red' }}>Error<br />{semError.message}</div>}
               {semLoading && <div className='sb-choice-list-message'>Loading</div>}
+              {!semLoading && !semError && semData.semesterList.length === 0 && <div className='sb-choice-list-message'>No semesters</div>}
               
             </SidebarChoice>
           }
@@ -127,11 +137,12 @@ function Sidebar() {
               list={courseData && courseData.courseList}
               valueToName={courseToName}
               onSelect={selectCourse}
-              override={!selectedSemester || courseError || courseLoading}
+              override={!selectedSemester || courseError || courseLoading || courseData.courseList.length === 0}
             >
               {!selectedSemester && <div className='sb-choice-list-message'>Please select a semester</div>}
-              {selectedSemester && courseError && <div style={{color: 'red'}}>Error</div>}
+              {selectedSemester && courseError && <div style={{ color: 'red' }}>Error<br />{courseError.message}</div>}
               {selectedSemester && courseLoading && <div className='sb-choice-list-message'>Loading</div>}
+              {!courseLoading && !courseError && courseData.courseList.length === 0 && <div className='sb-choice-list-message'>No courses for semester</div>}
               
             </SidebarChoice>
           }

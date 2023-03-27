@@ -1,7 +1,9 @@
+// @ts-check
 import React, { useContext } from "react";
+// @ts-ignore
 import plusIco from "../../img/plus-svgrepo-com.svg";
 import { ColoredPercent, floatToDecimalStr } from "../../utils/Util";
-import { contextCourse, contextSelectedItem, contextSemester } from "./ContentPane";
+import { contextSelectedItem } from "./ContentPane";
 import ContentGradeList from "./ContentGradeList";
 import PreviewCategoryModify from "./PreviewCategoryModify";
 import PreviewGradeAdd from "./PreviewGradeAdd";
@@ -18,24 +20,8 @@ import PreviewGradeAdd from "./PreviewGradeAdd";
  * In addition, this component must calculate some statistics regarding itself using its
  * contained grades: the number of points out of the category's weight and the corresponding
  * percentage.
- *
- * @typedef Grade
- * @prop {string} uuid
- * @prop {string} item_name
- * @prop {number} item_weight
- * @prop {number} item_mark
- * @prop {number} item_total
- * @prop {string} item_description
- * @prop {string} item_date
- *
- * @typedef Category
- * @prop {string} uuid
- * @prop {string} category_type
- * @prop {number} category_weight
- * @prop {string} category_description
- * @prop {Array<Grade>} category_grade_list
- *
- * @param {{categoryList: Array<Category>}} props
+
+ * @param {{categoryList: Array<{categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}>}>}} props
  * @returns
  */
 function ContentCategoryList({ categoryList }) {
@@ -57,9 +43,9 @@ function ContentCategoryList({ categoryList }) {
     // FIXME maybe put in useMemo
     let actPoints = 0; // How many out of the total points we achieved.
     let maxPoints = 0; // Total points in the category
-    category.category_grade_list.forEach((grade) => {
-      actPoints += (grade.item_mark / grade.item_total) * grade.item_weight;
-      maxPoints += grade.item_weight;
+    category.categoryGradeList.forEach((grade) => {
+      actPoints += (grade.gradePointsAct / grade.gradePointsMax) * grade.gradeWeight;
+      maxPoints += grade.gradePointsMax;
     });
 
     // When clicking the category's banner, modify screen
@@ -72,8 +58,8 @@ function ContentCategoryList({ categoryList }) {
         );
       };
 
-      console.log("Selected category " + category.uuid + " : " + category.category_type);
-      setSelectedItem({ id: category.uuid, preview: previewModify });
+      console.log("Selected category " + category.categoryID + " : " + category.categoryName);
+      setSelectedItem({ id: category.categoryID, preview: previewModify });
     };
 
     // When clicking the category's plus, add grade screen
@@ -87,37 +73,43 @@ function ContentCategoryList({ categoryList }) {
       };
 
       e.stopPropagation(); //Don't trip handleClickModify
-      console.log("Selected category PLUS " + category.uuid + " : " + category.category_type);
-      setSelectedItem({ id: category.uuid, preview: previewAdd });
+      console.log("Selected category PLUS " + category.categoryID + " : " + category.categoryName);
+      setSelectedItem({ id: category.categoryID, preview: previewAdd });
     };
 
     return (
-      <div className="category-item" key={category.uuid}>
+      <div className="category-item" key={category.categoryID}>
         {/* Category header */}
-        <div className={`category-header selectable-item ${selectedItem.id === category.uuid ? "selected-item" : ""}`} onClick={handleClickModify}>
+        <div className={`category-header selectable-item ${selectedItem.id === category.categoryID ? "selected-item" : ""}`} onClick={handleClickModify}>
           {/* Max width to allow name to expand, min-width to allow name to shrink */}
           <div className="category-header-box">
             <div className="category-header-top">
-              <div className="category-name cap-text">{category.category_type}</div>
+              <div className="category-name cap-text">{category.categoryName}</div>
               <div className="category-weight">
-                {floatToDecimalStr((actPoints * category.category_weight) / maxPoints, 1)}/{category.category_weight} (<ColoredPercent number={actPoints / maxPoints} />)
+                {floatToDecimalStr((actPoints * category.categoryWeight) / maxPoints, 1)}/{category.categoryWeight} (<ColoredPercent number={actPoints / maxPoints} />)
               </div>
             </div>
-            <div className="category-description cap-text">{category.category_description}</div>
+            <div className="category-description cap-text">{category.categoryDescription}</div>
           </div>
-          <img className="content-plus" src={plusIco} alt="Plus icon" onClick={handleClickPlus} title={`Add grade to ${category.category_type}`} />
+          <img className="content-plus" src={plusIco} alt="Plus icon" onClick={handleClickPlus} title={`Add grade to ${category.categoryName}`} />
         </div>
 
         <div className="horizontal-line" />
 
         {/* Grades in that category */}
-        <ContentGradeList category={{id: category.uuid, name: category.name}} gradeList={category.category_grade_list} />
+        <ContentGradeList category={category} />
       </div>
     );
   });
 
   // Finally, render
-  return <div className="category-list thin-scrollbar">{categoryListJSX}</div>;
+  return (
+    <div className="category-list thin-scrollbar">
+      {
+        categoryList.length !== 0 ? categoryListJSX : <div>Nothing for this course</div> 
+      }
+    </div>
+  );
 }
 
 export default ContentCategoryList;

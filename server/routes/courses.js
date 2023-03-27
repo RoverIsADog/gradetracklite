@@ -11,7 +11,7 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 4,
         message: "Invalid or missing token",
-        course_list: [],
+        courseList: [],
       });
       return;
     }
@@ -30,7 +30,7 @@ module.exports = (app, db) => {
           res.status(401).json({
             error: 7,
             message: "Expired token",
-            course_list: [],
+            courseList: [],
           });
           return;
         }
@@ -38,14 +38,14 @@ module.exports = (app, db) => {
         res.status(401).json({
           error: 5,
           message: "Invalid or missing token",
-          course_list: [],
+          courseList: [],
         });
         return;
       }
       res.status(401).json({
         error: 5,
         message: "Invalid or missing token",
-        course_list: [],
+        courseList: [],
       });
       return;
     }
@@ -55,20 +55,20 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 6,
         message: "Invalid or missing token",
-        course_list: [],
+        courseList: [],
       });
       return;
     }
 
     const userUuid = decodedToken.uuid;
-    const semesterUuid = req.query.semester_id;
+    const semesterUuid = req.query.semesterID;
 
     // Check if query contains the required parameters
     if (!semesterUuid) {
       res.status(400).json({
         error: -2,
         message: "Missing required query parameters",
-        course_list: [],
+        courseList: [],
       });
       return;
     }
@@ -80,7 +80,7 @@ module.exports = (app, db) => {
         res.status(500).json({
           error: -1,
           message: "Internal server error",
-          course_list: [],
+          courseList: [],
         });
         return;
       }
@@ -89,7 +89,7 @@ module.exports = (app, db) => {
         res.json({
           error: 1,
           message: "User does not exist",
-          course_list: [],
+          courseList: [],
         });
         return;
       }
@@ -101,7 +101,7 @@ module.exports = (app, db) => {
           res.status(500).json({
             error: -1,
             message: "Internal server error",
-            course_list: [],
+            courseList: [],
           });
           return;
         }
@@ -110,7 +110,7 @@ module.exports = (app, db) => {
           res.json({
             error: 2,
             message: "Semester does not exist",
-            course_list: [],
+            courseList: [],
           });
           return;
         }
@@ -119,7 +119,7 @@ module.exports = (app, db) => {
           res.json({
             error: 3,
             message: "User does not have authorized access to the specified semester",
-            course_list: [],
+            courseList: [],
           });
           return;
         }
@@ -131,24 +131,24 @@ module.exports = (app, db) => {
             res.status(500).json({
               error: -1,
               message: "Internal server error",
-              course_list: [],
+              courseList: [],
             });
             return;
           }
 
           // Create course list
           const courseList = rows.map((row) => ({
-            uuid: row.uuid,
-            course_name: row.course_name,
-            course_credits: row.course_credits,
-            course_description: row.course_description || "No Description.",
+            courseID: row.uuid,
+            courseName: row.course_name,
+            courseCredits: row.course_credits,
+            courseDescription: row.course_description || "No Description.",
           }));
 
           // Success response
           res.json({
             error: 0,
             message: "Courses successfully fetched",
-            course_list: courseList,
+            courseList: courseList,
           });
         });
       });
@@ -158,10 +158,11 @@ module.exports = (app, db) => {
   // /add-course POST request
   app.post("/add-course", async (req, res) => {
     // Get request body
-    const { semesterUuid, courseName, courseCredits, courseDescription } = req.body;
+    const { semesterID, candidateCourse } = req.body;
+    const { courseName, courseCredits, courseDescription } = candidateCourse;
 
     // Check if request body contains the required fields
-    if (!semesterUuid || !courseName || !courseCredits) {
+    if (!semesterID || !courseName || !courseCredits) {
       res.status(400).json({
         error: -2,
         message: "Missing required fields",
@@ -200,12 +201,14 @@ module.exports = (app, db) => {
         res.status(401).json({
           error: 6,
           message: "Invalid or missing token",
+          newCourse: null,
         });
         return;
       }
       res.status(401).json({
         error: 6,
         message: "Invalid or missing token",
+        newCourse: null,
       });
       return;
     }
@@ -215,6 +218,7 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 7,
         message: "Invalid or missing token",
+        newCourse: null,
       });
       return;
     }
@@ -228,6 +232,7 @@ module.exports = (app, db) => {
         res.status(500).json({
           error: -1,
           message: "Internal server error",
+          newCourse: null,
         });
         return;
       }
@@ -236,17 +241,19 @@ module.exports = (app, db) => {
         res.json({
           error: 1,
           message: "User does not exist",
+          newCourse: null,
         });
         return;
       }
 
       // Check that semester exists
-      db.get("SELECT * FROM semesters WHERE uuid = ?", [semesterUuid], (err, semesterRow) => {
+      db.get("SELECT * FROM semesters WHERE uuid = ?", [semesterID], (err, semesterRow) => {
         if (err) {
           console.error("Error selecting semester:", err);
           res.status(500).json({
             error: -1,
             message: "Internal server error",
+            newCourse: null,
           });
           return;
         }
@@ -255,6 +262,7 @@ module.exports = (app, db) => {
           res.json({
             error: 2,
             message: "Semester does not exist",
+            newCourse: null,
           });
           return;
         }
@@ -264,17 +272,19 @@ module.exports = (app, db) => {
           res.json({
             error: 3,
             message: "User does not have authorized access to the specified semester",
+            newCourse: null,
           });
           return;
         }
 
         // Check that course does not already exist
-        db.get("SELECT * FROM courses WHERE semester_uuid = ? AND course_name = ?", [semesterUuid, courseName], (err, courseRow) => {
+        db.get("SELECT * FROM courses WHERE semester_uuid = ? AND course_name = ?", [semesterID, courseName], (err, courseRow) => {
           if (err) {
             console.error("Error selecting course:", err);
             res.status(500).json({
               error: -1,
               message: "Internal server error",
+              newCourse: null,
             });
             return;
           }
@@ -283,23 +293,27 @@ module.exports = (app, db) => {
             res.json({
               error: 4,
               message: "Course already exists",
+              newCourse: null,
             });
             return;
           }
 
           // SQL query
-          db.run("INSERT INTO courses (uuid, semester_uuid, course_name, course_credits, course_description) VALUES (?, ?, ?, ?, ?)", [uuidv4(), semesterUuid, courseName, courseCredits, courseDescription || "No Description."], (err) => {
+          const newCourseID = uuidv4();
+          db.run("INSERT INTO courses (uuid, semester_uuid, course_name, course_credits, course_description) VALUES (?, ?, ?, ?, ?)", [newCourseID, semesterID, courseName, courseCredits, courseDescription || "No Description."], (err) => {
             if (err) {
               console.error("Error inserting course:", err);
               res.status(500).json({
                 error: -1,
                 message: "Internal server error",
+                newCourse: null,
               });
               return;
             } else {
               res.status(200).json({
                 error: 0,
                 message: "Course created successfully",
+                newCourse: {...candidateCourse, courseID: newCourseID},
               });
             }
           });
@@ -316,7 +330,7 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 5,
         message: "Invalid or missing token",
-        category_list: [],
+        categoryList: [],
       });
       return;
     }
@@ -335,7 +349,7 @@ module.exports = (app, db) => {
           res.status(401).json({
             error: 8,
             message: "Expired token",
-            category_list: [],
+            categoryList: [],
           });
           return;
         }
@@ -343,14 +357,14 @@ module.exports = (app, db) => {
         res.status(401).json({
           error: 6,
           message: "Invalid or missing token",
-          category_list: [],
+          categoryList: [],
         });
         return;
       }
       res.status(401).json({
         error: 6,
         message: "Invalid or missing token",
-        category_list: [],
+        categoryList: [],
       });
       return;
     }
@@ -360,20 +374,20 @@ module.exports = (app, db) => {
       res.status(401).json({
         error: 7,
         message: "Invalid or missing token",
-        category_list: [],
+        categoryList: [],
       });
       return;
     }
 
     const userUuid = decodedToken.uuid;
-    const courseUuid = req.query.course_id;
+    const courseUuid = req.query.courseID;
 
     // Check if query contains the required parameters
     if (!courseUuid) {
       res.status(400).json({
         error: -2,
         message: "Missing required query parameters",
-        category_list: [],
+        categoryList: [],
       });
       return;
     }
@@ -385,7 +399,7 @@ module.exports = (app, db) => {
         res.status(500).json({
           error: -1,
           message: "Internal server error",
-          category_list: [],
+          categoryList: [],
         });
         return;
       }
@@ -394,7 +408,7 @@ module.exports = (app, db) => {
         res.json({
           error: 1,
           message: "User does not exist",
-          category_list: [],
+          categoryList: [],
         });
         return;
       }
@@ -406,7 +420,7 @@ module.exports = (app, db) => {
           res.status(500).json({
             error: -1,
             message: "Internal server error",
-            category_list: [],
+            categoryList: [],
           });
           return;
         }
@@ -415,7 +429,7 @@ module.exports = (app, db) => {
           res.json({
             error: 2,
             message: "Course does not exist",
-            category_list: [],
+            categoryList: [],
           });
           return;
         }
@@ -427,7 +441,7 @@ module.exports = (app, db) => {
             res.status(500).json({
               error: -1,
               message: "Internal server error",
-              category_list: [],
+              categoryList: [],
             });
             return;
           }
@@ -436,7 +450,7 @@ module.exports = (app, db) => {
             res.json({
               error: 3,
               message: "Semester does not exist",
-              category_list: [],
+              categoryList: [],
             });
             return;
           }
@@ -446,7 +460,7 @@ module.exports = (app, db) => {
             res.json({
               error: 4,
               message: "User does not have authorized access to the specified semester",
-              category_list: [],
+              categoryList: [],
             });
             return;
           }
@@ -458,7 +472,7 @@ module.exports = (app, db) => {
               res.status(500).json({
                 error: -1,
                 message: "Internal server error",
-                category_list: [],
+                categoryList: [],
               });
               return;
             }
@@ -474,21 +488,21 @@ module.exports = (app, db) => {
                     }
 
                     const categoryGradeList = gradeItems.map((item) => ({
-                      uuid: item.uuid,
-                      item_name: item.item_name,
-                      item_weight: item.item_weight,
-                      item_mark: item.item_mark,
-                      item_total: item.item_total,
-                      item_description: item.item_description || "No Description.",
-                      item_date: item.item_date,
+                      gradeID: item.uuid,
+                      gradeName: item.item_name,
+                      gradeWeight: item.item_weight,
+                      gradePointsAct: item.item_mark,
+                      gradePointsMax: item.item_total,
+                      gradeDescription: item.item_description || "No Description.",
+                      gradeDate: item.item_date,
                     }));
 
                     resolve({
-                      uuid: category.uuid,
-                      category_type: category.category_type,
-                      category_weight: category.category_weight,
-                      category_description: category.category_description || "No Description.",
-                      category_grade_list: categoryGradeList,
+                      categoryID: category.uuid,
+                      categoryName: category.category_type,
+                      categoryWeight: category.category_weight,
+                      categoryDescription: category.category_description || "No Description.",
+                      categoryGradeList: categoryGradeList,
                     });
                   });
                 })
@@ -499,7 +513,7 @@ module.exports = (app, db) => {
                 res.json({
                   error: 0,
                   message: "Course information successfully fetched",
-                  category_list: categoryList,
+                  categoryList: categoryList,
                 });
               })
               .catch((err) => {
@@ -507,7 +521,7 @@ module.exports = (app, db) => {
                 res.status(500).json({
                   error: -1,
                   message: "Internal server error",
-                  category_list: [],
+                  categoryList: [],
                 });
               });
           });
