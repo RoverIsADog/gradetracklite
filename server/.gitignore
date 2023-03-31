@@ -11,7 +11,8 @@
 /build
 
 # Database
-database.db
+*.db
+*.db-journal
 
 # Environment
 .env
@@ -26,3 +27,12 @@ database.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Static documents compiled from client
+/public
+
+# Customizeable documents
+/static
+
+# Configuration files
+/conf

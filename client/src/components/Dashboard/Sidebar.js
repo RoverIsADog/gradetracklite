@@ -9,13 +9,15 @@ import coursesIco from "../../img/education-books-apple-svgrepo-com.svg";
 import identicon from "../../img/identicon.png"; // TODO procedurally generate based on username??
 import logoutIco from "../../img/sign-out-2-svgrepo-com.svg";
 import privacyIco from "../../img/contract-line-svgrepo-com.svg";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { contextTheme } from "../../pages/Dashboard";
 import { apiLocation } from "../../App";
 import useFetch from "../../hooks/useFetch";
 import SidebarChoice from "./SidebarChoice";
 import { ContentPane } from "./ContentPane";
 import Settings from "./Settings";
+import { readCookie } from "../../utils/Util";
+import jwt_decode from "jwt-decode";
 
 /**
  * Component displaying the sidebar (#sidebar-itself) and the area controlled
@@ -76,14 +78,16 @@ function Sidebar() {
   /**
    * @type {{loading: boolean, error: Error, data: {error: number, message: string, semesterList: Array<{semesterID: string, semesterName: string}>}}}
    */
-  const { data: semData, loading: semLoading, error: semError } = useFetch(`${apiURL}/semesters`);
+  const { data: semData, loading: semLoading, error: semError } = useFetch(`${apiURL}/semesters/list`);
   const semToName = (val) => { return [val.semesterID, val.semesterName]; }
   
   /* Set the URL of the fetch request for the course to null if no semester
   have been selected (useFetch does nothing if they are null). Values of
   course fetch metrics are meaningless if selectedSemester == null. */
-  const courseURL = selectedSemester != null ? `${apiURL}/courses?semesterID=${selectedSemester.id}&singular=1` : null; // Remove singular for production
-  /** @type {{loading: boolean, error: Error, data: {error: number, message: string, courseList: Array<{courseID: string, courseName: string}>}}} */
+  const courseURL = selectedSemester != null ? `${apiURL}/courses/list?semesterID=${selectedSemester.id}&singular=1` : null; // Remove singular for production
+  /** 
+   * @type {{loading: boolean, error: Error, data: {error: number, message: string, courseList: Array<{courseID: string, courseName: string}>}}} 
+   */
   const { data: courseData, loading: courseLoading, error: courseError } = useFetch(courseURL);
   const courseToName = (val) => { return [val.courseID, val.courseName]; }
   
@@ -91,7 +95,20 @@ function Sidebar() {
   console.log(`Sem status... ${semLoading ? 'loading' : 'loaded'} / ${semError ? 'err' : 'ok'}`);
   console.log("Course data... " + (courseData ? 'exist' : 'dne'));
   console.log(`Course status... ${courseLoading ? 'loading' : 'loaded'} / ${courseError ? 'err' : 'ok'}`);
-  
+
+  // Get the username from the token.
+  let token;
+  try {
+    // Not validating, just decoding
+    const tokenStr = readCookie("token");
+    console.log("TokenStr: " + tokenStr);
+    token = jwt_decode(tokenStr);
+    console.log("Token decoded into");
+    console.log(token);
+  } catch(Error) {
+    alert("Malformed token");
+    return (<Navigate replace to="/404" />);
+  }
 
   return (
     <div id="sidebar-container">
@@ -166,7 +183,7 @@ function Sidebar() {
             {/* We're not actually storing any user pfp this just is just a random gravatar. */}
             <img src={identicon} className="not-icon" alt="identicon" />
             <div>
-              <div id="username">UserNameThatIsWayTooLongForItsOwnGood</div>
+              <div id="username">{token && (token.username || "Error")}</div>
               <div>Account Settings</div>
             </div>
           </div>

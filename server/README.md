@@ -1,3 +1,44 @@
+# Table of Contents
+## List of all requests:
+**All requests start with `hostname/api/v1`**
+
+Authentication
+- [POST /auth/login](#login-post-authlogin)
+- [POST /auth/register](#register-post-authregister)
+
+Semesters
+- [GET /semesters/list](#list-of-semesters-get-semesterslist)
+- [POST /semesters/add](#create-a-semester-post-semestersadd)
+- [POST /semesters/edit](#edit-a-semester-post-semestersedit) (WIP)
+- [POST /semesters/delete](#delete-a-semester-post-semestersdelete) (WIP)
+
+Courses
+- [GET /courses/list](#list-of-courses-get-courseslist)
+- [POST /courses/add](#create-a-course-post-coursesadd)
+- [POST /courses/edit](#edit-a-course-post-coursesedit) (WIP)
+- [GET /courses/get](#get-a-course-and-its-children-get-coursesget) 
+- [GET /courses/delete](#delete-a-course-post-coursesdelete) (WIP)
+
+Grade Categories
+- [POST /categories/add](#create-a-grade-category-post-categoriesadd)
+- [POST /categories/edit](#edit-a-category-post-coursesedit) (WIP)
+- [POST /categories/delete](#delete-a-category-post-categoriesdelete) (WIP)
+
+Grade Items
+- [POST /grades/add](#create-a-grade-item-post-gradesadd)
+- [POST /grades/edit](#edit-a-grade-post-coursesedit) (WIP)
+- [POST /grades/delete](#delete-a-grade-post-gradesdelete) (WIP)
+
+Account administration
+- [POST /account/edit/info](#edit-account-information-post-accounteditinfo) (WIP)
+- [POST /account/edit/password](#edit-account-password-post-accounteditpassword) (WIP)
+- [GET /account/download](#request-data-download-get-accountdownload) (WIP)
+- [POST /account/delete](#delete-account-post-accountdelete) (WIP)
+
+Static Resources
+- [GET /](#compiled-website-get)
+- [GET /static](#static-resources-get-static)
+
 # API Requests
 
 __This document now supersedes the Word document. The Word document will no longer be kept to date.__
@@ -8,41 +49,23 @@ It outlines what information is expected in the payload for each POST request, a
 
 By referencing this document, users of our application can ensure that they are making requests with the correct syntax and can better understand any errors they encounter.
 
-## List of all requests:
+## General Syntax
+`hostname/api/v1/dataTypeOrFunctionality/action`
 
-Authentication
+Example: `localhost:8000/api/v1/courses/list`
 
-- [POST /login](#login-post-login)
-- [POST /register](#register-post-register)
-
-Dashboard loading
-
-- [GET /semesters](#semesters-get-semesters)
-- [GET /courses](#courses-get-courses)
-- [GET /course](#course-items-get-course)
-
-Adding things
-- [POST /add-semester](#create-a-semester-post-add-semester)
-- [POST /add-course](#create-a-course-post-add-course)
-- [POST /add-category](#create-a-grade-category-post-add-category)
-- [POST /add-grade](#create-a-grade-item-post-add-grade)
-
-Modifying things
-- Modify semester (WIP)
-- Modify course (WIP)
-- Modify category (WIP)
-- Modify grade (WIP)
-
-Account administration
-- Modify account credentials (WIP)
-- Request data download (WIP)
-- Delete account
+| URL Element | Description |
+| -- | -- |
+| `hostname` | Always there. Address of the GradeTrackLite host |
+| `api/v1` | Always there. To distinguish API versions and from static files served from `/` |
+| `dataTypeOrFunctionality` | Denotes either a type of data (`semesters`/`courses`/`categories`/`grades`) or a functionality such as authentication or account management (`auth`/`account`) |
+| `action` | Do some action with regards to the resource or functionality. <br>For data, we generally have: <br> <ul><li>`list`: Given a parent's ID, get a list of all instances of that resource belonging to the parent.</li><li>`add`: Given a parent's ID, add an instance of the resource to the parent</li><li>`get`: Get a specific instance of the resource (and all "children"). Currently only for courses (and that won't change).</li><li>`edit`: Modifies a specified instance of the resource.</li><li>`delete`: Deletes a specified instance of the resource</li></ul>For functionalities, we have stuff like `login`/`resister`/... |
 
 # Authentication
 
 This section pertains to the API requests related to authentication (login and register).
 
-## Login (POST `/login`)
+## Login (POST `/auth/login`)
 
 ### Request
 
@@ -101,7 +124,7 @@ Here is a sample fail response:
 }
 ```
 
-## Register (POST `/register`)
+## Register (POST `/auth/register`)
 
 ### Request
 
@@ -158,15 +181,15 @@ Here is a sample fail response:
 
 # Dashboard Loading
 
-This section pertains to the API requests related to loading information to the dashboard (loading, adding and modifying information).
+This section pertains to the API requests related to loading information to the dashboard.
 
-## Semesters (GET `/semesters`)
+## List of Semesters (GET /semesters/list)
 
 ### Request
 
 Upon successful login, the user is redirected to the dashboard page. The semesters section fetches the semesters from the user on page load with a GET request with the following header:
 
-- `Authorization: Bearer \<JWT Token\>`
+- `Authorization: Bearer <JWT Token>`
 
 ### Response
 
@@ -218,7 +241,7 @@ Here is a sample fail response:
 }
 ```
 
-## Courses (GET `/courses`)
+## List of Courses (GET `/courses/list`)
 
 ### Request
 
@@ -299,312 +322,7 @@ Here is a sample fail response:
 }
 ```
 
-## Create a Semester (POST `/add-semester`)
-
-### Request
-
-On the dashboard page, the user can add a new semester by providing a semester name, and the frontend will send a POST request with the following content:
-
-- candidateSemester: A semester with all required fields filled out except the ID.
-
-The JWT token is included in the header as follows:
-
-- `Authorization: Bearer <JWT Token>`
-
-Here is a sample request:
-
-```json
-{
-	"candidateSemester": {
-		"semesterName": "Summer 2023"
-	}
-}
-```
-
-### Response
-
-The server verifies the JWT token, and creates a new semester with the given name.
-It then sends a response with the following content:
-
-- error
-- message
-- newSemester: The candidate semester, as it was inserted into the database (with ID).
-
-The error code corresponds to 0 for a successful registration, otherwise it failed.
-
-| Error Code | Code Meaning                               |
-| :--------- | :----------------------------------------- |
-| 0          | Semester created successfully              |
-| 1          | User does not exist                        |
-| 2          | Semester already exists                    |
-| 3          | Missing token                              |
-| 4          | Token decoding or verification failed      |
-| 5          | Invalid token (invalid or no 'uuid' param) |
-| 6          | Expired token                              |
-| -1         | Internal server error                      |
-| -2         | Missing required fields                    |
-
-Here is a sample success response:
-
-```json
-{
-	"error": 0,
-	"message": "Semester created successfully",
-	"newSemester": {
-		"semesterName": "Summer 2023",
-		"semesterID": "554d2bee-30a5-4484-b095-227fc35b4071"
-	}
-}
-```
-
-Here is a sample fail response:
-
-```json
-{
-	"error": 2,
-	"message": "Semester already exists",
-	"newSemester": null
-}
-```
-
-## Create a Course (POST `/add-course`)
-
-### Request
-
-On the dashboard page, the user can add a new course by providing a course name and description, and the number of credits, and the frontend will send a POST request with the following content:
-
-- semesterID
-- candidateCourse: A course with all required fields filled out except the ID.
-
-The JWT token is included in the header as follows:
-
-- `Authorization: Bearer <JWT Token>`
-
-Here is a sample request:
-
-```json
-{
-    "semesterID": "332458a6-8b50-432b-a6ca-f2cbeccec6fc",
-    "candidateCourse": {
-        "courseName": "COMP 555",
-        "courseCredits": 4,
-        "courseDescription": "Best class ever ong"
-    }
-}
-```
-
-### Response
-
-The server verifies the JWT token and checks if a course with the same name does not already exist. Then, it creates a new course with the given name, description and number of credits. If the description is omitted, the default description is set to 'No Description.'.
-It then sends a response with the following content:
-
-- error
-- message
-- newCourse: The candidate course, as it was inserted into the database (with ID).
-
-The error code corresponds to 0 for a successful registration, otherwise it failed.
-
-| Error Code | Code Meaning                                                   |
-| :--------- | :------------------------------------------------------------- |
-| 0          | Course created successfully                                    |
-| 1          | User does not exist                                            |
-| 2          | Semester does not exist                                        |
-| 3          | User does not have authorized access to the specified semester |
-| 4          | Course already exists                                          |
-| 5          | Missing token                                                  |
-| 6          | Token decoding or verification failed                          |
-| 7          | Invalid token (invalid or no 'uuid' param)                     |
-| 8          | Expired token                                                  |
-| -1         | Internal server error                                          |
-| -2         | Missing required fields                                        |
-
-Here is a sample success response:
-
-```json
-{
-	"error": 0,
-	"message": "Course created successfully",
-	"newCourse": {
-		"courseName": "COMP 666",
-		"courseCredits": 3,
-		"courseDescription": "Third best class",
-		"courseID": "d3c7e3b1-a845-4b9b-ae3b-aab89ff4257b"
-	}
-}
-```
-
-Here is a sample fail response:
-
-```json
-{
-	"error": 4,
-	"message": "Course already exists",
-	"newCourse": null
-}
-```
-
-## Create a Grade Category (POST `/add-category`)
-
-### Request
-
-On the dashboard page, the user can add a new grade category by providing a category type, its weight and its description, and the frontend will send a POST request with the following content:
-
-- courseID
-- candidateCategory: A category with all required fields filled out except the ID.
-
-The JWT token is included in the header as follows:
-
-- `Authorization: Bearer <JWT Token>`
-
-Here is a sample request:
-
-```json
-{
-	"courseID": "1d09255a-a33b-472b-89e2-5beed929fabd",
-	"candidateCategory": {
-		"categoryName": "Assignments",
-		"categoryWeight": 20,
-		"categoryDescription": "Repeating every week"
-	}
-}
-```
-
-### Response
-
-The server verifies the JWT token and checks if the course exists and belongs to the user. Then, it checks if the grade category type does not already exist. Then, it creates a new category of the given type, with the given weight and description. If the description is omitted, the default description is set to 'No Description.'.
-It then sends a response with the following content:
-
-- error
-- message
-- newCategory: The candidate category, as it was inserted into the database (with ID).
-
-The error code corresponds to 0 for a successful registration, otherwise it failed.
-
-| Error Code | Code Meaning                                                   |
-| :--------- | :------------------------------------------------------------- |
-| 0          | Grade category created successfully                            |
-| 1          | User does not exist                                            |
-| 2          | Course does not exist                                          |
-| 3          | Semester does not exist                                        |
-| 4          | User does not have authorized access to the specified semester |
-| 5          | Grade category already exists                                  |
-| 6          | Missing token                                                  |
-| 7          | Token decoding or verification failed                          |
-| 8          | Invalid token (invalid or no 'uuid' param)                     |
-| 9          | Expired token                                                  |
-| -1         | Internal server error                                          |
-| -2         | Missing required fields                                        |
-
-Here is a sample success response:
-
-```json
-{
-	"error": 0,
-	"message": "Grade category created successfully",
-	"newCategory": {
-		"categoryName": "Assignments",
-		"categoryWeight": 20,
-		"categoryDescription": "Repeating every week",
-		"categoryID": "d16eb95f-e3b7-45f0-bede-3fca1402bceb"
-	}
-}
-```
-
-Here is a sample fail response:
-
-```json
-{
-	"error": 5,
-	"message": "Grade category already exists",
-	"newCategory": null
-}
-```
-
-## Create a Grade Item (POST `/add-grade`)
-
-### Request
-
-On the dashboard page, the user can add a new grade item by providing the item name, its weight, its mark and its total mark, its description, and its date, and the frontend will send a POST request with the following content:
-
-- categoryID
-- candidateGrade: A grade with all required fields filled out except the ID.
-
-The JWT token is included in the header as follows:
-
-- `Authorization: Bearer <JWT Token>`
-
-Here is a sample request:
-
-```json
-{
-    "categoryID": "c981a9d2-53aa-4efd-b5a4-9be99827935e",
-    "candidateGrade": {
-        "gradeName": "COMP 555 Quiz 7",
-        "gradeWeight": 12.5,
-        "gradePointsAct": 3,
-        "gradePointsMax": 10,
-        "gradeDescription": "VPN Quiz",
-        "gradeDate": "2023-03-16"
-    }
-}
-```
-
-### Response
-
-The server verifies the JWT token and checks if the semester and grade category exist and belongs to the user. Then, it checks if the grade item does not already exist. Then, it creates a new grade item of the given name, with the given weight, mark and total mark, description and date. If the description is omitted, the default description is set to 'No Description.'.
-It then sends a response with the following content:
-
-- error
-- message
-- newGrade: The candidate grade, as it was inserted into the database (with ID).
-
-The error code corresponds to 0 for a successful registration, otherwise it failed.
-
-| Error Code | Code Meaning                                                   |
-| :--------- | :------------------------------------------------------------- |
-| 0          | Grade item created successfully                                |
-| 1          | User does not exist                                            |
-| 2          | Grade category does not exist                                  |
-| 3          | Course does not exist                                          |
-| 4          | Semester does not exist                                        |
-| 5          | User does not have authorized access to the specified semester |
-| 6          | Grade item already exists                                      |
-| 7          | Missing token                                                  |
-| 8          | Token decoding or verification failed                          |
-| 9          | Invalid token (invalid or no 'uuid' param)                     |
-| 10         | Expired token                                                  |
-| -1         | Internal server error                                          |
-| -2         | Missing required fields                                        |
-
-Here is a sample success response:
-
-```json
-{
-	"error": 0,
-	"message": "Grade item created successfully",
-	"newGrade": {
-		"gradeName": "COMP 555 Quiz 7",
-		"gradeWeight": 12.5,
-		"gradePointsAct": 3,
-		"gradePointsMax": 10,
-		"gradeDescription": "VPN Quiz",
-		"gradeDate": "2023-03-16",
-		"gradeID": "59fb5718-235e-4e72-88ee-867c7783c52d"
-	}
-}
-```
-
-Here is a sample fail response:
-
-```json
-{
-	"error": 6,
-	"message": "Grade item already exists",
-	"newGrade": null
-}
-```
-
-## Course Items (GET `/course`)
+## Get a Course and its children (GET `/courses/get`)
 
 ### Request
 
@@ -702,5 +420,524 @@ Here is a sample fail response:
     "error": 1,
     "message": "User does not exist",
     "categoryList": []
+}
+```
+
+# Creating Data Items
+
+## Create a Semester (POST `/semesters/add`)
+
+### Request
+
+On the dashboard page, the user can add a new semester by providing a semester name, and the frontend will send a POST request with the following content:
+
+- candidateSemester: A semester with all required fields filled out except the ID.
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```json
+{
+	"candidateSemester": {
+		"semesterName": "Summer 2023"
+	}
+}
+```
+
+### Response
+
+The server verifies the JWT token, and creates a new semester with the given name.
+It then sends a response with the following content:
+
+- error
+- message
+- newSemester: The candidate semester, as it was inserted into the database (with ID).
+
+The error code corresponds to 0 for a successful registration, otherwise it failed.
+
+| Error Code | Code Meaning                               |
+| :--------- | :----------------------------------------- |
+| 0          | Semester created successfully              |
+| 1          | User does not exist                        |
+| 2          | Semester already exists                    |
+| 3          | Missing token                              |
+| 4          | Token decoding or verification failed      |
+| 5          | Invalid token (invalid or no 'uuid' param) |
+| 6          | Expired token                              |
+| -1         | Internal server error                      |
+| -2         | Missing required fields                    |
+
+Here is a sample success response:
+
+```json
+{
+	"error": 0,
+	"message": "Semester created successfully",
+	"newSemester": {
+		"semesterName": "Summer 2023",
+		"semesterID": "554d2bee-30a5-4484-b095-227fc35b4071"
+	}
+}
+```
+
+Here is a sample fail response:
+
+```json
+{
+	"error": 2,
+	"message": "Semester already exists",
+	"newSemester": null
+}
+```
+
+## Create a Course (POST `/courses/add`)
+
+### Request
+
+On the dashboard page, the user can add a new course by providing a course name and description, and the number of credits, and the frontend will send a POST request with the following content:
+
+- semesterID
+- candidateCourse: A course with all required fields filled out except the ID.
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```json
+{
+    "semesterID": "332458a6-8b50-432b-a6ca-f2cbeccec6fc",
+    "candidateCourse": {
+        "courseName": "COMP 555",
+        "courseCredits": 4,
+        "courseDescription": "Best class ever ong"
+    }
+}
+```
+
+### Response
+
+The server verifies the JWT token and checks if a course with the same name does not already exist. Then, it creates a new course with the given name, description and number of credits. If the description is omitted, the default description is set to 'No Description.'.
+It then sends a response with the following content:
+
+- error
+- message
+- newCourse: The candidate course, as it was inserted into the database (with ID).
+
+The error code corresponds to 0 for a successful registration, otherwise it failed.
+
+| Error Code | Code Meaning                                                   |
+| :--------- | :------------------------------------------------------------- |
+| 0          | Course created successfully                                    |
+| 1          | User does not exist                                            |
+| 2          | Semester does not exist                                        |
+| 3          | User does not have authorized access to the specified semester |
+| 4          | Course already exists                                          |
+| 5          | Missing token                                                  |
+| 6          | Token decoding or verification failed                          |
+| 7          | Invalid token (invalid or no 'uuid' param)                     |
+| 8          | Expired token                                                  |
+| -1         | Internal server error                                          |
+| -2         | Missing required fields                                        |
+
+Here is a sample success response:
+
+```json
+{
+	"error": 0,
+	"message": "Course created successfully",
+	"newCourse": {
+		"courseName": "COMP 666",
+		"courseCredits": 3,
+		"courseDescription": "Third best class",
+		"courseID": "d3c7e3b1-a845-4b9b-ae3b-aab89ff4257b"
+	}
+}
+```
+
+Here is a sample fail response:
+
+```json
+{
+	"error": 4,
+	"message": "Course already exists",
+	"newCourse": null
+}
+```
+
+## Create a Grade Category (POST `/categories/add`)
+
+### Request
+
+On the dashboard page, the user can add a new grade category by providing a category type, its weight and its description, and the frontend will send a POST request with the following content:
+
+- courseID
+- candidateCategory: A category with all required fields filled out except the ID.
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```json
+{
+	"courseID": "1d09255a-a33b-472b-89e2-5beed929fabd",
+	"candidateCategory": {
+		"categoryName": "Assignments",
+		"categoryWeight": 20,
+		"categoryDescription": "Repeating every week"
+	}
+}
+```
+
+### Response
+
+The server verifies the JWT token and checks if the course exists and belongs to the user. Then, it checks if the grade category type does not already exist. Then, it creates a new category of the given type, with the given weight and description. If the description is omitted, the default description is set to 'No Description.'.
+It then sends a response with the following content:
+
+- error
+- message
+- newCategory: The candidate category, as it was inserted into the database (with ID).
+
+The error code corresponds to 0 for a successful registration, otherwise it failed.
+
+| Error Code | Code Meaning                                                   |
+| :--------- | :------------------------------------------------------------- |
+| 0          | Grade category created successfully                            |
+| 1          | User does not exist                                            |
+| 2          | Course does not exist                                          |
+| 3          | Semester does not exist                                        |
+| 4          | User does not have authorized access to the specified semester |
+| 5          | Grade category already exists                                  |
+| 6          | Missing token                                                  |
+| 7          | Token decoding or verification failed                          |
+| 8          | Invalid token (invalid or no 'uuid' param)                     |
+| 9          | Expired token                                                  |
+| -1         | Internal server error                                          |
+| -2         | Missing required fields                                        |
+
+Here is a sample success response:
+
+```json
+{
+	"error": 0,
+	"message": "Grade category created successfully",
+	"newCategory": {
+		"categoryName": "Assignments",
+		"categoryWeight": 20,
+		"categoryDescription": "Repeating every week",
+		"categoryID": "d16eb95f-e3b7-45f0-bede-3fca1402bceb"
+	}
+}
+```
+
+Here is a sample fail response:
+
+```json
+{
+	"error": 5,
+	"message": "Grade category already exists",
+	"newCategory": null
+}
+```
+
+## Create a Grade Item (POST `/grades/add`)
+
+### Request
+
+On the dashboard page, the user can add a new grade item by providing the item name, its weight, its mark and its total mark, its description, and its date, and the frontend will send a POST request with the following content:
+
+- categoryID
+- candidateGrade: A grade with all required fields filled out except the ID.
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```json
+{
+    "categoryID": "c981a9d2-53aa-4efd-b5a4-9be99827935e",
+    "candidateGrade": {
+        "gradeName": "COMP 555 Quiz 7",
+        "gradeWeight": 12.5,
+        "gradePointsAct": 3,
+        "gradePointsMax": 10,
+        "gradeDescription": "VPN Quiz",
+        "gradeDate": "2023-03-16"
+    }
+}
+```
+
+### Response
+
+The server verifies the JWT token and checks if the semester and grade category exist and belongs to the user. Then, it checks if the grade item does not already exist. Then, it creates a new grade item of the given name, with the given weight, mark and total mark, description and date. If the description is omitted, the default description is set to 'No Description.'.
+It then sends a response with the following content:
+
+- error
+- message
+- newGrade: The candidate grade, as it was inserted into the database (with ID).
+
+The error code corresponds to 0 for a successful registration, otherwise it failed.
+
+| Error Code | Code Meaning                                                   |
+| :--------- | :------------------------------------------------------------- |
+| 0          | Grade item created successfully                                |
+| 1          | User does not exist                                            |
+| 2          | Grade category does not exist                                  |
+| 3          | Course does not exist                                          |
+| 4          | Semester does not exist                                        |
+| 5          | User does not have authorized access to the specified semester |
+| 6          | Grade item already exists                                      |
+| 7          | Missing token                                                  |
+| 8          | Token decoding or verification failed                          |
+| 9          | Invalid token (invalid or no 'uuid' param)                     |
+| 10         | Expired token                                                  |
+| -1         | Internal server error                                          |
+| -2         | Missing required fields                                        |
+
+Here is a sample success response:
+
+```json
+{
+	"error": 0,
+	"message": "Grade item created successfully",
+	"newGrade": {
+		"gradeName": "COMP 555 Quiz 7",
+		"gradeWeight": 12.5,
+		"gradePointsAct": 3,
+		"gradePointsMax": 10,
+		"gradeDescription": "VPN Quiz",
+		"gradeDate": "2023-03-16",
+		"gradeID": "59fb5718-235e-4e72-88ee-867c7783c52d"
+	}
+}
+```
+
+Here is a sample fail response:
+
+```json
+{
+	"error": 6,
+	"message": "Grade item already exists",
+	"newGrade": null
+}
+```
+
+# Editing Data Items (WIP)
+API requests to modify existing courses, categories or grades. In practice, the client will send an almost complete object (excluding its children), and the server should attempt to merge its (modifiable) content.
+
+Look at the DB table for the object to see what is modifiable.
+
+All the requests here share the almost the same server response, so I'll put it here.
+
+Sample Response
+```json
+{
+    "error": 0,
+    "message": "Modified successfully"
+}
+```
+
+Sample Error
+```json
+{
+    "error": 1,
+    "message": "Some error"
+}
+```
+
+## Edit a Semester (POST `/semesters/edit`)
+Not sure if we should bother with that one (not sure if frontend will suport). It should be really easy so might aswell.
+
+Sample Request
+```json
+{
+    "modifiedSemester": {
+        "semesterID": "59fb5718-235e-4e72-88ee-867c7783c52d",
+        "semesterName": "Summer 2023"
+    }
+}
+```
+
+## Edit a Course (POST `/courses/edit`)
+Sample Request
+```json
+{
+    "modifiedCourse": {
+        "courseID": "59fb5718-235e-4e72-88ee-867c7783c52d",
+        "courseName": "COMP 555A",
+        "courseCredits": 10,
+        "courseDescription": "Best class ever ong1"
+    }
+}
+```
+
+## Edit a Category (POST `/courses/edit`)
+Sample Request
+```json
+{
+    "modifiedCategory": {
+        "categoryID": "59fb5718-235e-4e72-88ee-867c7783c52d",
+		"categoryName": "Assignments",
+		"categoryWeight": 20,
+		"categoryDescription": "Repeating every week"
+	}
+}
+```
+
+## Edit a Grade (POST `/courses/edit`)
+
+Sample Requests
+```json
+{
+    "modifiedCategory": {
+        "gradeID": "59fb5718-235e-4e72-88ee-867c7783c52d",
+        "gradeName": "COMP 555 Quiz 7",
+        "gradeWeight": 12.5,
+        "gradePointsAct": 3,
+        "gradePointsMax": 10,
+        "gradeDescription": "VPN Quiz",
+        "gradeDate": "2023-03-16"
+    }
+}
+```
+
+# Deleting Data Items
+These should be really easy since all we need to do is cascade delete. The syntax here is super easy. In the payload, we include the ID of the item to delete. That's pretty much it tbh. They all have the same response.
+
+Sample Response
+```json
+{
+    "error": 0,
+    "message": "Modified successfully"
+}
+```
+
+## Delete a Semester (POST `/semesters/delete`)
+Sample request
+```json
+{ "semesterID": "59fb5718-235e-4e72-88ee-867c7783c52d" }
+```
+## Delete a Course (POST `/courses/delete`)
+Sample request
+```json
+{ "courseID": "59fb5718-235e-4e72-88ee-867c7783c52d" }
+```
+## Delete a Category (POST `/categories/delete`)
+Sample request
+```json
+{ "categoryID": "59fb5718-235e-4e72-88ee-867c7783c52d" }
+```
+## Delete a Grade (POST `/grades/delete`)
+Sample request
+```json
+{ "gradeID": "59fb5718-235e-4e72-88ee-867c7783c52d" }
+```
+
+# Account Administration
+## Edit Account Information (POST `/account/edit/info`)
+Passwords are sent in a separate request for added security
+
+**We return a new token since we're using the token's content to know the username and other info!** The client will replace the current token with the new one, if appropriate.
+
+Sample Request
+```json
+{
+    "username": "JDoe",
+    "email": "jodoe@email.com"
+}
+```
+Sample Response
+```json
+{
+    "error": 0,
+    "message": "Updated successfully",
+    "token": "hfuiweuifyuifyuiregyureguiguigygugsuiegh"
+}
+```
+Sample Error
+```json
+{
+    "error": 1,
+    "message": "Some error",
+    "token": null
+}
+```
+
+## Edit Account Password (POST `/account/edit/password`)
+
+Sample Request
+```json
+{
+    "password": "4321"
+}
+```
+Sample Response
+```json
+{
+    "error": 0,
+    "message": "Updated successfully"
+}
+```
+Sample Error
+```json
+{
+    "error": 1,
+    "message": "Some error"
+}
+```
+
+## Request Data Download (GET `/account/download`)
+No URL params
+
+Response should prompt browser to download.
+
+## Delete Account (POST `/account/delete`)
+No payload
+
+Sample Response
+```json
+{
+    "error": 0,
+    "message": "Deleted successfully"
+}
+```
+Sample Error
+```json
+{
+    "error": 1,
+    "message": "Some error"
+}
+```
+
+# Static resources
+## Compiled Website (GET `/`)
+The client can be compiled, and its contents placed inside of the server's `public` folder, where it will be served by Express at route `/` (no need to juggle two ports).
+
+## Static Resources (GET `/static/`)
+We may let Express serve some static resources (outside of the client's compiled output) such as the terms of conditions, privacy policy, etc.
+
+### Privacy Policy (`GET /static/privacy`)
+Sample Response
+```json
+{
+    "type": "markdown",
+    "content": "#Lorem Ipsum"
+}
+```
+
+### Terms of Use (`GET /static/terms`)
+Sample Response
+```json
+{
+    "type": "markdown",
+    "content": "#Lorem Ipsum"
 }
 ```

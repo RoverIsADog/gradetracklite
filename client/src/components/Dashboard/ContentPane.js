@@ -72,7 +72,7 @@ function ContentPane({ semester, course }) {
   const apiURL = useContext(apiLocation);
 
   // Upon loading, fetch the selected course
-  const courseURL = course ? `${apiURL}/course?courseID=${course.id}&singular=1` : null;
+  const courseURL = course ? `${apiURL}/courses/get?courseID=${course.id}&singular=1` : null;
 
   /** @type {{loading: boolean, error: Error, data: {error: number, message: string, categoryList: Array<{categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}>}>}}} */
   const fetchMetrics = useFetch(courseURL);
