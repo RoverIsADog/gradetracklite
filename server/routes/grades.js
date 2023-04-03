@@ -7,14 +7,15 @@ const path = require("path");
 const db = new sqlite3.Database(path.join(__dirname, "../database.db"));
 // Routing
 const express = require("express");
+const ownerCheck = require("../middlewares/ownerCheck");
 const router = express.Router();
 
 /**
  * This file contains API requests (apiURL/grades/x) that allow adding
  * (/add) and modifying (/edit) a grade.
- * 
+ *
  * There is no /list or /get here because that's handled by /courses/get.
- * 
+ *
  * Authentication required (JWT middleware ran before arriving here).
  * Assume all requests will have valid tokens (bad ones don't get past MW).
  * Assume req.auth exists and contains token payload.
@@ -234,14 +235,16 @@ router.post("/add", (req, res) => {
   });
 });
 
-router.post("/edit", (req, res) => {
+const isOwnerMWEdit = ownerCheck.getMW((req) => req.body.modifiedGrade.gradeID, ownerCheck.sql.grade);
+router.post("/edit", isOwnerMWEdit, (req, res) => {
   //TODO
   res.sendStatus(501);
 });
 
-router.post("/delete", (req, res) => {
-//TODO
+const isOwnerMWDel = ownerCheck.getMW((req) => req.body.gradeID, ownerCheck.sql.grade);
+router.post("/delete", isOwnerMWDel, (req, res) => {
+  //TODO
   res.sendStatus(501);
-})
+});
 
 module.exports = router;

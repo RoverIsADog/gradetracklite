@@ -14,7 +14,7 @@ const router = express.Router();
  * This file contains API requests (apiURL/auth/x) to perform actions
  * relating to authentication such as logging in (/login) and
  * registering (/register)
- * 
+ *
  * No authentication required (JWT middleware did NOT run before arriving
  * here).
  */
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
             username: row.username,
             email: row.email,
           },
-          process.env.JWT_SECRET, // || 'my_secret_key_for_the_signed_jwt_token'
+          process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
 

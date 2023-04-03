@@ -8,22 +8,25 @@ const path = require("path");
 const db = new sqlite3.Database(path.join(__dirname, "../database.db"));
 // Routing
 const express = require("express");
+const ownerCheck = require("../middlewares/ownerCheck");
+// Verification
 const router = express.Router();
 
 /**
  * This file contains API requests (apiURL/courses/x) that allow adding
  * (/add), modifying (/edit) or retrieving a list (/list) of courses.
- * 
+ *
  * Unique to courses, we can get a "tree" of categories and grades starting
- * at the specified course (/GET). 
- * 
+ * at the specified course (/GET).
+ *
  * Authentication required (JWT middleware ran before arriving here).
  * Assume all requests will have valid tokens (bad ones don't get past MW).
  * Assume req.auth exists and contains token payload.
  */
 
 // apiURL/courses/list GET request
-router.get("/list", (req, res) => {
+const isOwnerMWList = ownerCheck.getMW((req) => req.query.semesterID, ownerCheck.sql.sem);
+router.get("/list", isOwnerMWList, (req, res) => {
   // Get JWT token
   const authHeader = req.headers.authorization;
   if (!authHeader) {
@@ -342,7 +345,8 @@ router.post("/add", (req, res) => {
 });
 
 // apiURL/courses/get GET request
-router.get("/get", (req, res) => {
+const isOwnerMWGet = ownerCheck.getMW((req) => req.query.courseID, ownerCheck.sql.course);
+router.get("/get", isOwnerMWGet, (req, res) => {
   // Get JWT token
   const authHeader = req.headers.authorization;
   if (!authHeader) {
@@ -549,14 +553,16 @@ router.get("/get", (req, res) => {
   });
 });
 
-router.post("/edit", (req, res) => {
+const isOwnerMWEdit = ownerCheck.getMW((req) => req.body.modifiedCourse.courseID, ownerCheck.sql.course);
+router.post("/edit", isOwnerMWEdit, (req, res) => {
   //TODO
   res.sendStatus(501);
 });
 
-router.post("/delete", (req, res) => {
-//TODO
+const isOwnerMWDel = ownerCheck.getMW((req) => req.body.courseID, ownerCheck.sql.course);
+router.post("/delete", isOwnerMWDel, (req, res) => {
+  //TODO
   res.sendStatus(501);
-})
+});
 
 module.exports = router;

@@ -8,11 +8,13 @@ const db = new sqlite3.Database(path.join(__dirname, "../database.db"));
 // Routing
 const express = require("express");
 const router = express.Router();
+// Verification
+const ownerCheck = require("../middlewares/ownerCheck");
 
 /**
  * This file contains API requests (apiURL/semesters/x) that allow adding
  * (/add), modifying (/edit) or retrieving a list (/list) of semesters.
- * 
+ *
  * Authentication required (JWT middleware ran before arriving here).
  * Assume all requests will have valid tokens (bad ones don't get past MW).
  * Assume req.auth exists and contains token payload.
@@ -265,14 +267,25 @@ router.post("/add", (req, res) => {
   });
 });
 
-router.post("/edit", (req, res) => {
+const isOwnerMWEdit = ownerCheck.getMW((res) => res.body.modifiedSemester.semesterID, ownerCheck.sql.sem);
+router.post("/edit", isOwnerMWEdit, (req, res) => {
+  const { modifiedSemester } = req.body;
+  if (!modifiedSemester) res.sendStatus(400);
+
+  // Potentially only those that changed are sent over, so expect some of these to be undefined?
+  const { semesterID, semesterName } = modifiedSemester;
+
   //TODO
   res.sendStatus(501);
 });
 
-router.post("/delete", (req, res) => {
-//TODO
+const isOwnerMWDel = ownerCheck.getMW((res) => res.body.semesterID, ownerCheck.sql.sem);
+router.post("/delete", isOwnerMWDel, (req, res) => {
+  const { semesterID } = req.body;
+  if (!semesterID) res.sendStatus(400);
+
+  //TODO
   res.sendStatus(501);
-})
+});
 
 module.exports = router;

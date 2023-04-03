@@ -13,19 +13,23 @@ Don't let the server start if anything is missing. The goal is to not
 have to depend on environment variables or config files pas this point,
 if possible.
 */
-require("dotenv").config({ path: 'conf/.env' }); // Loads .env into process.env.
+require("dotenv").config({ path: "conf/.env" }); // Loads .env into process.env.
 let { HTTPS_ENABLED: HTTPS_ENABLED_STR, PORT: PORT_STR, SSL_PRIVATE_KEY, SSL_CERTIFICATE, JWT_SECRET } = process.env;
 let PORT = Number(PORT_STR); // It's ok if it NaNs since we check right after
-let HTTPS_ENABLED = HTTPS_ENABLED_STR === 'true';
+let HTTPS_ENABLED = HTTPS_ENABLED_STR === "true";
 
-// HTTPS handling
+// HTTPS error checking
 if (!HTTPS_ENABLED) {
-  console.warn("HTTPS is disabled! We strongly recommend using HTTPS for private browsing.");
+  console.warn("HTTPS is disabled! We strongly recommend using HTTPS to encrypt traffic in transit.");
 } else {
   console.log("HTTPS is enabled!");
   if (!SSL_PRIVATE_KEY || !SSL_CERTIFICATE) {
     console.error("Your have enabled HTTPS. You must specify the location of your private key and certificate in environment variables SSL_PRIVATE_KEY and SSL_CERTIFICATE.");
     process.exit(0); // Exit application
+  }
+  if (!fs.existsSync(path.join(__dirname, SSL_PRIVATE_KEY)) || !fs.existsSync(path.join(__dirname, SSL_CERTIFICATE))) {
+    console.error("Either the SSL key or certificate could not be found");
+    process.exit(0);
   }
 }
 
@@ -38,6 +42,7 @@ if (!PORT) {
 // JWT Token Related
 if (!JWT_SECRET) {
   console.error("Please specify a secret to sign JWT tokens with in the environment variable JWT_SECRET");
+  process.exit(0);
 }
 
 /* ######################### Express/DB init #########################
@@ -163,24 +168,25 @@ db.run(
 
 /* ######################### MIDDLEWARES #########################
 Declare and add middlewares to the chain here, before moving onto routes.
-For development, the first middleware in the chain takes requests and
-prints some info about them.
-A JWT token verification middlware is added to the chain for some routes.
 */
 
-const loggingMiddleware = (req, res, next) => {
-  // FIXME debug only. Comment me out when packaging
-  console.log("Incoming request to " + req.originalUrl);
+// For development, the first middleware in the chain takes requests
+// and prints some info about them.
+app.use((req, res, next) => {
+  // FIXME debug only.
+  if (req.originalUrl.startsWith("/api")) {
+    console.log("\nIncoming request to " + req.originalUrl);
+    console.log(req.body);
+  }
   next();
-};
-app.use(loggingMiddleware);
+});
 
 /*
 Then, go through the JWT token verification middleware before
-proceeding to a route (if the route requires it). If not, the
+proceeding (if the route requires being logged in). If not, the
 JWT middleware is not applied.
 
-Rejects invalid tokens before we proceed to routes. Let the
+This rejects invalid tokens before we proceed to routes. Let the
 JWTErrorHandler return the status instead of the JWT middleware
 because it returns the error (contains stack trace exposing
 the server's file structure).
@@ -188,44 +194,63 @@ the server's file structure).
 If success, stores decoded token content in --> req.auth <--
 */
 const { expressjwt } = require("express-jwt");
-const jwtMiddleware = expressjwt({ secret: () => (JWT_SECRET), algorithms: ["HS256"] });
+const jwtMiddleware = expressjwt({ secret: () => JWT_SECRET, algorithms: ["HS256"] });
 const jwtErrorHandler = function (err, req, res, next) {
-  if (err.name === 'UnauthorizedError') {
-    res.status(401).send('invalid token');
+  if (err.name === "UnauthorizedError") {
+    res.status(401).send("invalid token");
   }
 };
 
-// Routes
+/* For all requests needing to be logged in, we must check for a situation
+where the request goes past the JWTMiddleware since it's valid, but the
+account got deleted. So, use custom userCheck middleware. */
+const userCheck = require("./middlewares/userCheck");
+const userCheckMW = userCheck.getMW();
+
+// Bundling all MW for protected routes to reduce spam
+const authMiddlewares = [jwtMiddleware, jwtErrorHandler, userCheckMW];
+
+/* ######################### ROUTES #########################
+Separate all API routes into their own router. Grouped by what 
+resource or functionality the request concerns. Ex: /semesters/ contains
+all the requests for getting a list, adding, modifying, and deleting.
+
+JWT token check middleware only applies to protected paths (account settings
+or accessing resources)
+*/
 const authRouter = require("./routes/authentication");
 app.use("/api/v1/auth", authRouter); // No token required
 
 const semesterRouter = require("./routes/semesters");
-app.use("/api/v1/semesters", jwtMiddleware, jwtErrorHandler, semesterRouter);
+app.use("/api/v1/semesters", authMiddlewares, semesterRouter);
 
 const courseRouter = require("./routes/courses");
-app.use("/api/v1/courses", jwtMiddleware, jwtErrorHandler, courseRouter);
+app.use("/api/v1/courses", authMiddlewares, courseRouter);
 
 const categoryRouter = require("./routes/categories");
-app.use("/api/v1/categories", jwtMiddleware, jwtErrorHandler, categoryRouter);
+app.use("/api/v1/categories", authMiddlewares, categoryRouter);
 
 const gradeRouter = require("./routes/grades");
-app.use("/api/v1/grades", jwtMiddleware, jwtErrorHandler, gradeRouter);
+app.use("/api/v1/grades", authMiddlewares, gradeRouter);
 
-const staticRouter = require("./routes/static");
-app.use("/api/v1/static", staticRouter); // No token required
+const staticRouter = require("./routes/docs");
+app.use("/api/v1/docs", staticRouter); // No token required
 
 const accountRouter = require("./routes/account");
-app.use("/api/v1/account", jwtMiddleware, jwtErrorHandler, accountRouter);
+app.use("/api/v1/account", authMiddlewares, accountRouter);
 
-// Serve static webpages from /
-// THIS MUST REMAIN AT THE END OTHERWISE THE * WILL MATCH OTHER ROUTES!!!!
+/* ######################### WEBAPP #########################
+Serve static webpages (the webapp) from "/"
+THIS MUST REMAIN AFTER THE OTHER ROUTES OTHERWISE THE * WILL
+MATCH OTHER ROUTES!!!! */
 app.use(express.static(path.join(__dirname, "public")));
-app.get("/*", function (req, res) {
+app.get("/*", function (req, res, next) {
+  if (req.originalUrl.startsWith("/api")) next();
   // This is to allow react path reloads (client navigation).
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-/* ######################### MIDDLEWARES #########################
+/* ######################### HTTPS #########################
 Finally, start up server in either HTTP or HTTPS depending on
 the configuration. Nothing should be missing to successfully start
 the server here as we checked at the very top. The only crash here
@@ -234,19 +259,18 @@ if (HTTPS_ENABLED) {
   https
     .createServer(
       {
-        key: fs.readFileSync("conf/key.pem"),
-        cert: fs.readFileSync("conf/cert.pem"),
+        // @ts-ignore
+        key: fs.readFileSync(path.join(__dirname, SSL_PRIVATE_KEY)),
+        // @ts-ignore
+        cert: fs.readFileSync(path.join(__dirname, SSL_CERTIFICATE)),
       },
       app
     )
-    .listen(process.env.PORT, () => {
+    .listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
-}
-else {
-  http
-    .createServer(app)
-    .listen(PORT, () => console.log(`HTTP server running on port ${PORT}`));
+} else {
+  http.createServer(app).listen(PORT, () => console.log(`HTTP server running on port ${PORT}`));
 }
 
 console.log("SERVER READY!");

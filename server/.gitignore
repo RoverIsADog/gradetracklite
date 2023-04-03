@@ -32,7 +32,7 @@ yarn-error.log*
 /public
 
 # Customizeable documents
-/static
+/docs
 
 # Configuration files
 /conf
