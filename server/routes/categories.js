@@ -16,7 +16,7 @@ const router = express.Router();
  * (/add) and modifying (/edit) a category.
  *
  * There is no /list or /get here because that's handled by /courses/get.
- * 
+ *
  * For all routes here:
  *
  * Authentication required (JWT middleware ran before arriving here).
@@ -27,7 +27,7 @@ const router = express.Router();
 
 // apiURL/categories/add POST request
 const isOwnerMWAdd = ownerCheck.getMW((req) => req.body.courseID, ownerCheck.sql.course);
-router.post("/add", (req, res) => {
+router.post("/add", isOwnerMWAdd, (req, res) => {
   /* === At this point these middlewares ran providing these guarantees ===
   authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
   - Token valid, tok payload in req.auth, user exists
@@ -49,67 +49,16 @@ router.post("/add", (req, res) => {
     return;
   }
 
-  // Get JWT token
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.status(401).json({
-      error: 6,
-      message: "Invalid or missing token",
-      newCategory: null,
-    });
-    return;
-  }
+  // Decode the JWT token (redundant, removed), we don't even need the userID anymore
+  // Check that user exists (redundant, removed)
+  // Check that course exists (redundant, removed)
+  // Check that semester exists (redundant, removed)
+  // Check that user is authorized to access the specified semester (redundant, removed)
 
-  // Decode the JWT token
-  const token = authHeader.split(" ")[1];
-  let decodedToken;
-
-  try {
-    decodedToken = jwt.verify(token, process.env.JWT_SECRET || "not_having_a_secret_key_is_bad_bad_bad_smh");
-  } catch (err) {
-    // Check if token is expired
-    try {
-      const { exp } = jwt.decode(token);
-      if (exp * 1000 < Date.now()) {
-        res.status(401).json({
-          error: 9,
-          message: "Expired token",
-          newCategory: null,
-        });
-        return;
-      }
-    } catch (err) {
-      res.status(401).json({
-        error: 7,
-        message: "Invalid or missing token",
-        newCategory: null,
-      });
-      return;
-    }
-    res.status(401).json({
-      error: 7,
-      message: "Invalid or missing token",
-      newCategory: null,
-    });
-    return;
-  }
-
-  // Get the user's UUID from the JWT token
-  if (!decodedToken || !decodedToken.uuid) {
-    res.status(401).json({
-      error: 8,
-      message: "Invalid or missing token",
-      newCategory: null,
-    });
-    return;
-  }
-
-  const userUuid = decodedToken.uuid;
-
-  // Check that user exists
-  db.get("SELECT * FROM users WHERE uuid = ?", [userUuid], (err, userRow) => {
+  // Check that grade category does not already exist
+  db.get("SELECT * FROM grade_categories WHERE course_uuid = ? AND category_type = ?", [courseID, categoryName], (err, categoryRow) => {
     if (err) {
-      console.error("Error selecting user:", err);
+      console.error("Error selecting category:", err);
       res.status(500).json({
         error: -1,
         message: "Internal server error",
@@ -118,109 +67,33 @@ router.post("/add", (req, res) => {
       return;
     }
 
-    if (!userRow) {
+    if (categoryRow) {
       res.json({
-        error: 1,
-        message: "User does not exist",
+        error: 5,
+        message: "Grade category already exists",
         newCategory: null,
       });
       return;
     }
 
-    // Check that course exists
-    db.get("SELECT * FROM courses WHERE uuid = ?", [courseID], (err, courseRow) => {
+    // SQL query
+    const newCategoryID = uuidv4();
+    db.run("INSERT INTO grade_categories (uuid, course_uuid, category_type, category_weight, category_description) VALUES (?, ?, ?, ?, ?)", [newCategoryID, courseID, categoryName, categoryWeight, categoryDescription || "No Description."], (err) => {
       if (err) {
-        console.error("Error selecting course:", err);
+        console.error("Error inserting grade category:", err);
         res.status(500).json({
           error: -1,
           message: "Internal server error",
           newCategory: null,
         });
         return;
-      }
-
-      if (!courseRow) {
-        res.json({
-          error: 2,
-          message: "Course does not exist",
-          newCategory: null,
+      } else {
+        res.status(200).json({
+          error: 0,
+          message: "Grade category created successfully",
+          newCategory: { ...candidateCategory, categoryID: newCategoryID },
         });
-        return;
       }
-
-      // Check that semester exists
-      db.get("SELECT * FROM semesters WHERE uuid = ?", [courseRow.semester_uuid], (err, semesterRow) => {
-        if (err) {
-          console.error("Error selecting semester:", err);
-          res.status(500).json({
-            error: -1,
-            message: "Internal server error",
-            newCategory: null,
-          });
-          return;
-        }
-
-        if (!semesterRow) {
-          res.json({
-            error: 3,
-            message: "Semester does not exist",
-            newCategory: null,
-          });
-          return;
-        }
-
-        // Check that user is authorized to access the specified semester
-        if (semesterRow.user_uuid !== userUuid) {
-          res.json({
-            error: 4,
-            message: "User does not have authorized access to the specified semester",
-            newCategory: null,
-          });
-          return;
-        }
-
-        // Check that grade category does not already exist
-        db.get("SELECT * FROM grade_categories WHERE course_uuid = ? AND category_type = ?", [courseID, categoryName], (err, categoryRow) => {
-          if (err) {
-            console.error("Error selecting category:", err);
-            res.status(500).json({
-              error: -1,
-              message: "Internal server error",
-              newCategory: null,
-            });
-            return;
-          }
-
-          if (categoryRow) {
-            res.json({
-              error: 5,
-              message: "Grade category already exists",
-              newCategory: null,
-            });
-            return;
-          }
-
-          // SQL query
-          const newCategoryID = uuidv4();
-          db.run("INSERT INTO grade_categories (uuid, course_uuid, category_type, category_weight, category_description) VALUES (?, ?, ?, ?, ?)", [newCategoryID, courseID, categoryName, categoryWeight, categoryDescription || "No Description."], (err) => {
-            if (err) {
-              console.error("Error inserting grade category:", err);
-              res.status(500).json({
-                error: -1,
-                message: "Internal server error",
-                newCategory: null,
-              });
-              return;
-            } else {
-              res.status(200).json({
-                error: 0,
-                message: "Grade category created successfully",
-                newCategory: { ...candidateCategory, categoryID: newCategoryID },
-              });
-            }
-          });
-        });
-      });
     });
   });
 });
