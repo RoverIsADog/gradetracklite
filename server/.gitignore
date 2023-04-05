@@ -36,3 +36,8 @@ yarn-error.log*
 
 # Configuration files
 /conf
+
+# pkg builds
+server-win.exe
+server-macos
+server-linux

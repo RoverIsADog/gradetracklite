@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const db = new sqlite3.Database(path.join(__dirname, "../database.db"));
+db.get("PRAGMA foreign_keys = ON");
 // Routing
 const express = require("express");
 const router = express.Router();
@@ -15,76 +16,27 @@ const ownerCheck = require("../middlewares/ownerCheck");
  * This file contains API requests (apiURL/semesters/x) that allow adding
  * (/add), modifying (/edit) or retrieving a list (/list) of semesters.
  *
+ * For all routes here:
+ * 
  * Authentication required (JWT middleware ran before arriving here).
- * Assume all requests will have valid tokens (bad ones don't get past MW).
- * Assume req.auth exists and contains token payload.
+ * - Assume all requests will have valid tokens (bad ones don't get past MW).
+ * - Assume req.auth exists and contains valid token payload
+ * - Assume the user exists
  */
 
 // apiURL/semesters/list GET request
 router.get("/list", (req, res) => {
-  console.log("req.auth is...");
-  console.log(req.auth);
-  // Get JWT token
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.status(401).json({
-      error: 2,
-      message: "Invalid or missing token",
-      semesterList: [],
-    });
-    return;
-  }
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+   - Token valid, tok payload in req.auth, user exists
+  */
 
-  // Decode the JWT token
-  const token = authHeader.split(" ")[1];
-  let decodedToken;
+  const userID = req.auth.uuid;
 
-  try {
-    decodedToken = jwt.verify(token, process.env.JWT_SECRET || "not_having_a_secret_key_is_bad_bad_bad_smh");
-  } catch (err) {
-    // Check if token is expired
-    try {
-      const { exp } = jwt.decode(token);
-      if (exp * 1000 < Date.now()) {
-        res.status(401).json({
-          error: 5,
-          message: "Expired token",
-          semesterList: [],
-        });
-        return;
-      }
-    } catch (err) {
-      res.status(401).json({
-        error: 3,
-        message: "Invalid or missing token",
-        semesterList: [],
-      });
-      return;
-    }
-    res.status(401).json({
-      error: 3,
-      message: "Invalid or missing token",
-      semesterList: [],
-    });
-    return;
-  }
-
-  // Get the user's UUID from the JWT token
-  if (!decodedToken || !decodedToken.uuid) {
-    res.status(401).json({
-      error: 4,
-      message: "Invalid or missing token",
-      semesterList: [],
-    });
-    return;
-  }
-
-  const userUuid = decodedToken.uuid;
-
-  // Check that user exists
-  db.get("SELECT * FROM users WHERE uuid = ?", [userUuid], async (err, row) => {
+  // Get all semesters for that user
+  db.all("SELECT uuid, semester_name FROM semesters WHERE user_uuid = ?", [userID], (err, rows) => {
     if (err) {
-      console.error("Error selecting user:", err);
+      console.error("Error fetching semesters:", err);
       res.status(500).json({
         error: -1,
         message: "Internal server error",
@@ -93,120 +45,45 @@ router.get("/list", (req, res) => {
       return;
     }
 
-    if (!row) {
-      res.json({
-        error: 1,
-        message: "User does not exist",
-        semesterList: [],
-      });
-      return;
-    }
+    // Create semester list
+    const semesterList = rows.map((row) => ({
+      semesterID: row.uuid,
+      semesterName: row.semester_name,
+    }));
 
-    // Get all semesters
-    db.all("SELECT uuid, semester_name FROM semesters WHERE user_uuid = ?", [userUuid], (err, rows) => {
-      if (err) {
-        console.error("Error fetching semesters:", err);
-        res.status(500).json({
-          error: -1,
-          message: "Internal server error",
-          semesterList: [],
-        });
-        return;
-      }
-
-      // Create semester list
-      const semesterList = rows.map((row) => ({
-        semesterID: row.uuid,
-        semesterName: row.semester_name,
-      }));
-
-      // Success response
-      res.json({
-        error: 0,
-        message: "Semesters successfully fetched",
-        semesterList: semesterList,
-      });
+    // Success response
+    res.json({
+      error: 0,
+      message: "Semesters successfully fetched",
+      semesterList: semesterList,
     });
   });
 });
 
 // apiURL/semesters/add POST request
 router.post("/add", (req, res) => {
-  // Get request body
-  const { candidateSemester } = req.body;
-  const { semesterName } = candidateSemester;
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+   - Token valid, tok payload in req.auth, user exists
+  */
 
-  // Check if request body contains the required fields
-  if (!semesterName) {
-    res.status(400).json({
-      error: -2,
-      message: "Missing required fields",
-      newSemester: null,
-    });
-    return;
-  }
-
-  // Get JWT token
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.status(401).json({
-      error: 3,
-      message: "Invalid or missing token",
-      newSemester: null,
-    });
-    return;
-  }
-
-  // Decode the JWT token
-  const token = authHeader.split(" ")[1];
-  let decodedToken;
-
+  // Verify request body
+  let candidateSemester, semesterName;
   try {
-    decodedToken = jwt.verify(token, process.env.JWT_SECRET || "not_having_a_secret_key_is_bad_bad_bad_smh");
+    ({ candidateSemester } = req.body);
+    ({ semesterName } = candidateSemester);
+    if (!semesterName) res.sendStatus(400);
   } catch (err) {
-    // Check if token is expired
-    try {
-      const { exp } = jwt.decode(token);
-      if (exp * 1000 < Date.now()) {
-        res.status(401).json({
-          error: 6,
-          message: "Expired token",
-          newSemester: null,
-        });
-        return;
-      }
-    } catch (err) {
-      res.status(401).json({
-        error: 4,
-        message: "Invalid or missing token",
-        newSemester: null,
-      });
-      return;
-    }
-    res.status(401).json({
-      error: 4,
-      message: "Invalid or missing token",
-      newSemester: null,
-    });
+    res.sendStatus(400);
     return;
   }
 
-  // Get the user's UUID from the JWT token
-  if (!decodedToken || !decodedToken.uuid) {
-    res.status(401).json({
-      error: 5,
-      message: "Invalid or missing token",
-      newSemester: null,
-    });
-    return;
-  }
+  const userID = req.auth.uuid;
 
-  const userUuid = decodedToken.uuid;
-
-  // Check that user exists
-  db.get("SELECT * FROM users WHERE uuid = ?", [userUuid], (err, userRow) => {
+  // Check that semester does not already exist
+  db.get("SELECT * FROM semesters WHERE semester_name = ? AND user_uuid = ?", [semesterName, userID], (err, semesterRow) => {
     if (err) {
-      console.error("Error selecting user:", err);
+      console.error("Error selecting semester:", err);
       res.status(500).json({
         error: -1,
         message: "Internal server error",
@@ -215,66 +92,44 @@ router.post("/add", (req, res) => {
       return;
     }
 
-    if (!userRow) {
+    if (semesterRow) {
       res.json({
-        error: 1,
-        message: "User does not exist",
+        error: 2,
+        message: "Semester already exists",
         newSemester: null,
       });
       return;
     }
 
-    // Check that semester does not already exist
-    db.get("SELECT * FROM semesters WHERE semester_name = ? AND user_uuid = ?", [semesterName, userUuid], (err, semesterRow) => {
+    // SQL query
+    const newSemesterID = uuidv4();
+    db.run("INSERT INTO semesters (uuid, user_uuid, semester_name) VALUES (?, ?, ?)", [newSemesterID, userID, semesterName], (err) => {
       if (err) {
-        console.error("Error selecting semester:", err);
+        console.error("Error inserting semester:", err);
         res.status(500).json({
           error: -1,
           message: "Internal server error",
-          newSemester: null,
         });
         return;
-      }
-
-      if (semesterRow) {
-        res.json({
-          error: 2,
-          message: "Semester already exists",
-          newSemester: null,
+      } else {
+        res.status(200).json({
+          error: 0,
+          message: "Semester created successfully",
+          newSemester: { ...candidateSemester, semesterID: newSemesterID },
         });
-        return;
       }
-
-      // SQL query
-      const newSemesterID = uuidv4();
-      db.run("INSERT INTO semesters (uuid, user_uuid, semester_name) VALUES (?, ?, ?)", [newSemesterID, userUuid, semesterName], (err) => {
-        if (err) {
-          console.error("Error inserting semester:", err);
-          res.status(500).json({
-            error: -1,
-            message: "Internal server error",
-          });
-          return;
-        } else {
-          res.status(200).json({
-            error: 0,
-            message: "Semester created successfully",
-            newSemester: { ...candidateSemester, semesterID: newSemesterID },
-          });
-        }
-      });
     });
   });
 });
 
 const isOwnerMWEdit = ownerCheck.getMW((res) => res.body.modifiedSemester.semesterID, ownerCheck.sql.sem);
 router.post("/edit", isOwnerMWEdit, (req, res) => {
-  const { modifiedSemester } = req.body;
-  if (!modifiedSemester) res.sendStatus(400);
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+   - Token valid, tok payload in req.auth, user exists
+  */
 
-  // Potentially only those that changed are sent over, so expect some of these to be undefined?
-  const { semesterID, semesterName } = modifiedSemester;
-
+  // Potentially only those that changed are sent over, so expect some of these to be undefined? idk
   //TODO
   res.sendStatus(501);
 });

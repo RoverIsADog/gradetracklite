@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const db = new sqlite3.Database(path.join(__dirname, "../database.db"));
+db.get("PRAGMA foreign_keys = ON");
 // Routing
 const express = require("express");
 const ownerCheck = require("../middlewares/ownerCheck");
@@ -15,14 +16,25 @@ const router = express.Router();
  * (/add) and modifying (/edit) a grade.
  *
  * There is no /list or /get here because that's handled by /courses/get.
+ * 
+ * For all routes here:
  *
  * Authentication required (JWT middleware ran before arriving here).
- * Assume all requests will have valid tokens (bad ones don't get past MW).
- * Assume req.auth exists and contains token payload.
+ * - Assume all requests will have valid tokens (bad ones don't get past MW).
+ * - Assume req.auth exists and contains valid token payload.
+ * - Assume the user exists
  */
 
 // apiURL/grades/add POST request
-router.post("/add", (req, res) => {
+const isOwnerMWAdd = ownerCheck.getMW((req) => req.body.categoryID, ownerCheck.sql.cat);
+router.post("/add", isOwnerMWAdd, (req, res) => {
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+  - Token valid, tok payload in req.auth, user exists
+  isOwnerMWAdd
+  - Parent category exists, is owned by user
+  */
+
   // Get request body
   const { categoryID, candidateGrade } = req.body;
   const { gradeName, gradeWeight, gradePointsAct, gradePointsMax, gradeDescription, gradeDate } = candidateGrade;
@@ -237,12 +249,26 @@ router.post("/add", (req, res) => {
 
 const isOwnerMWEdit = ownerCheck.getMW((req) => req.body.modifiedGrade.gradeID, ownerCheck.sql.grade);
 router.post("/edit", isOwnerMWEdit, (req, res) => {
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+  - Token valid, tok payload in req.auth, user exists
+  isOwnerMWEdit
+  - Target grade exists, is owned by user
+  */
+  
   //TODO
   res.sendStatus(501);
 });
 
 const isOwnerMWDel = ownerCheck.getMW((req) => req.body.gradeID, ownerCheck.sql.grade);
 router.post("/delete", isOwnerMWDel, (req, res) => {
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+  - Token valid, tok payload in req.auth, user exists
+  isOwnerMWDel
+  - Target grade exists, is owned by user
+  */
+  
   //TODO
   res.sendStatus(501);
 });

@@ -3,6 +3,7 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const db = new sqlite3.Database(path.join(__dirname, "../database.db"));
+db.get("PRAGMA foreign_keys = ON");
 // Routing
 const express = require("express");
 
@@ -29,6 +30,10 @@ const express = require("express");
  * protected paths require a token, and JWTMiddleware will decode the token
  * into there. Optionally, a function `userIDGetter(req) => string` to
  * extract the UUID from the request can be provided.
+ * 
+ * If this MW is successful:
+ * * The user owns the desired resource
+ * * The user and the resource both exist
  *
  * @param {(req: express.Request) => string} resIDGetter
  * Function to get the resource from the request
@@ -45,8 +50,9 @@ function getOwnerCheckMW(resIDGetter, sqlQuery, userIDGetter = null) {
     try {
       userID = userIDGetter ? userIDGetter(req) : req.auth.uuid;
       resID = resIDGetter(req);
-    } catch (Error) {
-      console.log("Unable to get either userID or resID");
+      if (!userID || !resID) throw Error();
+    } catch (err) {
+      console.log("ResOwner: Failed to get either userID or resID");
       res.sendStatus(400);
       return;
     }

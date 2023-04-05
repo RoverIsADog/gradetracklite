@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const db = new sqlite3.Database(path.join(__dirname, "../database.db"));
+db.get("PRAGMA foreign_keys = ON");
 // Routing
 const express = require("express");
 const router = express.Router();
@@ -16,8 +17,9 @@ const router = express.Router();
  * the account (/delete).
  *
  * Authentication required (JWT middleware ran before arriving here).
- * Assume all requests will have valid tokens (bad ones don't get past MW).
- * Assume req.auth exists and contains token payload.
+ * - Assume all requests will have valid tokens (bad ones don't get past MW).
+ * - Assume req.auth exists and contains valid token payload.
+ * - Assume the user exists
  */
 
 /**
@@ -31,7 +33,12 @@ const router = express.Router();
  * username contained in the token's payload to display the user's profile
  */
 router.post("/edit/info", (req, res) => {
-  // TODO returning placeholder for now
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+   - Token valid, tok payload in req.auth, user exists
+  */
+  
+   // TODO returning placeholder for now
   res.json({
     error: 0,
     message: "All good",
@@ -43,6 +50,11 @@ router.post("/edit/info", (req, res) => {
  * This request is for changing the account's password.
  */
 router.post("/edit/password", (req, res) => {
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+   - Token valid, tok payload in req.auth, user exists
+  */
+
   // TODO returning placeholder for now
   res.json({
     error: 0,
@@ -56,6 +68,11 @@ router.post("/edit/password", (req, res) => {
  * (it can be some other field type aswell).
  */
 router.get("/download", (req, res) => {
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+   - Token valid, tok payload in req.auth, user exists
+  */
+
   // TODO returning placeholder JSON object for now
   const placeholderData = {
     mother: "Is a hamster",
@@ -74,6 +91,11 @@ router.get("/download", (req, res) => {
  * associated with it.
  */
 router.post("/delete", (req, res) => {
+  /* === At this point these middlewares ran providing these guarantees ===
+  authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
+   - Token valid, tok payload in req.auth, user exists
+  */
+
   res.json({
     error: 0,
     message: "Deleted successfully",

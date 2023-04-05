@@ -56,6 +56,7 @@ when required.
 */
 const app = express();
 const db = new sqlite3.Database(path.join(__dirname, "database.db"));
+db.get("PRAGMA foreign_keys = ON");
 
 /* FIXME cors is redundant now that we're hosting the website on the
 same server (the whole point is to bypass same-origin restrictions,
@@ -195,11 +196,23 @@ If success, stores decoded token content in --> req.auth <--
 */
 const { expressjwt } = require("express-jwt");
 const jwtMiddleware = expressjwt({ secret: () => JWT_SECRET, algorithms: ["HS256"] });
-const jwtErrorHandler = function (err, req, res, next) {
+const jwtErrorHandler = function(err, req, res, next) { // Only invoked if errors. Doesn't run otherwise
   if (err.name === "UnauthorizedError") {
+    console.error("Invalid token");
     res.status(401).send("invalid token");
+    return;
   }
+  next();
 };
+const jwtPayloadVerifier = function (req, res, next) {
+  // Modify this if the token payload is modified (email opt)
+  if (!req.auth || !req.auth.uuid || !req.auth.username) {
+    console.error("Token valid but malformed payload");
+    res.status(401).send("malformed token");
+    return;
+  }
+  next();
+}
 
 /* For all requests needing to be logged in, we must check for a situation
 where the request goes past the JWTMiddleware since it's valid, but the
@@ -208,7 +221,7 @@ const userCheck = require("./middlewares/userCheck");
 const userCheckMW = userCheck.getMW();
 
 // Bundling all MW for protected routes to reduce spam
-const authMiddlewares = [jwtMiddleware, jwtErrorHandler, userCheckMW];
+const authMiddlewares = [jwtMiddleware, jwtErrorHandler, jwtPayloadVerifier, userCheckMW];
 
 /* ######################### ROUTES #########################
 Separate all API routes into their own router. Grouped by what 
@@ -233,8 +246,8 @@ app.use("/api/v1/categories", authMiddlewares, categoryRouter);
 const gradeRouter = require("./routes/grades");
 app.use("/api/v1/grades", authMiddlewares, gradeRouter);
 
-const staticRouter = require("./routes/docs");
-app.use("/api/v1/docs", staticRouter); // No token required
+const docRouter = require("./routes/docs");
+app.use("/api/v1/docs", docRouter); // No token required
 
 const accountRouter = require("./routes/account");
 app.use("/api/v1/account", authMiddlewares, accountRouter);
