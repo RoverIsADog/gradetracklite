@@ -43,6 +43,7 @@ import ContentCourseHeader from "./ContentCourseHeader";
  * 
  */
 
+/** @type {React.Context<{selectedItem: {id: string, preview: {() => JSX.Element}}, setSelectedItem: React.Dispatch<React.SetStateAction<{id: string; preview: () => JSX.Element;}>>}>} */
 const contextSelectedItem = createContext(null);
 /** @type {React.Context<{id: string, name: string}>} */
 const contextSemester = createContext(null);
@@ -71,14 +72,14 @@ function ContentPane({ semester, course }) {
   const apiURL = useContext(apiLocation);
 
   // Upon loading, fetch the selected course
-  const courseURL = course ? `${apiURL}/course?courseID=${course.id}&singular=1` : null;
+  const courseURL = course ? `${apiURL}/courses/get?courseID=${course.id}&singular=1` : null;
 
-  /** @type {{loading: boolean, error: Error, data: CourseResponse}} */
+  /** @type {{loading: boolean, error: Error, data: {error: number, message: string, categoryList: Array<{categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}>}>}}} */
   const fetchMetrics = useFetch(courseURL);
 
   // Keep track of which child is selected, and the function the selected child uses to
   // generate its preview pane.
-  const [selectedItem, setSelectedItem] = useState({ id: null, preview: EmptyPreview });
+  const [selectedItem, setSelectedItem] = useState({ id: "", preview: EmptyPreview });
 
   // Special handling if loading or loading failed
   if (fetchMetrics.loading) {
@@ -111,7 +112,7 @@ function ContentPane({ semester, course }) {
                 <ContentCourseHeader />
                 <div className="horizontal-line-bold" />
                 {/* Each course has its list of categories. */}
-                <ContentCategoryList categoryList={fetchMetrics.data.category_list} />
+                <ContentCategoryList categoryList={fetchMetrics.data.categoryList} />
               </div>
             </div>
             

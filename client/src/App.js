@@ -1,16 +1,18 @@
 import React, { createContext } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import About from "./pages/About";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard"; // Path: /app
 
 /**
- * "Global" context to give all pages access to the API's domain (and port).
- * Components should append their requests to this instead of hardcoding
- * the link since we don't know where the API will be hosted.
- *
- * TOOD: Get this from a file or env variable or something (1 hardcode is
- * still better than many though)
+ * "Global" context to give all pages access to the path to the root of the
+ * API. Access this path instead of hardcoding anything. Currently, the path is /api/...
+ * 
+ * In the create-react-app's development server (npm start), all requests are proxied
+ * from "http://localhost:3000" to "http://localhost:8000", where the server is located.
+ * 
+ * In production, this relative path (without a hostname) allows API calls to be sent
+ * to wherever the website was served from (which is the same as the server).
  */
 const apiLocation = createContext(null);
 
@@ -31,11 +33,13 @@ function App() {
   components.
   */
   return (
-    <apiLocation.Provider value='http://localhost:8000'>
+    <apiLocation.Provider value='/api/v1'>
       <Routes>
         <Route path="/" element={<AuthPage />}></Route>
         <Route path="/app" element={<Dashboard />}></Route>
         <Route path="/about" element={<About />}></Route>
+        <Route path="/404" element={<div>404 Not Found. <Link to={"/"}>Go back</Link></div>}></Route>
+        <Route path="*" element={<div>404 Not Found. <Link to={"/"}>Go back</Link></div>}></Route> {/* Redirect if DNE */}
       </Routes>
     </apiLocation.Provider>
   );

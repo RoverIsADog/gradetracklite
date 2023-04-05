@@ -1,0 +1,1 @@
+SELECT COUNT(1) as "count" FROM users WHERE uuid = "692f205f-7bcc-40ee-9010-8eee7a76525f"

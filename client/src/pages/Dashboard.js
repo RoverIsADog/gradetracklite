@@ -4,6 +4,7 @@ import Sidebar from "../components/Dashboard/Sidebar";
 import "../css/dashboard/styles.css";
 import "../css/dashboard/input.css";
 import "../css/dashboard/colors.css";
+import { readCookie } from "../utils/Util";
 
 /**
  * Context providing a function to allow changing the theme of the dashboard.
@@ -30,10 +31,14 @@ const contextTheme = createContext(null);
 function Dashboard() {
   // Dark mode CSS loading management
   // We could save this in local storage but whatever
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(readCookie("theme") || "light");
   const toggleTheme = () => {
     console.log("Toggling dark mode...");
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    setTheme((prev) => {
+      const newTheme = prev === "light" ? "dark" : "light";
+      document.cookie = `theme=${newTheme}`;
+      return newTheme;
+    });
   };
 
   return (

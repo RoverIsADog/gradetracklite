@@ -1,3 +1,5 @@
+# THIS FOLDER IS NOW OUTDATED DO NOT USE
+
 # REST Requests Definitions
 
 This folder contains sample expected requests and sample expected responses for the REST API. It will likely be out of date. The precedence in case of conflicts is:
