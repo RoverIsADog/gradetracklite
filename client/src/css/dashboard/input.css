@@ -44,3 +44,13 @@ don't stand out (except for a bottom edge) when unused. */
   text-align: center;
   width: 3em;
 }
+
+.input-small::-webkit-outer-spin-button,
+.input-small::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-small[type=number] {
+  -moz-appearance: textfield;
+}

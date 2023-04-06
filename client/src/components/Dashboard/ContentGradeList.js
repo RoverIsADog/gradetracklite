@@ -50,7 +50,9 @@ function ContentGradeList({ category }) {
           <div className="grade-score">
             {grade.gradePointsAct}/{grade.gradePointsMax} (<ColoredPercent number={grade.gradePointsAct / grade.gradePointsMax} />)
           </div>
-          <div className="grade-weight">weight: {grade.gradeWeight}</div>
+          <div className="grade-weight">
+            weight: {grade.gradeWeight}
+          </div>
         </div>
       </div>
     );

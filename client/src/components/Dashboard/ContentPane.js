@@ -109,7 +109,7 @@ function ContentPane({ semester, course }) {
               {/* Another div level here to prevent weird padding/margin problems */}
               <div id="course-area">
                 {/* A course's header (name, grade, credits) */}
-                <ContentCourseHeader />
+                <ContentCourseHeader categoryList={fetchMetrics.data.categoryList} />
                 <div className="horizontal-line-bold" />
                 {/* Each course has its list of categories. */}
                 <ContentCategoryList categoryList={fetchMetrics.data.categoryList} />
@@ -122,7 +122,7 @@ function ContentPane({ semester, course }) {
               a function to generate its previewer. For now, also display template
               previewer, but remove once all specific previewers are done*/}
               {selectedItem.preview && selectedItem.preview()}
-              <PlaceholderPreview />
+              {/* <PlaceholderPreview /> */}
             </div>
           </div>
         </contextCourse.Provider>

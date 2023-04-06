@@ -42,23 +42,23 @@ export const LoginForm = (props) => {
       <h2 className="center-header">Login</h2>
       <form className="login-form" onSubmit={handleSubmit}>
         {/* USERNAME */}
-        <label htmlFor="username">Username</label>
-        <input value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username" required id="username" name="username" />
+        <label className="auth-label" htmlFor="username">Username</label>
+        <input className="auth-input" value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username" required id="username" name="username" />
 
         {/* PASSWORD */}
-        <label htmlFor="password">Password</label>
-        <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="*********" required id="password" name="password" />
+        <label className="auth-label" htmlFor="password">Password</label>
+        <input className="auth-input" value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="*********" required id="password" name="password" />
 
         {/* ERROR */}
         {error && <p className="error-message">{error}</p>}
 
-        <button className="login-btn" type="submit">
+        <button className="login-btn auth-button" type="submit">
           Log In
         </button>
       </form>
 
       {/* Back to Login button */}
-      <button className="link-btn" onClick={() => props.onFormSwitch("register")}>
+      <button className="link-btn auth-button" onClick={() => props.onFormSwitch("register")}>
         Register here!
       </button>
     </div>

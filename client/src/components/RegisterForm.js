@@ -41,8 +41,9 @@ export const RegisterForm = (props) => {
         <h2 className="center-header">Registration</h2>
 
         {/* USERNAME */}
-        <label htmlFor="username">Username</label>
+        <label className="auth-label" htmlFor="username">Username</label>
         <input
+          className="auth-input"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           type="text"
@@ -51,8 +52,9 @@ export const RegisterForm = (props) => {
           name="username" />
 
         {/* PASSWORD */}
-        <label htmlFor="password">Password</label>
+        <label className="auth-label" htmlFor="password">Password</label>
         <input
+          className="auth-input"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           type="password"
@@ -61,8 +63,9 @@ export const RegisterForm = (props) => {
           name="password" />
 
         {/* Email */}
-        <label htmlFor="email">Email address (optional)</label>
+        <label className="auth-label" htmlFor="email">Email address (optional)</label>
         <input
+          className="auth-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
@@ -70,9 +73,9 @@ export const RegisterForm = (props) => {
           placeholder="youremail@mail.com"></input>
 
         {/* Checkbox for Terms and Condition */}
-        <label htmlFor="checkbox">
-          <input value={checkbox} onClick={() => setCheckbox(true)} type="checkbox" required id="checkbox" name="checkbox" /> I have agreed to
-          <button className="popup-btn " onClick={() => setButtonPopup(true)} type="button">
+        <label className="auth-label" htmlFor="checkbox">
+          <input className="auth-input" value={checkbox} onClick={() => setCheckbox(true)} type="checkbox" required id="checkbox" name="checkbox" /> I have agreed to
+          <button className="popup-btn auth-button " onClick={() => setButtonPopup(true)} type="button">
             the privacy policy and terms of use.
           </button>
         </label>
@@ -97,13 +100,13 @@ export const RegisterForm = (props) => {
         {error && <p className="error-message">{error}</p>}
 
         {/* Register Button */}
-        <button className="register-btn" type="submit">
+        <button className="register-btn auth-button" type="submit">
           Register
         </button>
         <br />
 
         {/* Back to Login button */}
-        <button className="link-btn" onClick={() => props.onFormSwitch("login")}>
+        <button className="link-btn auth-button" onClick={() => props.onFormSwitch("login")}>
           Already have an account? Login!
         </button>
       </form>

@@ -44,8 +44,8 @@ function ContentCategoryList({ categoryList }) {
     let actPoints = 0; // How many out of the total points we achieved.
     let maxPoints = 0; // Total points in the category
     category.categoryGradeList.forEach((grade) => {
-      actPoints += (grade.gradePointsAct / grade.gradePointsMax) * grade.gradeWeight;
-      maxPoints += grade.gradePointsMax;
+      actPoints += grade.gradePointsAct * grade.gradeWeight;
+      maxPoints += grade.gradePointsMax * grade.gradeWeight;
     });
 
     // When clicking the category's banner, modify screen

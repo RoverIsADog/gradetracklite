@@ -4,5 +4,5 @@
         "strictPropertyInitialization": false,
         "strictNullChecks": false
     },
-    "include": ["./src/*", "index.d.ts"]
+    "include": ["./src/*", "./src/img/*","custom.d.ts"]
 }

@@ -55,6 +55,11 @@ itself on the right */
   text-align: right;
 }
 
+.preview-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
 /* ################## VERTICAL PROPERTY ################## */
 /* These properties are too big to fit in one line, so they
 are instead distributed vertically, with the top being the
