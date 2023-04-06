@@ -20,7 +20,7 @@ import descriptionIco from "../../img/open-book-svgrepo-com.svg";
  * Basically, when building the specific panes, reuse "items" from this
  * template such as preview-inline and preview-vertical.
  
- * @returns {React.Component}
+ * @returns {JSX.Component}
  */
 function PlaceholderPreview() {
   return (

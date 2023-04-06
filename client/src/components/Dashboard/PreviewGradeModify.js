@@ -1,3 +1,4 @@
+//@ts-check
 import React, { useContext } from 'react'
 import { contextCourse, contextSemester } from './ContentPane';
 
@@ -14,14 +15,17 @@ import { contextCourse, contextSemester } from './ContentPane';
  * 
  * See ContentGradeList for the type declaration of a grade, but it's subject
  * to change as of writing.
- * @returns {React.Component}
+ * 
+ * 
+ * @param {{category: {categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}>}, grade: {gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}}} props
+ * @returns {JSX.Element}
  */
 function PreviewGradeModify({ category, grade }) {
   const course = useContext(contextCourse);
   const semester = useContext(contextSemester);
   return (
     <div>
-      Previewing editing grade {grade.item_name}({grade.uuid}) from {category.name}/{semester.name}/${course.name}
+      Previewing editing grade {grade.gradeName}({grade.gradeID}) from {category.categoryName}/{semester.name}/{course.name}
     </div>
   );
 }

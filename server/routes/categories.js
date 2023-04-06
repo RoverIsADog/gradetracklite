@@ -12,8 +12,8 @@ const ownerCheck = require("../middlewares/ownerCheck");
 const router = express.Router();
 
 /**
- * This file contains API requests (apiURL/grades/x) that allow adding
- * (/add) and modifying (/edit) a grade.
+ * This file contains API requests (apiURL/categories/x) that allow adding
+ * (/add) and modifying (/edit) a category.
  *
  * There is no /list or /get here because that's handled by /courses/get.
  *
@@ -25,100 +25,99 @@ const router = express.Router();
  * - Assume the user exists
  */
 
-// apiURL/grades/add POST request
-const isOwnerMWAdd = ownerCheck.getMW((req) => req.body.categoryID, ownerCheck.sql.cat);
+// apiURL/categories/add POST request
+const isOwnerMWAdd = ownerCheck.getMW((req) => req.body.courseID, ownerCheck.sql.course);
 router.post("/add", isOwnerMWAdd, (req, res) => {
   /* === At this point these middlewares ran providing these guarantees ===
   authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
   - Token valid, tok payload in req.auth, user exists
   isOwnerMWAdd
-  - Parent category exists, is owned by user
+  - Parent course exists, is owned by user
   */
 
   // Get request body
-  const { categoryID, candidateGrade } = req.body;
-  const { gradeName, gradeWeight, gradePointsAct, gradePointsMax, gradeDescription, gradeDate } = candidateGrade;
+  const { courseID, candidateCategory } = req.body;
+  const { categoryName, categoryWeight, categoryDescription } = candidateCategory;
 
   // Check if request body contains the required fields
-  if (!categoryID || !gradeName || !gradeWeight || !gradePointsAct || !gradePointsMax || !gradeDate) {
+  if (!courseID || !categoryName || !categoryWeight) {
     res.status(400).json({
       error: -2,
       message: "Missing required fields",
-      newGrade: null,
+      newCategory: null,
     });
     return;
   }
 
-  // Get JWT token (redundant, removed), we don't even need the userID anymore
+  // Decode the JWT token (redundant, removed), we don't even need the userID anymore
   // Check that user exists (redundant, removed)
-  // Check that grade category exists (redundant, removed)
   // Check that course exists (redundant, removed)
   // Check that semester exists (redundant, removed)
   // Check that user is authorized to access the specified semester (redundant, removed)
 
-  // Check that grade item does not already exist
-  db.get("SELECT * FROM grade_items WHERE category_uuid = ? AND item_name = ?", [categoryID, gradeName], (err, itemRow) => {
+  // Check that grade category does not already exist
+  db.get("SELECT * FROM grade_categories WHERE course_uuid = ? AND category_type = ?", [courseID, categoryName], (err, categoryRow) => {
     if (err) {
-      console.error("Error selecting grade item:", err);
+      console.error("Error selecting category:", err);
       res.status(500).json({
         error: -1,
         message: "Internal server error",
-        newGrade: null,
+        newCategory: null,
       });
       return;
     }
 
-    if (itemRow) {
+    if (categoryRow) {
       res.json({
-        error: 6,
-        message: "Grade item already exists",
-        newGrade: null,
+        error: 5,
+        message: "Grade category already exists",
+        newCategory: null,
       });
       return;
     }
 
     // SQL query
-    const newGradeID = uuidv4();
-    db.run("INSERT INTO grade_items (uuid, category_uuid, item_name, item_weight, item_mark, item_total, item_description, item_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [newGradeID, categoryID, gradeName, gradeWeight, gradePointsAct, gradePointsMax, gradeDescription || "No Description.", gradeDate], (err) => {
+    const newCategoryID = uuidv4();
+    db.run("INSERT INTO grade_categories (uuid, course_uuid, category_type, category_weight, category_description) VALUES (?, ?, ?, ?, ?)", [newCategoryID, courseID, categoryName, categoryWeight, categoryDescription || "No Description."], (err) => {
       if (err) {
-        console.error("Error inserting grade item:", err);
+        console.error("Error inserting grade category:", err);
         res.status(500).json({
           error: -1,
           message: "Internal server error",
-          newGrade: null,
+          newCategory: null,
         });
         return;
       } else {
         res.status(200).json({
           error: 0,
-          message: "Grade item created successfully",
-          newGrade: { ...candidateGrade, gradeID: newGradeID },
+          message: "Grade category created successfully",
+          newCategory: { ...candidateCategory, categoryID: newCategoryID },
         });
       }
     });
   });
 });
 
-const isOwnerMWEdit = ownerCheck.getMW((req) => req.body.modifiedGrade.gradeID, ownerCheck.sql.grade);
+const isOwnerMWEdit = ownerCheck.getMW((req) => req.body.modifiedCategory.categoryID, ownerCheck.sql.cat);
 router.post("/edit", isOwnerMWEdit, (req, res) => {
   /* === At this point these middlewares ran providing these guarantees ===
   authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
   - Token valid, tok payload in req.auth, user exists
   isOwnerMWEdit
-  - Target grade exists, is owned by user
+  - Target category exists, is owned by user
   */
 
   //TODO
   res.sendStatus(501);
 });
 
-const isOwnerMWDel = ownerCheck.getMW((req) => req.body.gradeID, ownerCheck.sql.grade);
+const isOwnerMWDel = ownerCheck.getMW((req) => req.body.categoryID, ownerCheck.sql.cat);
 router.post("/delete", isOwnerMWDel, (req, res) => {
   /* === At this point these middlewares ran providing these guarantees ===
   authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
   - Token valid, tok payload in req.auth, user exists
   isOwnerMWDel
-  - Target grade exists, is owned by user
+  - Target category exists, is owned by user
   */
 
   //TODO

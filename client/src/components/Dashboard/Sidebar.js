@@ -9,19 +9,26 @@ import coursesIco from "../../img/education-books-apple-svgrepo-com.svg";
 import identicon from "../../img/identicon.png"; // TODO procedurally generate based on username??
 import logoutIco from "../../img/sign-out-2-svgrepo-com.svg";
 import privacyIco from "../../img/contract-line-svgrepo-com.svg";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { contextTheme } from "../../pages/Dashboard";
 import { apiLocation } from "../../App";
 import useFetch from "../../hooks/useFetch";
 import SidebarChoice from "./SidebarChoice";
 import { ContentPane } from "./ContentPane";
 import Settings from "./Settings";
+import { readCookie } from "../../utils/Util";
+import jwt_decode from "jwt-decode";
 
 /**
  * Component displaying the sidebar (#sidebar-itself) and the area controlled
  * by the sidebar (#sidebar-display).
  * The sidebar should control how elements in its control area are displayed,
  * in this case, the course and item panes.
+ * 
+ * @typedef Semester
+ * @prop {string} uuid
+ * @prop {string} semesterName
+ * 
  */
 function Sidebar() {
   const apiURL = useContext(apiLocation);
@@ -29,7 +36,7 @@ function Sidebar() {
   // Logout button
   const handleLogout = () => {
     console.log("Logging out");
-    console.log("TODO: clear session cookie/storage");
+    document.cookie = "token=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;"; // Set expiration to long ago
   };
 
   // Theme toggle button
@@ -68,13 +75,19 @@ function Sidebar() {
   }
 
   // Always initially fetch a list of semesters (userID included in token)
-  const { data: semData, loading: semLoading, error: semError } = useFetch(`${apiURL}/semesters`);
-  const semToName = (val) => { return [val.semID, val.semName]; }
+  /**
+   * @type {{loading: boolean, error: Error, data: {error: number, message: string, semesterList: Array<{semesterID: string, semesterName: string}>}}}
+   */
+  const { data: semData, loading: semLoading, error: semError } = useFetch(`${apiURL}/semesters/list`);
+  const semToName = (val) => { return [val.semesterID, val.semesterName]; }
   
   /* Set the URL of the fetch request for the course to null if no semester
   have been selected (useFetch does nothing if they are null). Values of
   course fetch metrics are meaningless if selectedSemester == null. */
-  const courseURL = selectedSemester != null ? `${apiURL}/courses?semID=${selectedSemester.id}&singular=1` : null; // Remove singular for production
+  const courseURL = selectedSemester != null ? `${apiURL}/courses/list?semesterID=${selectedSemester.id}&singular=1` : null; // Remove singular for production
+  /** 
+   * @type {{loading: boolean, error: Error, data: {error: number, message: string, courseList: Array<{courseID: string, courseName: string}>}}} 
+   */
   const { data: courseData, loading: courseLoading, error: courseError } = useFetch(courseURL);
   const courseToName = (val) => { return [val.courseID, val.courseName]; }
   
@@ -82,7 +95,20 @@ function Sidebar() {
   console.log(`Sem status... ${semLoading ? 'loading' : 'loaded'} / ${semError ? 'err' : 'ok'}`);
   console.log("Course data... " + (courseData ? 'exist' : 'dne'));
   console.log(`Course status... ${courseLoading ? 'loading' : 'loaded'} / ${courseError ? 'err' : 'ok'}`);
-  
+
+  // Get the username from the token.
+  let token;
+  try {
+    // Not validating, just decoding
+    const tokenStr = readCookie("token");
+    console.log("TokenStr: " + tokenStr);
+    token = jwt_decode(tokenStr);
+    console.log("Token decoded into");
+    console.log(token);
+  } catch(Error) {
+    alert("Malformed token");
+    return (<Navigate replace to="/404" />);
+  }
 
   return (
     <div id="sidebar-container">
@@ -109,10 +135,11 @@ function Sidebar() {
               list={semData && semData.semesterList}
               valueToName={semToName}
               onSelect={selectSemester}
-              override={semError || semLoading}
+              override={semError || semLoading || semData.semesterList.length === 0}
             >
-              {semError && <div className='sb-choice-list-message' style={{color: 'red'}}>Error</div>}
+              {semError && <div className='sb-choice-list-message' style={{ color: 'red' }}>Error<br />{semError.message}</div>}
               {semLoading && <div className='sb-choice-list-message'>Loading</div>}
+              {!semLoading && !semError && semData.semesterList.length === 0 && <div className='sb-choice-list-message'>No semesters</div>}
               
             </SidebarChoice>
           }
@@ -127,11 +154,12 @@ function Sidebar() {
               list={courseData && courseData.courseList}
               valueToName={courseToName}
               onSelect={selectCourse}
-              override={!selectedSemester || courseError || courseLoading}
+              override={!selectedSemester || courseError || courseLoading || courseData.courseList.length === 0}
             >
               {!selectedSemester && <div className='sb-choice-list-message'>Please select a semester</div>}
-              {selectedSemester && courseError && <div style={{color: 'red'}}>Error</div>}
+              {selectedSemester && courseError && <div style={{ color: 'red' }}>Error<br />{courseError.message}</div>}
               {selectedSemester && courseLoading && <div className='sb-choice-list-message'>Loading</div>}
+              {!courseLoading && !courseError && courseData.courseList.length === 0 && <div className='sb-choice-list-message'>No courses for semester</div>}
               
             </SidebarChoice>
           }
@@ -155,7 +183,7 @@ function Sidebar() {
             {/* We're not actually storing any user pfp this just is just a random gravatar. */}
             <img src={identicon} className="not-icon" alt="identicon" />
             <div>
-              <div id="username">UserNameThatIsWayTooLongForItsOwnGood</div>
+              <div id="username">{token && (token.username || "Error")}</div>
               <div>Account Settings</div>
             </div>
           </div>

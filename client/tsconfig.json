@@ -3,5 +3,6 @@
         "strict": false,
         "strictPropertyInitialization": false,
         "strictNullChecks": false
-    }
+    },
+    "include": ["./src/*", "index.d.ts"]
 }

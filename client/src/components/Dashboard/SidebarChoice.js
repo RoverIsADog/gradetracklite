@@ -32,10 +32,14 @@ function SidebarChoice({ name, icon, id, list, valueToName, onSelect, onPlus, ov
   let displayed;
   if (override) displayed = children;
   else {
-    displayed = list.map((value, idx) => {
-      const [elID, elName] = valueToName(value);
-      return <ChoiceElement isSelected={curSelection === elID} name={elName} key={elID} onClick={() => handleClick({id: elID, name: elName})} />;
-    });
+    if (list.length !== 0) {
+      displayed = list.map((value, idx) => {
+        const [elID, elName] = valueToName(value);
+        return <ChoiceElement isSelected={curSelection === elID} name={elName} key={elID} onClick={() => handleClick({id: elID, name: elName})} />;
+      });
+    } else {
+      displayed = <div>No courses</div>;
+    }
   }
 
   if (!override) {

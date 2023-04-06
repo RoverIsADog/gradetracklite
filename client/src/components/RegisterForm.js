@@ -17,7 +17,7 @@ export const RegisterForm = (props) => {
     e.preventDefault();
     console.log(username);
     try {
-      const response = await axios.post(`${apiURL}/register`, {
+      const response = await axios.post(`${apiURL}/auth/register`, {
         username,
         password,
         email

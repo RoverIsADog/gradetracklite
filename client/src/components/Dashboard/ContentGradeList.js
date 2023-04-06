@@ -1,3 +1,4 @@
+// @ts-check
 import React, { useContext } from "react";
 import { ColoredPercent } from "../../utils/Util";
 import { contextCourse, contextSelectedItem, contextSemester } from "./ContentPane";
@@ -11,51 +12,57 @@ import PreviewGradeModify from "./PreviewGradeModify";
  * ContentPane's selection management context. Each grade provide a previewer that
  * displays a menu to change the grade's information.
  *
- * @typedef Grade
- * @prop {string} uuid
- * @prop {string} item_name
- * @prop {number} item_weight
- * @prop {number} item_mark
- * @prop {number} item_total
- * @prop {string} item_description
- * @prop {string} item_date
+ * @typedef Grade // Here for readability only
+ * @prop {string} gradeID
+ * @prop {string} gradeName
+ * @prop {number} gradeWeight
+ * @prop {number} gradePointsAct
+ * @prop {number} gradePointsMax
+ * @prop {string} gradeDescription
+ * @prop {string} gradeDate
  *
- * @param {{category: {id: string, name: string}, gradeList: Array<Grade>}} props
- * @returns
+ * @param {{category: {categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}>}}} props
+ * @returns {JSX.Element}
  */
-function ContentGradeList({ category, gradeList }) {
+function ContentGradeList({ category }) {
   const semester = useContext(contextSemester);
   const course = useContext(contextCourse);
   const { selectedItem, setSelectedItem } = useContext(contextSelectedItem);
 
-  const lst = gradeList.map((grade, index) => {
+  let lst = category.categoryGradeList.map((grade, index) => {
     const handleClick = () => {
       /* Renders the current grade's editing page */
       const preview = () => {
         return <PreviewGradeModify category={category} grade={grade} />;
       };
 
-      console.log(`Selected grade ${grade.uuid} : ${grade.item_name} at ${semester.name}/${course.name}`);
-      setSelectedItem({ id: grade.uuid, preview });
+      console.log(`Selected grade ${grade.gradeID} : ${grade.gradeName} at ${semester.name}/${course.name}`);
+      setSelectedItem({ id: grade.gradeID, preview });
     };
 
     return (
-      <div className={`grade-item selectable-item ${selectedItem.id === grade.uuid ? "selected-item" : ""}`} key={grade.uuid} onClick={handleClick}>
+      <div className={`grade-item selectable-item ${selectedItem.id === grade.gradeID ? "selected-item" : ""}`} key={grade.gradeID} onClick={handleClick}>
         <div className="grade-vert-box">
-          <div className="grade-name cap-text">{grade.item_name}</div>
-          <div className="grade-description cap-text">{grade.item_description}</div>
+          <div className="grade-name cap-text">{grade.gradeName}</div>
+          <div className="grade-description cap-text">{grade.gradeDescription}</div>
         </div>
         <div className="grade-vert-box">
           <div className="grade-score">
-            {grade.item_mark}/{grade.item_total} (<ColoredPercent number={grade.item_mark / grade.item_total} />)
+            {grade.gradePointsAct}/{grade.gradePointsMax} (<ColoredPercent number={grade.gradePointsAct / grade.gradePointsMax} />)
           </div>
-          <div className="grade-weight">weight: {grade.item_weight}</div>
+          <div className="grade-weight">weight: {grade.gradeWeight}</div>
         </div>
       </div>
     );
   });
 
-  return <div className="grade-list">{lst}</div>;
+  return (
+    <div className="grade-list">
+      {
+        category.categoryGradeList.length !== 0 ? lst : <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '2rem'}}>No grades in this category</div>
+      }
+    </div>
+  );
 }
 
 export default ContentGradeList;

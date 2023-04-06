@@ -23,7 +23,7 @@ import { readCookie } from "../utils/Util";
  * TODO modify this hook to be able to use POST aswell.
  * 
  * @param {string | null} url
- * @returns {{data: any, loading: boolean, error: Error}} Object containing the 3 monitoring fields.
+ * @returns {{data: any, loading: boolean, error: Error | null}} Object containing the 3 monitoring fields.
  */
 function useFetch(url) {
   // State declarations

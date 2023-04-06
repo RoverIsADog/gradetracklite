@@ -16,7 +16,7 @@ export const LoginForm = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${apiURL}/login`, {
+      const response = await axios.post(`${apiURL}/auth/login`, {
         username,
         password,
       });
