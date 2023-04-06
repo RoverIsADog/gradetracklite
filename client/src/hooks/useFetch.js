@@ -51,7 +51,7 @@ function useFetch(url) {
       method: "GET",
       headers: {
         // Can't use new header() because it will lowercase it
-        Authorization: token ? "Bearer " + token : "Bearer randomToken",
+        Authorization: token ? "Bearer " + token : "",
       },
       signal: abortController.signal // stop request on unmount
     };

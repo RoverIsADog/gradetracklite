@@ -1,4 +1,6 @@
+// @ts-check
 import React, { useContext } from "react";
+// @ts-ignore
 import plusIco from "../../img/plus-svgrepo-com.svg";
 import { contextCourse, contextSelectedItem } from "./ContentPane";
 import PreviewCourseModify from "./PreviewCourseModify";
@@ -19,26 +21,16 @@ function ContentCourseHeader({ categoryList }) {
   const course = useContext(contextCourse);
   const { selectedItem, setSelectedItem } = useContext(contextSelectedItem);
 
-  /* Preview pane component allowing modifying a course. */
-  const previewModify = () => {
-    // TODO maybe put this in a memo
-    return <PreviewCourseModify />;
-  };
-  /* Peview pane component allowing adding a category to a course. */
-  const previewAdd = () => {
-    // TODO maybe put this in a memo
-    return <PreviewCategoryAdd />;
-  };
   /* Set the content pane's selected to itself and preview pane to modify the course. */
   const handleClickModify = () => {
     console.log("Selected course " + course.id + " : " + course.name);
-    setSelectedItem({ id: course.id, preview: previewModify });
+    setSelectedItem({ id: course.id, preview: <PreviewCourseModify /> });
   };
   /* Set the content pane's selected to itself and preview pane to add a category. */
-  const handleClickPlus = (e) => {
+  const handleClickPlus = (/** @type {React.MouseEvent<HTMLElement>} */ e) => {
     e.stopPropagation(); //Don't trip handleClickModify
     console.log("Selected course PLUS " + course.id + " : " + course.name);
-    setSelectedItem({ id: course.id, preview: previewAdd });
+    setSelectedItem({ id: course.id, preview: <PreviewCategoryAdd /> });
   };
   
   let actPoint = 0;

@@ -1,21 +1,24 @@
 // @ts-check
 import React, { useContext, useEffect, useState } from "react";
-import "../../css/dashboard/preview.css";
+import "../../../css/dashboard/preview.css";
 // @ts-ignore
-import gradeIco from "../../img/abacus-svgrepo-com.svg";
+import gradeIco from "../../../img/abacus-svgrepo-com.svg";
 // @ts-ignore
-import weightIco from "../../img/weight-svgrepo-com.svg";
+import weightIco from "../../../img/weight-svgrepo-com.svg";
 // @ts-ignore
-import dateIco from "../../img/time-svgrepo-com.svg";
+import dateIco from "../../../img/time-svgrepo-com.svg";
 // @ts-ignore
-import categoryIco from "../../img/bookshelf-library-svgrepo-com.svg";
+import categoryIco from "../../../img/bookshelf-library-svgrepo-com.svg";
 // @ts-ignore
-import courseIco from "../../img/education-books-apple-svgrepo-com.svg";
+import courseIco from "../../../img/education-books-apple-svgrepo-com.svg";
 // @ts-ignore
-import descriptionIco from "../../img/open-book-svgrepo-com.svg";
-import { contextCourse, contextSemester } from "./ContentPane";
-import { floatToPercentStr } from "../../utils/Util";
+import descriptionIco from "../../../img/open-book-svgrepo-com.svg";
+import { contextCourse, contextSelectedItem, contextSemester } from "../ContentPane";
+import { floatToPercentStr } from "../../../utils/Util";
 import LoadingButton from "./LoadingButton";
+import EmptyPreview from "./EmptyPreview";
+import { networkPost } from "../../../utils/NetworkUtils";
+import { apiLocation } from "../../../App";
 
 /**
  * Renders a preview pane that allows the user to modify a grade to the
@@ -31,14 +34,19 @@ import LoadingButton from "./LoadingButton";
  * See ContentGradeList for the type declaration of a grade, but it's subject
  * to change as of writing.
  *
+ * @typedef {{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}} Grade
+ * @typedef {{categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<Grade>}} Category
  *
- * @param {{category: {categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}>}, grade: {gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}}} props
+ * @param {{category: Category, grade: Grade, gradeList: Array<Grade>, setGradeList: React.Dispatch<React.SetStateAction<Array<Grade>>>}} props
  * @returns {JSX.Element}
  */
-function PreviewGradeModify({ category, grade }) {
-  // Values for controlled inputs
+function PreviewGradeModify({ category, grade, setGradeList }) {
+  const apiURL = useContext(apiLocation);
   const course = useContext(contextCourse);
   const semester = useContext(contextSemester);
+  const selected = useContext(contextSelectedItem);
+  
+  // Values for controlled inputs
   const [ptsAct, setPtsAct] = useState("");
   const [ptsMax, setPtsMax] = useState("");
   const [date, setDate] = useState("");
@@ -60,11 +68,13 @@ function PreviewGradeModify({ category, grade }) {
   
   Sometimes I really hate React */
   useEffect(() => {
-    setPtsAct(String(grade.gradePointsAct));
-    setPtsMax(String(grade.gradePointsMax));
-    setDate(String(grade.gradeDate));
-    setWeight(String(grade.gradeWeight));
-    setDescription(String(grade.gradeDescription));
+    if (grade) {
+      setPtsAct(String(grade.gradePointsMax));
+      setPtsMax(String(grade.gradePointsMax));
+      setDate(String(grade.gradeDate));
+      setWeight(String(grade.gradeWeight));
+      setDescription(String(grade.gradeDescription));
+    }
   }, [category, grade]);
 
   /** @type {(e: React.ChangeEvent<HTMLInputElement>) => void} */
@@ -79,35 +89,84 @@ function PreviewGradeModify({ category, grade }) {
     setPtsMax(newVal);
   };
 
-  const sendDelete = (done) => {
+  const sendDelete = (btnDone, btnErr) => {
+
     console.log("Starting deletion request...");
-    setTimeout(() => {
-      console.log("Deletion request finished");
+    networkPost(
+      `${apiURL}/grades/delete`,
+      {
+        gradeID: grade.gradeID,
+      },
+      (err, res) => {
+        console.log("Deletion request finished");
+        // Server has refused the deletion request
+        if (err) {
+          console.log("Deletion request was unsuccessful!");
+          btnErr(err);
+          alert("Deletion request was unsuccessful! " + err);
+          return;
+        };
 
-      // This is preferrable to splicing
-      category.categoryGradeList = category.categoryGradeList.filter((g) => {
-        return g.gradeID !== grade.gradeID;
-      });
+        // Server has accepted the deletion: replace parent's grade list
+        // with a new list where this grade's entry is removed.
+        setGradeList((prevGradeList) => {
+          const newList = prevGradeList.filter((g) => {
+            return g.gradeID !== grade.gradeID;
+          });
+          return newList;
+        });
+        selected.setSelectedItem({id: "", preview: <EmptyPreview />});
+        btnDone();
 
-      done();
-    }, 3000);
+      }
+    )
   }
 
-  const sendEdit = (done) => {
+  const sendEdit = (btnDone, btnErr) => {
     console.log("Starting edit request...")
-    setTimeout(() => {
-      console.log("Edit request finished");
 
-      grade.gradePointsAct = Number(ptsAct);
-      grade.gradePointsMax = Number(ptsMax);
-      grade.gradeDate = date;
-      grade.gradeWeight = Number(weight);
-      grade.gradeDescription = description;
+    /** @type {Grade} */
+    const modifiedGrade = {
+      gradeID: grade.gradeID,
+      gradeName: grade.gradeName,
+      gradePointsAct: Number(ptsAct),
+      gradePointsMax: Number(ptsMax),
+      gradeDate: date,
+      gradeWeight: Number(weight),
+      gradeDescription: description,
+    }
 
-      done();
-    }, 3000);
+    networkPost(
+      `${apiURL}/grades/edit`,
+      {
+        modifiedGrade: modifiedGrade
+      },
+      (err, res) => {
+        console.log("Edit request finished");
+        // Server has refused the changed grade
+        if (err) {
+          console.log("Edit request was unsuccessful!");
+          btnErr(err);
+          alert("Edit request was unsuccessful! " + err);
+          return;
+        };
+  
+        // Server has accepted the changed grade: replace parent's grade list
+        // with a new list where this grade's entry is changed.
+        setGradeList((prevGradeList) => {
+          const newList = prevGradeList.map((gr) => {
+            return gr.gradeID === grade.gradeID ? modifiedGrade : gr;
+          })
+          console.log(`Modified grade ${grade.gradeName}`);
+          console.log(newList);
+          return newList;
+        })
+  
+        btnDone();
+      }
+    )
   }
-
+  
   return (
     <>
       <div key={grade.gradeID + "123"} className="card thin-scrollbar" id="preview-card">

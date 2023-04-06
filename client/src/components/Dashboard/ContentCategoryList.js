@@ -20,11 +20,14 @@ import PreviewGradeAdd from "./PreviewGradeAdd";
  * In addition, this component must calculate some statistics regarding itself using its
  * contained grades: the number of points out of the category's weight and the corresponding
  * percentage.
-
- * @param {{categoryList: Array<{categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}>}>}} props
+ * 
+ * @typedef {{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}} Grade
+ * @typedef {{categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<Grade>}} Category
+ * 
+ * @param {{categoryList: Array<Category>, setCategoryList: React.Dispatch<React.SetStateAction<Array<Category>>>}} props
  * @returns
  */
-function ContentCategoryList({ categoryList }) {
+function ContentCategoryList({ categoryList, setCategoryList }) {
   const { selectedItem, setSelectedItem } = useContext(contextSelectedItem);
 
   /* For every category in the category list, convert into JSX using the below code. */
@@ -50,31 +53,16 @@ function ContentCategoryList({ categoryList }) {
 
     // When clicking the category's banner, modify screen
     const handleClickModify = () => {
-      // Preview renderer for a menu to modify the category's info.
-      const previewModify = () => {
-        // TODO, maybe put in useMemo
-        return (
-          <PreviewCategoryModify category={category} />
-        );
-      };
 
-      console.log("Selected category " + category.categoryID + " : " + category.categoryName);
-      setSelectedItem({ id: category.categoryID, preview: previewModify });
+      console.log(`Selected category ${category.categoryName} aka ${category.categoryID}`);
+      setSelectedItem({ id: category.categoryID, preview: <PreviewCategoryModify category={category} /> });
     };
 
     // When clicking the category's plus, add grade screen
-    const handleClickPlus = (e) => {
-      // Preview renderer for a menu to add a new grade into the category
-      const previewAdd = () => {
-        // TODO, maybe put in useMemo
-        return (
-          <PreviewGradeAdd category={category} />
-        );
-      };
-
+    const handleClickPlus = (/** @type {React.MouseEvent<HTMLElement>} */ e) => {
       e.stopPropagation(); //Don't trip handleClickModify
-      console.log("Selected category PLUS " + category.categoryID + " : " + category.categoryName);
-      setSelectedItem({ id: category.categoryID, preview: previewAdd });
+      console.log(`Selected category PLUS ${category.categoryName} aka ${category.categoryID}`);
+      setSelectedItem({ id: category.categoryID, preview: <PreviewGradeAdd category={category} /> });
     };
 
     return (
