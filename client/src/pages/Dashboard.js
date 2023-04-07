@@ -1,10 +1,10 @@
 // @ts-check
 import React, { createContext, useState } from "react";
-import Sidebar from "../components/Dashboard/Sidebar";
-import "../css/dashboard/styles.css";
-import "../css/dashboard/input.css";
-import "../css/dashboard/colors.css";
-import { readCookie } from "../utils/Util";
+import Sidebar from "components/Dashboard/Sidebar";
+import "css/dashboard/styles.css";
+import "css/dashboard/input.css";
+import "css/dashboard/colors.css";
+import { readCookie } from "utils/Util";
 
 /**
  * Context providing a function to allow changing the theme of the dashboard.
@@ -31,7 +31,7 @@ const contextTheme = createContext(null);
 function Dashboard() {
   // Dark mode CSS loading management
   // We could save this in local storage but whatever
-  const [theme, setTheme] = useState(readCookie("theme") || "light");
+  const [theme, setTheme] = useState(readCookie("theme") || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"));
   const toggleTheme = () => {
     console.log("Toggling dark mode...");
     setTheme((prev) => {

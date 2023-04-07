@@ -33,6 +33,7 @@ the dark theme variables take precedence.
 
   /* Sidebar pane */
   --sidebar-hover: #bfbfbf;
+  --sidebar-hover-more: #929292;
 
   /* Content pane */
   --content-hover: #d9d9d9;
@@ -85,7 +86,9 @@ the dark theme variables take precedence.
   /* Inputs */
   --input-color: #00000020;
   --input-bottom-line: #505050;
+  --input-bottom-line-err: red;
   --input-bottom-background: linear-gradient(to bottom, #00000000 96%, #505050 4%), #00000099;
+  --input-bottom-background-err: linear-gradient(to bottom, #00000000 96%, red 4%), 00000099;
   --input-hover: #00000099;
 
   /* Icons */
@@ -193,4 +196,16 @@ the category's select colour */
 /* #################### ICONS ####################  */
 img:not(.not-icon) {
   filter: var(--icon-filter);
+}
+
+.preview-buttons>button {
+  color: inherit;
+  background-color: var(--scrollbar-thumb-color);
+}
+
+.preview-buttons>button:hover,
+.preview-buttons>button:active,
+.preview-buttons>button:disabled,
+.preview-buttons>button:focus {
+  background-color: var(--scrollbar-thumb-hover-color);
 }

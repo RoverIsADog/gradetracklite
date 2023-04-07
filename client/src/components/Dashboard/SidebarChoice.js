@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import plusIco from "../../img/plus-svgrepo-com.svg";
+import plusIco from "img/plus-svgrepo-com.svg";
+import trashIco from "img/delete-1-svgrepo-com.svg";
 
 /**
  * A component that is responsible for displaying a list of things to select
@@ -68,9 +69,17 @@ function SidebarChoice({ name, icon, id, list, valueToName, onSelect, onPlus, ov
 
 function ChoiceElement({ isSelected, name, onClick }) {
   const selected = isSelected ? "sb-selected" : "";
+
+  const handleDelete = (/** @type {React.MouseEvent<HTMLElement>} */ e) => {
+    e.stopPropagation(); // Don't select the thing
+    alert("Unimplemented!");
+  }
+
   return (
     <div className={`sb-choice-list-element sb-selectable ${selected}`} onClick={onClick}>
       {name}
+      <div style={{flexGrow: "1"}} />
+      <img src={trashIco} alt={`Delete ${name}`} onClick={handleDelete}/>
     </div>
   );
 }

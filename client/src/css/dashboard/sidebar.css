@@ -101,6 +101,21 @@ elements, and a list of selectable content. */
   font-size: large;
   border-radius: 0.3rem;
   text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.sb-choice-list-element>img {
+  height: 1.5;
+  width: 0;
+  transition: 0.1s;
+}
+
+.sb-choice-list-element:hover>img {
+  width: 1.5rem;
+}
+.sb-choice-list-element:hover>img:hover {
+  filter: invert(12%) sepia(98%) saturate(6984%) hue-rotate(358deg) brightness(99%) contrast(107%);
 }
 
 /* ################## SIDEBAR GPA ################## */

@@ -136,6 +136,7 @@ function Sidebar() {
               valueToName={semToName}
               onSelect={selectSemester}
               override={semError || semLoading || semData.semesterList.length === 0}
+              onPlus={() => alert("Unimplemented")}
             >
               {semError && <div className='sb-choice-list-message' style={{ color: 'red' }}>Error<br />{semError.message}</div>}
               {semLoading && <div className='sb-choice-list-message'>Loading</div>}
@@ -155,6 +156,7 @@ function Sidebar() {
               valueToName={courseToName}
               onSelect={selectCourse}
               override={!selectedSemester || courseError || courseLoading || courseData.courseList.length === 0}
+              onPlus={() => alert("Unimplemented")}
             >
               {!selectedSemester && <div className='sb-choice-list-message'>Please select a semester</div>}
               {selectedSemester && courseError && <div style={{ color: 'red' }}>Error<br />{courseError.message}</div>}

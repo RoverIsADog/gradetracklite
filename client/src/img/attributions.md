@@ -99,6 +99,21 @@ Book emoji icons (favicon-xx, android-chrome-xx, apple-touch-icon):
 * Twitter, Inc and other contributors
 * Generated into icons at https://favicon.io/emoji-favicons/books
 
+Loading spinner:
+* Public domain
+* https://loading.io/
+* Modifications: removed background, retextured to black
+
+Error icon:
+* Public domain
+* https://www.svgrepo.com/svg/488925/error
+* Gabriele Malaspina at svgrepo.com
+
+Checkmark icon:
+* Attribution CC BY license
+* https://www.svgrepo.com/svg/491588/checkmark-circle
+* thewolfkit at svgrepo.com
+
 ## Licenses
 
 Some licenses require a copy of the license to be included with the resource. They are included below.

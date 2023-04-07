@@ -1,9 +1,7 @@
+// @ts-check
 import React, { useContext } from "react";
 import { apiLocation } from "../../App";
 import "../../css/dashboard/content.css";
-import useFetch from "../../hooks/useFetch";
-import plusIco from "../../img/plus-svgrepo-com.svg";
-import PlaceholderPreview from "./PlaceholderPreview";
 
 function Settings() {
 

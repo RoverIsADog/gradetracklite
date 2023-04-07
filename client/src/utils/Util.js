@@ -28,6 +28,18 @@ export function floatToDecimalStr(number, decimals = 1) {
 }
 
 /**
+ * Returns whether the given string is a number, and returns either
+ * true or false. This function is different to comparing to Number()
+ * because 0 is falsy whereas this function would return true.
+ * @param {string} numberStr
+ * @returns {boolean}
+ */
+export function isNumber(numberStr) {
+  const nbr = Number(numberStr);
+  return !isNaN(nbr);
+}
+
+/**
  * Returns the value of the specified cookie.
  * @param {string} name 
  * @returns 

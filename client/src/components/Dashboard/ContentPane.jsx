@@ -1,25 +1,37 @@
-
+// @ts-check
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { apiLocation } from "../../App";
-import "../../css/dashboard/content.css";
-import useFetch from "../../hooks/useFetch";
-import PlaceholderPreview from "./PlaceholderPreview";
-import ContentCategoryList from "./ContentCategoryList";
-import ContentCourseHeader from "./ContentCourseHeader";
-import EmptyPreview from "./Preview/EmptyPreview";
+import { apiLocation } from "App";
+import "css/dashboard/content.css";
+import useFetch from "hooks/useFetch";
+import ContentCourseHeader from "./CourseHeader";
+import PreviewEmpty from "./Preview/PrevEmpty";
+import CategoryList from "./CategoryList";
 
 
 /**
- * Expected Request JSON format
+ * Type declarations
+ * @typedef {{
+ *   gradeID: string, 
+ *   gradeName: string, 
+ *   gradeWeight: number, 
+ *   gradePointsAct: number, 
+ *   gradePointsMax: number, 
+ *   gradeDescription: string, 
+ *   gradeDate: string
+ * }} Grade
+ * @typedef {{
+ *   categoryID: string, 
+ *   categoryName: string, 
+ *   categoryWeight: number, 
+ *   categoryDescription: string, 
+ *   categoryGradeList: Grade[]
+ * }} Category
  * 
- * @typedef {{gradeID: string, gradeName: string, gradeWeight: number, gradePointsAct: number, gradePointsMax: number, gradeDescription: string, gradeDate: string}} Grade
- * @typedef {{categoryID: string, categoryName: string, categoryWeight: number, categoryDescription: string, categoryGradeList: Array<Grade>}} Category
- * 
- * @typedef {Object} CourseResponse
- * @prop {number} error
- * @prop {string} message
- * @prop {Array<Category>} categoryList
- * 
+ * @typedef {{
+ *   loading: boolean, 
+ *   error: Error, 
+ *   data: {error: number, message: string, categoryList: Category[]}
+ * }} CourseResponse
  * 
  * Allowed props for this component.
  * @typedef Props
@@ -32,7 +44,7 @@ import EmptyPreview from "./Preview/EmptyPreview";
  * 
  */
 
-/** @type {React.Context<{selectedItem: {id: string, preview: JSX.Element}, setSelectedItem: React.Dispatch<React.SetStateAction<{id: string; preview: JSX.Element}>>}>} */
+/** @type {React.Context<{selectedItem: {id: string, preview: React.ReactNode}, setSelectedItem: React.Dispatch<React.SetStateAction<{id: string; preview: React.ReactNode}>>}>} */
 const contextSelectedItem = createContext(null);
 /** @type {React.Context<{id: string, name: string}>} */
 const contextSemester = createContext(null);
@@ -45,8 +57,8 @@ const contextCourse = createContext(null);
  * component keeps track of which one is selected to control what is displayed in the preview
  * pane
  * 
- * Each of the selectable elements provide their own function to generate the JSX of their
- * preview pane when called.
+ * Each of the selectable elements provide their JSX Element that renders their
+ * preview pane displayed.
  * 
  * @param {Props} props 
  * @returns 
@@ -57,21 +69,26 @@ function ContentPane({ semester, course }) {
   // Upon loading, fetch the selected course
   const courseURL = course ? `${apiURL}/courses/get?courseID=${course.id}&singular=1` : null;
 
-  /** @type {{loading: boolean, error: Error, data: Array<Category>}} */
+  /** @type {CourseResponse} */
   const fetchMetrics = useFetch(courseURL);
 
-  // Keep track of which child is selected, and the function the selected child uses to
-  // generate its preview pane.
-  const [selectedItem, setSelectedItem] = useState({ id: "", preview: EmptyPreview });
+  // Keep track of which child is selected, and the JSX Element that
+  // child uses to generate its preview pane.
+  const [selectedItem, setSelectedItem] = useState({ id: "", preview: <PreviewEmpty /> });
   const [catList, setCatList] = useState(fetchMetrics.data && fetchMetrics.data.categoryList && fetchMetrics.data.categoryList);
+
+  // On prop change, reset the selection
+  useEffect(() => {
+    setSelectedItem({ id: "", preview: <PreviewEmpty /> });
+  }, [semester, course])
 
   useEffect(() => {
     console.log("New data received!");
     fetchMetrics.data && fetchMetrics.data.categoryList && setCatList(fetchMetrics.data.categoryList);
   }, [fetchMetrics.data]);
 
-  console.log("Fetchmetrics are: ");
-  console.log(fetchMetrics);
+  // console.log("Fetchmetrics are: ");
+  // console.log(fetchMetrics);
 
   // Special handling if loading or loading failed
   if (fetchMetrics.loading || !catList) {
@@ -101,10 +118,10 @@ function ContentPane({ semester, course }) {
                 {/* Another div level here to prevent weird padding/margin problems */}
                 <div id="course-area">
                   {/* A course's header (name, grade, credits) */}
-                  <ContentCourseHeader categoryList={catList} />
+                  <ContentCourseHeader categoryList={catList} setCategoryList={setCatList} />
                   <div className="horizontal-line-bold" />
                   {/* Each course has its list of categories. */}
-                  <ContentCategoryList categoryList={catList} setCategoryList={setCatList} />
+                  <CategoryList categoryList={catList} setCategoryList={setCatList} />
                 </div>
               </div>
               
@@ -113,7 +130,7 @@ function ContentPane({ semester, course }) {
                 when setting the selected, the selected element must also provide
                 a function to generate its previewer. For now, also display template
                 previewer, but remove once all specific previewers are done*/}
-                {selectedItem.preview && selectedItem.preview}
+                {selectedItem.preview ? selectedItem.preview : <PreviewEmpty />}
                 {/* <PlaceholderPreview /> */}
               </div>
             </div>

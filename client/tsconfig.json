@@ -1,8 +1,0 @@
-{
-    "compilerOptions": {
-        "strict": false,
-        "strictPropertyInitialization": false,
-        "strictNullChecks": false
-    },
-    "include": ["./src/*", "./src/img/*","custom.d.ts"]
-}
