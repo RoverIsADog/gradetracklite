@@ -12,7 +12,7 @@ import { readCookie } from "utils/Util";
  * Could be moved up the component so that the login page can also use it, but
  * there are no more user-defined divs above the dashboard (except root &
  * body), so we can't easily set a property data-theme. 
- * @type {React.Context}
+ * @type {React.Context<{theme: string, toggleTheme: () => void}>}
  */
 const contextTheme = createContext(null);
 
@@ -36,7 +36,7 @@ function Dashboard() {
     console.log("Toggling dark mode...");
     setTheme((prev) => {
       const newTheme = prev === "light" ? "dark" : "light";
-      document.cookie = `theme=${newTheme}`;
+      document.cookie = `theme=${newTheme}; SameSite=Strict`;
       return newTheme;
     });
   };

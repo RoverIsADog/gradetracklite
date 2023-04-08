@@ -2,10 +2,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import plusIco from "img/plus-svgrepo-com.svg";
 import { ColoredPercent, floatToDecimalStr } from "utils/Util";
-import { contextSelectedItem } from "./ContentPane";
+import { contextSelectedItem } from "./Content/ContentPane";
 import ContentGradeList from "./GradeList";
-import PreviewGradeAdd from "./Preview/PrevGradeAdd";
-import PreviewCategoryEdit from "./Preview/PrevCatEdit";
+import PreviewGradeAdd from "./Preview/GradeAdd";
+import PreviewCategoryEdit from "./Preview/CatEdit";
 
 /**
  * Component responsible for displaying a category and its associated grades

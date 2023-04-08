@@ -4,13 +4,13 @@ import "css/dashboard/preview.css";
 import weightIco from "img/weight-svgrepo-com.svg";
 import semesterIco from "img/calendar-svgrepo-com.svg";
 import descriptionIco from "img/open-book-svgrepo-com.svg";
-import { contextCourse, contextSemester } from "../ContentPane";
-import LoadingButton from "./LoadingButton";
+import { contextCourse, contextSemester } from "../Content/ContentPane";
+import LoadingButton from "../LoadingButton";
 import { networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
-import PreviewItemInline from "./PrevItemInline";
+import PreviewItemInline from "./ItemInline";
 import { isNumber } from "utils/Util";
-import PreviewItemVertical from "./PrevItemVertical";
+import PreviewItemVertical from "./ItemVertical";
 
 /**
  * Renders the contents of a preview pane that allows the user to modify a
@@ -38,6 +38,10 @@ import PreviewItemVertical from "./PrevItemVertical";
  *   courseCredits: number,
  *   courseDescription: string
  * }} Course
+ * 
+ * @param {{
+ *   setCourseList: React.Dispatch<React.SetStateAction<Course[]>>
+ * }} props
  *
  * @returns {JSX.Element}
  */
@@ -54,9 +58,9 @@ function PreviewCategoryEdit({ setCourseList }) {
   // See PrevGradeEdit on why this is required
   useEffect(() => {
     console.log("Reset the component!");
-    setName(course.name);
-    setCredits(course.description || "TODO");
-    setDescription(course.description || "TODO");
+    setName(String(course.courseName));
+    setCredits(String(course.courseCredits));
+    setDescription(String(course.courseDescription));
   }, [course]);
 
   /** @type {(e: React.ChangeEvent<HTMLInputElement>) => void} */
@@ -77,18 +81,16 @@ function PreviewCategoryEdit({ setCourseList }) {
       return;
     }
 
-    alert("Unimplemented! The request is sent but it will likely crash");
-
     /** @type {Course} */
     const modifiedCourse = {
-      courseID: course.id,
+      courseID: course.courseID,
       courseName: name,
       courseCredits: Number(credits),
       courseDescription: description
     };
 
     networkPost(`${apiURL}/courses/edit`, {
-      semesterID: semester.id,
+      semesterID: semester.semesterID,
       modifiedCourse: modifiedCourse,
     })
       .then((res) => {
@@ -100,10 +102,10 @@ function PreviewCategoryEdit({ setCourseList }) {
         // with a new list where this course's entry is changed.
         setCourseList((prevCourseList) => {
           const newList = prevCourseList.map((cou) => {
-            return (cou.courseID === course.id) ? modifiedCourse : cou;
+            return (cou.courseID === course.courseID) ? modifiedCourse : cou;
           });
           // FIXME how to change the context here?
-          console.log(`Modified course ${course.name}`);
+          console.log(`Modified course ${course.courseName}`);
           console.log(newList);
           return newList;
         });
@@ -130,7 +132,7 @@ function PreviewCategoryEdit({ setCourseList }) {
           // console.log(e.currentTarget.textContent);
           setName(e.currentTarget.textContent);
         }}
-        title={`courseID: ${course.id}`}
+        title={`courseID: ${course.courseID}`}
         suppressContentEditableWarning={true} // The only child is text so it's ok
       >
         {/* Can't be {name} because React will keep updating it and setting
@@ -138,20 +140,20 @@ function PreviewCategoryEdit({ setCourseList }) {
         initial value and update the React name state to the contentEditable's
         content on change, but never set the CE's actual content to the React
         state. */}
-        {course.name}
+        {course.courseName}
       </div>
 
       <div className="horizontal-line" />
 
-      {/* Grade weight entry */}
-      <PreviewItemInline ico={weightIco} name="Weight">
+      {/* Course credits entry */}
+      <PreviewItemInline ico={weightIco} name="Credits">
         <label htmlFor="Date" />
         <input
           className={`input-small dash-input`}
           type="text"
           min="0"
           max="9999"
-          name="weight"
+          name="Credits"
           value={credits}
           onChange={changeWeight}
         />
@@ -160,7 +162,7 @@ function PreviewCategoryEdit({ setCourseList }) {
       {/* Semester (not editable) */}
       <PreviewItemInline ico={semesterIco} name="semester">
         <div className="cap-text" style={{ paddingLeft: "1rem", WebkitLineClamp: 3 }}>
-          {semester.name}
+          {semester.semesterName}
         </div>
       </PreviewItemInline>
 

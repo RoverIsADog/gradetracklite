@@ -1,9 +1,9 @@
 // @ts-check
 import React, { useContext } from "react";
-import { apiLocation } from "../../App";
-import "../../css/dashboard/content.css";
+import { apiLocation } from "App";
+import "css/dashboard/content.css";
 
-function Settings() {
+function ContentSettings() {
 
   // FIXME THIS ENTIRE FILE IS FOR TESTING ONLY
 
@@ -18,4 +18,4 @@ function Settings() {
   );
 }
 
-export default Settings;
+export default ContentSettings;

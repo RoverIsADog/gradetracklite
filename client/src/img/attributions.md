@@ -114,6 +114,11 @@ Checkmark icon:
 * https://www.svgrepo.com/svg/491588/checkmark-circle
 * thewolfkit at svgrepo.com
 
+Delete icon:
+* Public domain
+* https://www.svgrepo.com/svg/493964/delete-1
+* Dan Dan at svgrepo.com
+
 ## Licenses
 
 Some licenses require a copy of the license to be included with the resource. They are included below.

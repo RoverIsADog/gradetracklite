@@ -1,23 +1,23 @@
-import React, { useContext, useState } from "react";
-import "../../css/dashboard/sidebar.css";
-import "../../css/dashboard/content.css";
-import logoImg from "../../img/logo.png";
-import sunIco from "../../img/sun-svgrepo-com.svg";
-import moonIco from "../../img/moon-svgrepo-com.svg";
-import semestersIco from "../../img/calendar-svgrepo-com.svg";
-import coursesIco from "../../img/education-books-apple-svgrepo-com.svg";
-import identicon from "../../img/identicon.png"; // TODO procedurally generate based on username??
-import logoutIco from "../../img/sign-out-2-svgrepo-com.svg";
-import privacyIco from "../../img/contract-line-svgrepo-com.svg";
-import { Link, Navigate } from "react-router-dom";
-import { contextTheme } from "../../pages/Dashboard";
-import { apiLocation } from "../../App";
-import useFetch from "../../hooks/useFetch";
-import SidebarChoice from "./SidebarChoice";
-import { ContentPane } from "./ContentPane";
-import Settings from "./Settings";
-import { readCookie } from "../../utils/Util";
+// @ts-check
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import "css/dashboard/sidebar.css";
+import "css/dashboard/content.css";
+import logoImg from "img/logo.png";
+import sunIco from "img/sun-svgrepo-com.svg";
+import moonIco from "img/moon-svgrepo-com.svg";
+import identicon from "img/identicon.png"; // TODO procedurally generate based on username??
+import logoutIco from "img/sign-out-2-svgrepo-com.svg";
+import privacyIco from "img/contract-line-svgrepo-com.svg";
+import { Link, useNavigate } from "react-router-dom";
+import { contextTheme } from "pages/Dashboard";
+import { apiLocation } from "App";
+import ContentSettings from "./Content/ContentSettings";
+import { readCookie } from "utils/Util";
 import jwt_decode from "jwt-decode";
+import { networkGet } from "utils/NetworkUtils";
+import ContentEmpty from "./Content/ContentEmpty";
+import SidebarChoiceSemester from "./Content/SbChoiceSem";
+import SidebarChoiceCourse from "./Content/SbChoiceCourse";
 
 /**
  * Component displaying the sidebar (#sidebar-itself) and the area controlled
@@ -25,25 +25,64 @@ import jwt_decode from "jwt-decode";
  * The sidebar should control how elements in its control area are displayed,
  * in this case, the course and item panes.
  * 
- * @typedef Semester
- * @prop {string} uuid
- * @prop {string} semesterName
+ * @typedef {{
+ *   gradeID: string, 
+ *   gradeName: string, 
+ *   gradeWeight: number, 
+ *   gradePointsAct: number, 
+ *   gradePointsMax: number, 
+ *   gradeDescription: string, 
+ *   gradeDate: string
+ * }} Grade
+ * @typedef {{
+ *   categoryID: string, 
+ *   categoryName: string, 
+ *   categoryWeight: number, 
+ *   categoryDescription: string, 
+ *   categoryGradeList: Grade[]
+ * }} Category
+ * 
+ * @typedef {{semesterID: string, semesterName: string}} Semester
+ * @typedef {{courseID: string, courseName: string, courseCredits: number, courseDescription: string}} Course
+ * 
+ * @typedef {{error: number, message: string, semesterList: Semester[]}} listSemestersResponse
+ * @typedef {{loading: boolean, error: Error, data: listSemestersResponse}} listSemestersFetchMetrics
+ * 
+ * @typedef {{error: number, message: string, courseList: Course[]}} listCoursesResponse
+ * @typedef {{loading: boolean, error: Error, data: listCoursesResponse}} listCoursesFetchMetrics
+ * 
+ * @typedef {{error: number, message: string, categoryList: Category[]}} getCourseResponse
+ * 
+ * @typedef {{uuid: string, username: string, email: string | null | undefined, exp: number, iat: number}} TokenPayload
  * 
  */
 function Sidebar() {
   const apiURL = useContext(apiLocation);
-
-  // Logout button
-  const handleLogout = () => {
+  const { theme, toggleTheme } = useContext(contextTheme); // Theme toggle button
+  const handleLogout = () => { // For the logout button
     console.log("Logging out");
-    document.cookie = "token=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;"; // Set expiration to long ago
+    document.cookie = "token=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict"; // Delete cookie
   };
 
-  // Theme toggle button
-  const { theme, toggleTheme } = useContext(contextTheme);
+  // Global sidebar selection
+  const [selected, setSelected] = useState({ id: "", content: <ContentEmpty /> });
 
-  // States
-  const [selectedAccSetting, setSelectedAccSettings] = useState(false); // FIXME TESTING ONLY
+  // List-localised selection
+  /** @type {[Course | null, React.Dispatch<React.SetStateAction<Course | null>>]} */
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  /** @type {[Semester | null, React.Dispatch<React.SetStateAction<Semester | null>>]} */
+  const [selectedSemester, setSelectedSemester] = useState(null);
+
+  // console.log("Currently selected course is " + (selectedCourse ? `${selectedCourse.courseName}: ${selectedCourse.courseID}` : selectedCourse));
+  // console.log("Currently selected semester is " + (selectedSemester ? `${selectedSemester.semesterName}: ${selectedSemester.semesterID}` : selectedSemester));
+
+  // Fetch related states
+  /** @type {[[boolean, React.Dispatch<React.SetStateAction<boolean>>], [Error | null, React.Dispatch<React.SetStateAction<Error | null>>], [listSemestersResponse | null, React.Dispatch<React.SetStateAction<listSemestersResponse | null>>]]} */
+  const [[semLoading, setSemLoading], [semError, setSemError], [semData, setSemData]] = [useState(false), useState(null), useState(null)];
+  /** @type {[[boolean, React.Dispatch<React.SetStateAction<boolean>>], [Error | null, React.Dispatch<React.SetStateAction<Error | null>>], [listCoursesResponse | null, React.Dispatch<React.SetStateAction<listCoursesResponse | null>>]]} */
+  const [[courseLoading, setCourseLoading], [courseError, setCourseError], [courseData, setCourseData]] = [useState(false), useState(null), useState(null)];
+  const semFetchMetrics = { loading: semLoading, error: semError, data: semData };
+  const courseFetchMetrics = { loading: courseLoading, error: courseError, data: courseData };
 
 
   /*
@@ -54,61 +93,83 @@ function Sidebar() {
 
   So, fetch hook for courses only called on change of selectedSemester.
    */
-  const [selectedSemester, setSelectedSemester] = useState(null);
-  console.log("Currently selected semester is " + (selectedSemester ? `${selectedSemester.name}: ${selectedSemester.id}` : selectedSemester));
-  const selectSemester = (sem) => {
-    if (selectedAccSetting) setSelectedAccSettings(false);  // FIXME TESTING ONLY
-    if (selectedSemester && sem.id === selectedSemester.id) return;
-    setSelectedCourse(null);
-    setSelectedSemester(sem);
-  }
-  
-  /* The selected course state remains null as long as (1) the user didn't
-  select a semester and, once they selected a semester, as long as they
-  didn't select an entry in the list. */
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  console.log("Currently selected course is " + (selectedCourse ? `${selectedCourse.name}: ${selectedCourse.id}` : selectedCourse));
-  const selectCourse = (course) => {
-    if (setSelectedAccSettings) setSelectedAccSettings(false); // FIXME TESTING ONLY
-    if (selectedCourse && course.id === selectedCourse.id) return;
-    setSelectedCourse(course);
-  }
 
-  // Always initially fetch a list of semesters (userID included in token)
-  /**
-   * @type {{loading: boolean, error: Error, data: {error: number, message: string, semesterList: Array<{semesterID: string, semesterName: string}>}}}
-   */
-  const { data: semData, loading: semLoading, error: semError } = useFetch(`${apiURL}/semesters/list`);
-  const semToName = (val) => { return [val.semesterID, val.semesterName]; }
+  // Fetch on page load
+  useEffect(() => {
+    console.log(`Getting semesters list`);
+    setSemLoading(true);
+    setSemError(null);
+    setSemData(null);
+
+    networkGet(`${apiURL}/semesters/list`)
+      .then((res) => {
+        setSemLoading(false);
+        setSemError(null);
+        setSemData(res);
+      }).catch((err) => {
+        setSemLoading(false);
+        setSemError(err);
+        setSemData(null);
+      });
+    
+  }, []);
   
-  /* Set the URL of the fetch request for the course to null if no semester
-  have been selected (useFetch does nothing if they are null). Values of
-  course fetch metrics are meaningless if selectedSemester == null. */
-  const courseURL = selectedSemester != null ? `${apiURL}/courses/list?semesterID=${selectedSemester.id}&singular=1` : null; // Remove singular for production
-  /** 
-   * @type {{loading: boolean, error: Error, data: {error: number, message: string, courseList: Array<{courseID: string, courseName: string}>}}} 
-   */
-  const { data: courseData, loading: courseLoading, error: courseError } = useFetch(courseURL);
-  const courseToName = (val) => { return [val.courseID, val.courseName]; }
+  /* Every time the selected semester changes, fetch that semester's course
+  list and save it into the course list. */
+  useEffect(() => {
+    if (!selectedSemester || !selectedSemester.semesterID) return; // Don't do anything if empty.
+    console.log(`Getting courses for ${selectedSemester ? selectedSemester.semesterName : selectedSemester}`);
+    // Reset course states to display loading
+    setCourseLoading(true);
+    setCourseError(null);
+    setCourseData(null);
+    setSelectedCourse(null);
+
+    // Finally, do the network request
+    networkGet(`${apiURL}/courses/list`, { semesterID: selectedSemester.semesterID })
+      .then((res) => {
+        console.log("GET course list done.");
+
+        // Set course states accordingly
+        setCourseLoading(false);
+        setCourseError(null);
+        setCourseData(res);
+
+      }).catch((err) => {
+        console.log("Get course list failed.");
+
+        // Set course states accordingly
+        setCourseLoading(false);
+        setCourseError(err);
+        setCourseData(null);
+      })
+  }, [selectedSemester]);
   
-  console.log("Sem data... " + (semData ? 'exist' : 'dne'));
-  console.log(`Sem status... ${semLoading ? 'loading' : 'loaded'} / ${semError ? 'err' : 'ok'}`);
-  console.log("Course data... " + (courseData ? 'exist' : 'dne'));
-  console.log(`Course status... ${courseLoading ? 'loading' : 'loaded'} / ${courseError ? 'err' : 'ok'}`);
+  // console.log("Sem data... " + (semData ? 'exist' : 'dne'));
+  // console.log(`Sem status... ${semLoading ? 'loading' : 'loaded'} / ${semError ? 'err' : 'ok'}`);
+  // console.log("Course data... " + (courseData ? 'exist' : 'dne'));
+  // console.log(`Course status... ${courseLoading ? 'loading' : 'loaded'} / ${courseError ? 'err' : 'ok'}`);
+
 
   // Get the username from the token.
-  let token;
-  try {
-    // Not validating, just decoding
-    const tokenStr = readCookie("token");
-    console.log("TokenStr: " + tokenStr);
-    token = jwt_decode(tokenStr);
-    console.log("Token decoded into");
-    console.log(token);
-  } catch(Error) {
-    alert("Malformed token");
-    return (<Navigate replace to="/404" />);
-  }
+  const navigate = useNavigate();
+  /** @type {TokenPayload} */
+  const tokenPayload = useMemo(() => {
+    try {
+      // Not validating, just decoding
+      const tokenStr = readCookie("token");
+      console.log("TokenStr: " + tokenStr);
+      /** @type {TokenPayload} */
+      const content = jwt_decode(tokenStr);
+      console.log("Token decoded into");
+      console.log(content);
+      return content;
+    } catch (Error) {
+      alert("Malformed token");
+      navigate("/404");
+      return null;
+    }
+  }, []); // Run on page load only
 
   return (
     <div id="sidebar-container">
@@ -127,65 +188,52 @@ function Sidebar() {
           </div>
           <div className="horizontal-line" />
 
-          {
-            <SidebarChoice 
-              name="Semesters"
-              icon={semestersIco}
-              id="semester-container"
-              list={semData && semData.semesterList}
-              valueToName={semToName}
-              onSelect={selectSemester}
-              override={semError || semLoading || semData.semesterList.length === 0}
-              onPlus={() => alert("Unimplemented")}
-            >
-              {semError && <div className='sb-choice-list-message' style={{ color: 'red' }}>Error<br />{semError.message}</div>}
-              {semLoading && <div className='sb-choice-list-message'>Loading</div>}
-              {!semLoading && !semError && semData.semesterList.length === 0 && <div className='sb-choice-list-message'>No semesters</div>}
-              
-            </SidebarChoice>
-          }
+          <SidebarChoiceSemester
+            semFetchMetrics={semFetchMetrics}
+            selected={selected}
+            setSelected={setSelected}
+            selectedSemester={selectedSemester}
+            setSelectedSemester={setSelectedSemester}
+          />
+
+          
 
           <div className="horizontal-line" />
 
-          {
-            <SidebarChoice 
-              name="Courses"
-              icon={coursesIco}
-              id="semester-container"
-              list={courseData && courseData.courseList}
-              valueToName={courseToName}
-              onSelect={selectCourse}
-              override={!selectedSemester || courseError || courseLoading || courseData.courseList.length === 0}
-              onPlus={() => alert("Unimplemented")}
-            >
-              {!selectedSemester && <div className='sb-choice-list-message'>Please select a semester</div>}
-              {selectedSemester && courseError && <div style={{ color: 'red' }}>Error<br />{courseError.message}</div>}
-              {selectedSemester && courseLoading && <div className='sb-choice-list-message'>Loading</div>}
-              {!courseLoading && !courseError && courseData.courseList.length === 0 && <div className='sb-choice-list-message'>No courses for semester</div>}
-              
-            </SidebarChoice>
-          }
+          <SidebarChoiceCourse 
+            courseFetchMetrics={courseFetchMetrics}
+            selected={selected}
+            setSelected={setSelected}
+            selectedCourse={selectedCourse}
+            setSelectedCourse={setSelectedCourse}
+            selectedSemester={selectedSemester}
+            setSelectedSemester={setSelectedSemester}
+          />
 
           <div className="horizontal-line" />
           
-          {/* GPA container */}
-          <div className="sidebar-item" id="gpa-container">
+          {/* GPA container (temporarily disabled) */}
+          {/* <div className="sb-item" id="gpa-container">
             <span className="color-good">3.3</span>&nbsp;CGPA
-          </div>
+          </div> */}
           
-          {/* Padding */}
+          {/* Push acc/signout to bottom */}
           <div style={{ flexGrow: 1 }} />
           
           {/* User (FIXME FIXME FIXME TESTING ONLY SELECTION LOGIC) */}
           <div
-            className={`sb-selectable ${selectedAccSetting ? 'sb-selected' : ''}`}
+            className={`sb-selectable ${selected.id === "user-container" ? 'sb-selected' : ''}`}
             id="user-container"
-            onClick={() => (setSelectedAccSettings(prev => !prev))}
+            onClick={() => {
+              setSelected({ id: "user-container", content: <ContentSettings /> });
+              setSelectedSemester(null);
+              setSelectedCourse(null);
+            }}
           >
             {/* We're not actually storing any user pfp this just is just a random gravatar. */}
             <img src={identicon} className="not-icon" alt="identicon" />
             <div>
-              <div id="username">{token && (token.username || "Error")}</div>
+              <div id="username">{tokenPayload && (tokenPayload.username || "Error")}</div>
               <div>Account Settings</div>
             </div>
           </div>
@@ -205,24 +253,7 @@ function Sidebar() {
       </div>
       <div id='sidebar-display'>
         {
-          /*
-          Display the currently selected course's content on the condition that:
-          1. The user did not select account settings
-          2. Both a course and semester were selected, and the selected course isn't currently loading.
-              2.1 If loading, display loading.
-          */
-          (!selectedAccSetting &&
-            (
-              (selectedSemester && selectedCourse && !courseLoading) ?
-              <ContentPane course={selectedCourse} semester={selectedSemester} /> :
-              <div className="content-message">
-                Please select a course and semester
-              </div>
-            )
-          )
-        }
-        {
-          (selectedAccSetting && <Settings />) // FIXME TESTING ONLY
+          selected.content && selected.content
         }
       </div>
     </div>

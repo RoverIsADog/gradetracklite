@@ -23,7 +23,7 @@ export const LoginForm = (props) => {
       
       if (response.data.error === 0) {
         console.log('Login successful');
-        document.cookie = `token=${response.data.token}`;
+        document.cookie = `token=${response.data.token}; SameSite=Strict`;
         navigate("/app");
       } else {
         console.log('Login failed');

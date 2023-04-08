@@ -1,8 +1,8 @@
 // @ts-check
 import React, { useContext } from "react";
 import { ColoredPercent } from "utils/Util";
-import { contextCourse, contextSelectedItem, contextSemester } from "./ContentPane";
-import PreviewGradeEdit from "./Preview/PrevGradeEdit";
+import { contextCourse, contextSelectedItem, contextSemester } from "./Content/ContentPane";
+import PreviewGradeEdit from "./Preview/GradeEdit";
 
 /**
  * Component that is responsible for displaying a list of grades belonging to some
@@ -51,7 +51,7 @@ function ContentGradeList({ category, gradeList, setGradeList }) {
         setGradeList={setGradeList}
       />;
 
-      console.log(`Selected grade ${grade.gradeName} : ${grade.gradeID} at ${semester.name}/${course.name}`);
+      console.log(`Selected grade ${grade.gradeName} : ${grade.gradeID} at ${semester.semesterName}/${course.courseName}`);
       setSelectedItem({ id: grade.gradeID, preview });
     };
 

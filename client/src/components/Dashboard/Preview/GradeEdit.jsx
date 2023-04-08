@@ -7,14 +7,14 @@ import dateIco from "img/time-svgrepo-com.svg";
 import categoryIco from "img/bookshelf-library-svgrepo-com.svg";
 import courseIco from "img/education-books-apple-svgrepo-com.svg";
 import descriptionIco from "img/open-book-svgrepo-com.svg";
-import { contextCourse, contextSelectedItem } from "../ContentPane";
+import { contextCourse, contextSelectedItem } from "../Content/ContentPane";
 import { floatToPercentStr, isNumber } from "utils/Util";
-import LoadingButton from "./LoadingButton";
-import PreviewEmpty from "./PrevEmpty";
+import LoadingButton from "../LoadingButton";
+import PreviewEmpty from "./EmptyPreview";
 import { networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
-import PreviewItemInline from "./PrevItemInline";
-import PreviewItemVertical from "./PrevItemVertical";
+import PreviewItemInline from "./ItemInline";
+import PreviewItemVertical from "./ItemVertical";
 
 /**
  * Renders the contents of a preview pane that allows the user to modify a
@@ -309,7 +309,7 @@ function PreviewGradeEdit({ category, grade, setGradeList }) {
       {/* Course (not editable) */}
       <PreviewItemInline ico={courseIco} name="Course">
         <div className="cap-text" style={{ paddingLeft: "1rem", WebkitLineClamp: 3 }}>
-          {course.name}
+          {course.courseName}
         </div>
       </PreviewItemInline>
 

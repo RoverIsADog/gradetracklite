@@ -1,9 +1,9 @@
 // @ts-check
 import React, { useContext, useEffect, useState } from "react";
 import plusIco from "img/plus-svgrepo-com.svg";
-import { contextCourse, contextSelectedItem } from "./ContentPane";
-import PreviewCourseEdit from "./Preview/PrevCourseEdit";
-import PreviewCategoryAdd from "./Preview/PrevCatAdd";
+import { contextCourse, contextSelectedItem } from "../Content/ContentPane";
+import PreviewCourseEdit from "./CourseEdit";
+import PreviewCategoryAdd from "./CatAdd";
 import { floatToGPAMcgill, floatToPercentStr } from "utils/Util";
 
 /**
@@ -29,27 +29,29 @@ import { floatToGPAMcgill, floatToPercentStr } from "utils/Util";
  *   categoryDescription: string, 
  *   categoryGradeList: Grade[]
  * }} Category
+ * @typedef {{courseID: string, courseName: string, courseCredits: number, courseDescription: string}} Course
  * 
  * @param {{
- *   categoryList: Category[]
- *   setCategoryList: React.Dispatch<React.SetStateAction<Category[]>>
+ *   categoryList: Category[],
+ *   setCategoryList: React.Dispatch<React.SetStateAction<Category[]>>,
+ *   setCourseList: React.Dispatch<React.SetStateAction<Course[]>>,
  * }} props
  * @returns
  */
-function ContentCourseHeader({ categoryList, setCategoryList }) {
+function ContentCourseHeader({ categoryList, setCategoryList, setCourseList }) {
   const course = useContext(contextCourse);
   const { selectedItem, setSelectedItem } = useContext(contextSelectedItem);
 
   /* Set the content pane's selected to itself and preview pane to modify the course. */
   const handleClickModify = () => {
-    console.log("Selected course " + course.id + " : " + course.name);
-    setSelectedItem({ id: course.id, preview: <PreviewCourseEdit /> });
+    console.log("Selected course " + course.courseID + " : " + course.courseName);
+    setSelectedItem({ id: course.courseID, preview: <PreviewCourseEdit setCourseList={setCourseList} /> });
   };
   /* Set the content pane's selected to itself and preview pane to add a category. */
   const handleClickPlus = (/** @type {React.MouseEvent<HTMLElement>} */ e) => {
     e.stopPropagation(); //Don't trip handleClickModify
-    console.log("Selected course PLUS " + course.id + " : " + course.name);
-    setSelectedItem({ id: course.id, preview: <PreviewCategoryAdd setCategoryList={setCategoryList} /> });
+    console.log("Selected course PLUS " + course.courseID + " : " + course.courseName);
+    setSelectedItem({ id: course.courseID, preview: <PreviewCategoryAdd setCategoryList={setCategoryList} /> });
   };
   
   // Fixme this doesn't update on grade change
@@ -74,13 +76,13 @@ function ContentCourseHeader({ categoryList, setCategoryList }) {
 
   return (
     <div
-      className={`course-info selectable-item ${selectedItem.id === course.id ? "selected-item" : ""}`}
+      className={`course-info selectable-item ${selectedItem.id === course.courseID ? "selected-item" : ""}`}
       onClick={handleClickModify}
     >
       {/* Box containing the course info to allow the plus to grow */}
       <div className="course-info-box">
-        <div className="course-name cap-text" title={`Course ID: ${course.id}`}>
-          {course.name}
+        <div className="course-name cap-text" title={`Course ID: ${course.courseID}`}>
+          {course.courseName}
         </div>
         <div style={{ flexGrow: 1 }} /> {/* Grow to push away L and R sides */}
         <div className="course-data">
@@ -88,14 +90,14 @@ function ContentCourseHeader({ categoryList, setCategoryList }) {
             {/* TODO Implement looping to solve this */}
             {floatToGPAMcgill(points.actPoints / points.maxPoints)}({floatToPercentStr(points.actPoints / points.maxPoints)})
           </div>
-          <div className="course-credits">4 Credits</div>
+          <div className="course-credits">{course.courseCredits} Credits</div>
         </div>
       </div>
       <img
         className="content-plus"
         src={plusIco} alt="Plus icon"
         onClick={handleClickPlus}
-        title={`Add category to ${course.name}`} 
+        title={`Add category to ${course.courseName}`} 
       />
     </div>
   );

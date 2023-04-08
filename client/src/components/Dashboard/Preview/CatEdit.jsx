@@ -5,12 +5,13 @@ import weightIco from "img/weight-svgrepo-com.svg";
 import courseIco from "img/education-books-apple-svgrepo-com.svg";
 import semesterIco from "img/calendar-svgrepo-com.svg";
 import descriptionIco from "img/open-book-svgrepo-com.svg";
-import { contextCourse, contextSemester } from "../ContentPane";
-import LoadingButton from "./LoadingButton";
+import { contextCourse, contextSelectedItem, contextSemester } from "../Content/ContentPane";
+import LoadingButton from "../LoadingButton";
+import PreviewEmpty from "./EmptyPreview";
 import { networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
-import PreviewItemInline from "./PrevItemInline";
-import PreviewItemVertical from "./PrevItemVertical";
+import PreviewItemInline from "./ItemInline";
+import PreviewItemVertical from "./ItemVertical";
 import { isNumber } from "utils/Util";
 
 /**
@@ -21,7 +22,7 @@ import { isNumber } from "utils/Util";
  * page if we use setCategoryList to replace the list of categories with an
  * entirely new one with our changes.
  * 
- * The category prop can be used for information and initial state
+ * The category proo can be used for information and initial state
  * initialisation, but their values are not kept in sync after that. All edits
  * should be reflected onto the gradeList (via setGradeList).
  *
@@ -41,21 +42,18 @@ import { isNumber } from "utils/Util";
  *   categoryDescription: string, 
  *   categoryGradeList: Grade[]
  * }} Category
- * @typedef {{ 
- *   categoryName: string, 
- *   categoryWeight: number, 
- *   categoryDescription: string
- * }} CategoryCandidate
  *
  * @param {{
+ *   category: Category,
  *   setCategoryList: React.Dispatch<React.SetStateAction<Category[]>>
  * }} props
  * @returns {JSX.Element}
  */
-function PreviewCategoryAdd({ setCategoryList }) {
+function PreviewCategoryEdit({ category, setCategoryList }) {
   const apiURL = useContext(apiLocation);
   const course = useContext(contextCourse);
   const semester = useContext(contextSemester);
+  const { setSelectedItem } = useContext(contextSelectedItem);
   
   // Values for controlled inputs
   const [name, setName] = useState("");
@@ -65,16 +63,56 @@ function PreviewCategoryAdd({ setCategoryList }) {
   // See PrevGradeEdit on why this is required
   useEffect(() => {
     console.log("Reset the component!");
-    setName("New Category");
-    setWeight("-");
-    setDescription("");
-  }, [course]);
+    if (category) {
+      setName(String(category.categoryName));
+      setWeight(String(category.categoryWeight));
+      setDescription(String(category.categoryDescription));
+    }
+  }, [category]);
 
   /** @type {(e: React.ChangeEvent<HTMLInputElement>) => void} */
   const changeWeight = (e) => { // Limit to 4 chars
     const newVal = e.target.value;
     if (newVal.length > 4) return;
     setWeight(newVal);
+  };
+
+  /** @type {(btnDone: () => void, btnErr: (err: Error) => void) => void} */
+  const sendDelete = (btnDone, btnErr) => {
+    console.log("Starting deletion request...");
+    
+    if (!name || !isNumber(weight)) {
+      alert("Name or weight missing or mistyped");
+      console.log(`name: ${name}, weight: ${weight}`);
+      btnErr(new Error("Name or weight missing or mistyped"));
+      return;
+    }
+    
+    networkPost(`${apiURL}/categories/delete`, {
+      categoryID: category.categoryID,
+    })
+      .then((res) => {
+        // We don't really care about the response other than it's response
+        // code 200 and error code 0 (checked by networkPost).
+        console.log("Deletion request finished");
+
+        // Server has accepted the deletion: replace parent's cat list
+        // with a new list where this cat's entry is removed.
+        setCategoryList((prevCatList) => {
+          const newList = prevCatList.filter((cat) => {
+            return cat.categoryID !== category.categoryID;
+          });
+          return newList;
+        });
+        setSelectedItem({ id: "", preview: <PreviewEmpty /> });
+        btnDone();
+      })
+      .catch((err) => {
+        console.log(`Deletion request was unsuccessful!\n${err}`);
+        btnErr(err);
+        alert(`Deletion request was unsuccessful!\n${err}`);
+        return;
+      });
   };
 
   /** @type {(btnDone: () => void, btnErr: (err: Error) => void) => void} */
@@ -88,30 +126,31 @@ function PreviewCategoryAdd({ setCategoryList }) {
       return;
     }
 
-    /** @type {CategoryCandidate} */
-    const candidateCategory = {
+    /** @type {Category} */
+    const modifiedCategory = {
+      categoryID: category.categoryID,
       categoryName: name,
       categoryWeight: Number(weight),
-      categoryDescription: description
+      categoryDescription: description,
+      categoryGradeList: undefined,
     };
 
-    networkPost(`${apiURL}/categories/add`, {
-      courseID: String(course.id),
-      candidateCategory: candidateCategory,
+    networkPost(`${apiURL}/categories/edit`, {
+      modifiedCategory: modifiedCategory,
     })
       .then((res) => {
         // We don't really care about the response other than it's response
         // code 200 and error code 0 (checked by networkPost).
-        console.log("Add request finished");
+        console.log("Edit request finished");
 
-        /** @type {Category} */
-        const newCategory = { ...res.newCategory, categoryGradeList: [] };
-
-        // Server has accepted the new cat: replace parent's cat list
-        // with a new list where this cat's entry is added.
+        // Server has accepted the changed cat: replace parent's cat list
+        // with a new list where this cat's entry is changed.
         setCategoryList((prevCatList) => {
-          const newList = [...prevCatList, newCategory];
-          console.log(`Added category ${newCategory.categoryName}`);
+          modifiedCategory.categoryGradeList = category.categoryGradeList;
+          const newList = prevCatList.map((cat) => {
+            return (cat.categoryID === category.categoryID) ? modifiedCategory : cat;
+          });
+          console.log(`Modified category ${category.categoryName}`);
           console.log(newList);
           return newList;
         });
@@ -119,13 +158,13 @@ function PreviewCategoryAdd({ setCategoryList }) {
         btnDone();
       })
       .catch((err) => {
-        // Server has refused the new cat
-        console.log(`Add request was unsuccessful!\n${err}`);
+        // Server has refused the changed cat
+        console.log(`Edit request was unsuccessful!\n${err}`);
         btnErr(err);
-        alert(`Add request was unsuccessful!\n${err}`);
+        alert(`Edit request was unsuccessful!\n${err}`);
         return;
       });
-  }, [name, weight, description, apiURL, setCategoryList, course]);
+  }, [name, weight, description, category, apiURL, setCategoryList]);
   
   return (
     <div className="card thin-scrollbar" id="preview-card">
@@ -138,6 +177,7 @@ function PreviewCategoryAdd({ setCategoryList }) {
           // console.log(e.currentTarget.textContent);
           setName(e.currentTarget.textContent);
         }}
+        title={`categoryID: ${category.categoryID}`}
         suppressContentEditableWarning={true} // The only child is text so it's ok
       >
         {/* Can't be {name} because React will keep updating it and setting
@@ -145,7 +185,7 @@ function PreviewCategoryAdd({ setCategoryList }) {
         initial value and update the React name state to the contentEditable's
         content on change, but never set the CE's actual content to the React
         state. */}
-        {"New Category"}
+        {category.categoryName}
       </div>
 
       <div className="horizontal-line" />
@@ -167,14 +207,14 @@ function PreviewCategoryAdd({ setCategoryList }) {
       {/* Course (not editable) */}
       <PreviewItemInline ico={courseIco} name="Course">
         <div className="cap-text" style={{ paddingLeft: "1rem", WebkitLineClamp: 3 }}>
-          {course.name}
+          {course.courseName}
         </div>
       </PreviewItemInline>
 
       {/* Course (not editable) */}
       <PreviewItemInline ico={semesterIco} name="semester">
         <div className="cap-text" style={{ paddingLeft: "1rem", WebkitLineClamp: 3 }}>
-          {semester.name}
+          {semester.semesterName}
         </div>
       </PreviewItemInline>
 
@@ -192,10 +232,11 @@ function PreviewCategoryAdd({ setCategoryList }) {
       {/* Buttons */}
       <div style={{ flexGrow: "1" }}></div>
       <div className="preview-item preview-buttons">
+        <LoadingButton name="Delete" longFunction={sendDelete} />
         <LoadingButton name="Save" longFunction={sendEdit} />
       </div>
     </div>
   );
 }
 
-export default PreviewCategoryAdd;
+export default PreviewCategoryEdit;

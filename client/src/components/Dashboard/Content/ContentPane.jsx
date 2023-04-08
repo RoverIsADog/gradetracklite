@@ -3,13 +3,16 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { apiLocation } from "App";
 import "css/dashboard/content.css";
 import useFetch from "hooks/useFetch";
-import ContentCourseHeader from "./CourseHeader";
-import PreviewEmpty from "./Preview/PrevEmpty";
-import CategoryList from "./CategoryList";
+import ContentCourseHeader from "../Preview/CourseHeader";
+import PreviewEmpty from "../Preview/EmptyPreview";
+import CategoryList from "../CategoryList";
 
 
 /**
  * Type declarations
+ * @typedef {{semesterID: string, semesterName: string}} Semester
+ * @typedef {{courseID: string, courseName: string, courseCredits: number, courseDescription: string}} Course
+ * 
  * @typedef {{
  *   gradeID: string, 
  *   gradeName: string, 
@@ -46,9 +49,9 @@ import CategoryList from "./CategoryList";
 
 /** @type {React.Context<{selectedItem: {id: string, preview: React.ReactNode}, setSelectedItem: React.Dispatch<React.SetStateAction<{id: string; preview: React.ReactNode}>>}>} */
 const contextSelectedItem = createContext(null);
-/** @type {React.Context<{id: string, name: string}>} */
+/** @type {React.Context<Semester>} */
 const contextSemester = createContext(null);
-/** @type {React.Context<{id: string, name: string}>} */
+/** @type {React.Context<Course>} */
 const contextCourse = createContext(null);
 
 /**
@@ -60,14 +63,18 @@ const contextCourse = createContext(null);
  * Each of the selectable elements provide their JSX Element that renders their
  * preview pane displayed.
  * 
- * @param {Props} props 
+ * @param {{
+ *   semester: Semester,
+ *   course: Course,
+ *   setCourseList: React.Dispatch<React.SetStateAction<Course[]>>
+ * }} props 
  * @returns 
  */
-function ContentPane({ semester, course }) {
+function ContentPane({ semester, course, setCourseList }) {
   const apiURL = useContext(apiLocation);
 
   // Upon loading, fetch the selected course
-  const courseURL = course ? `${apiURL}/courses/get?courseID=${course.id}&singular=1` : null;
+  const courseURL = course ? `${apiURL}/courses/get?courseID=${course.courseID}&singular=1` : null;
 
   /** @type {CourseResponse} */
   const fetchMetrics = useFetch(courseURL);
@@ -118,7 +125,7 @@ function ContentPane({ semester, course }) {
                 {/* Another div level here to prevent weird padding/margin problems */}
                 <div id="course-area">
                   {/* A course's header (name, grade, credits) */}
-                  <ContentCourseHeader categoryList={catList} setCategoryList={setCatList} />
+                  <ContentCourseHeader categoryList={catList} setCategoryList={setCatList} setCourseList={setCourseList} />
                   <div className="horizontal-line-bold" />
                   {/* Each course has its list of categories. */}
                   <CategoryList categoryList={catList} setCategoryList={setCatList} />
