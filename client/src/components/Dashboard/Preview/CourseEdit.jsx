@@ -4,8 +4,8 @@ import "css/dashboard/preview.css";
 import weightIco from "img/weight-svgrepo-com.svg";
 import semesterIco from "img/calendar-svgrepo-com.svg";
 import descriptionIco from "img/open-book-svgrepo-com.svg";
-import { contextCourse, contextSemester } from "../Content/ContentPane";
-import LoadingButton from "../LoadingButton";
+import { contextCourse, contextSemester } from "../ContentPane";
+import LoadingButton from "../common/LoadingButton";
 import { networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
 import PreviewItemInline from "./ItemInline";
@@ -45,7 +45,7 @@ import PreviewItemVertical from "./ItemVertical";
  *
  * @returns {JSX.Element}
  */
-function PreviewCategoryEdit({ setCourseList }) {
+function PreviewCourseEdit({ setCourseList }) {
   const apiURL = useContext(apiLocation);
   const course = useContext(contextCourse);
   const semester = useContext(contextSemester);
@@ -186,4 +186,4 @@ function PreviewCategoryEdit({ setCourseList }) {
   );
 }
 
-export default PreviewCategoryEdit;
+export default PreviewCourseEdit;

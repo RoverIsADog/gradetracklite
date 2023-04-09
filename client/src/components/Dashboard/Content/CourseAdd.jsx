@@ -7,8 +7,7 @@ import weightIco from "img/weight-svgrepo-com.svg";
 import descriptionIco from "img/open-book-svgrepo-com.svg";
 import { networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
-import LoadingButton from "../LoadingButton";
-import ContentEmpty from "./ContentEmpty";
+import LoadingButton from "../common/LoadingButton";
 import { isNumber } from "utils/Util";
 import PreviewItemInline from "../Preview/ItemInline";
 import PreviewItemVertical from "../Preview/ItemVertical";
@@ -102,7 +101,8 @@ function ContentCourseAdd({ semester, setCourseList, setSelected }) {
           return;
         });
     },
-    [name, apiURL, setCourseList]
+    // eslint-disable-next-line
+    [name]
   );
 
   return (

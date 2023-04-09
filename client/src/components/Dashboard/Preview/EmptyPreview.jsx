@@ -1,4 +1,5 @@
-import React from 'react'
+// @ts-check
+import React from "react";
 
 /**
  * Renders an empty preview pane.
@@ -19,7 +20,7 @@ function EmptyPreview() {
     >
       Select something to see more details or to modify it.
     </div>
-  )
+  );
 }
 
-export default EmptyPreview
+export default EmptyPreview;

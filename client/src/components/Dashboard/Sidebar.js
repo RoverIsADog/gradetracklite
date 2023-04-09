@@ -1,5 +1,5 @@
 // @ts-check
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import "css/dashboard/sidebar.css";
 import "css/dashboard/content.css";
 import logoImg from "img/logo.png";
@@ -10,21 +10,15 @@ import logoutIco from "img/sign-out-2-svgrepo-com.svg";
 import privacyIco from "img/contract-line-svgrepo-com.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { contextTheme } from "pages/Dashboard";
-import { apiLocation } from "App";
-import ContentSettings from "./Content/ContentSettings";
+import ContentSettings from "./ContentSettings";
 import { readCookie } from "utils/Util";
 import jwt_decode from "jwt-decode";
-import { networkGet } from "utils/NetworkUtils";
-import ContentEmpty from "./Content/ContentEmpty";
-import SidebarChoiceSemester from "./Content/SbChoiceSem";
-import SidebarChoiceCourse from "./Content/SbChoiceCourse";
+import ContentEmpty from "./ContentEmpty";
+import SemesterChoiceList from "./SemChoiceList";
+import CourseChoiceList from "./CourseChoiceList";
+import ContentAbout from "./Content/About";
 
 /**
- * Component displaying the sidebar (#sidebar-itself) and the area controlled
- * by the sidebar (#sidebar-display).
- * The sidebar should control how elements in its control area are displayed,
- * in this case, the course and item panes.
- * 
  * @typedef {{
  *   gradeID: string, 
  *   gradeName: string, 
@@ -41,9 +35,16 @@ import SidebarChoiceCourse from "./Content/SbChoiceCourse";
  *   categoryDescription: string, 
  *   categoryGradeList: Grade[]
  * }} Category
- * 
- * @typedef {{semesterID: string, semesterName: string}} Semester
- * @typedef {{courseID: string, courseName: string, courseCredits: number, courseDescription: string}} Course
+ * @typedef {{
+ *   semesterID: string, 
+ *   semesterName: string
+ * }} Semester
+ * @typedef {{
+ *   courseID: string, 
+ *   courseName: string, 
+ *   courseCredits: number, 
+ *   courseDescription: string
+ * }} Course
  * 
  * @typedef {{error: number, message: string, semesterList: Semester[]}} listSemestersResponse
  * @typedef {{loading: boolean, error: Error, data: listSemestersResponse}} listSemestersFetchMetrics
@@ -54,10 +55,42 @@ import SidebarChoiceCourse from "./Content/SbChoiceCourse";
  * @typedef {{error: number, message: string, categoryList: Category[]}} getCourseResponse
  * 
  * @typedef {{uuid: string, username: string, email: string | null | undefined, exp: number, iat: number}} TokenPayload
+ */
+
+/**
+ * Component displaying the sidebar (#sidebar-itself) and the area controlled by the sidebar
+ * (#sidebar-display). At any moment, the sidebar only has one selected item (or none), which
+ * is stored in the `selected` state. The `selected` object contains the UUID of the element
+ * that is selected, and a Component that the sidebar will display in the content area.
+ * 
+ * `selected` and `setSelected` are passed as props to all "child" components of the sidebar,
+ * where they can determine if they are currently selected by comparing their ID with the
+ * currently selected's. They should also __set__ the selected element to their own ID and
+ * to their own content-display component if they are selected (usually onClick). For this
+ * reason, we should avoid setting it to null (reduce checks).
+ * 
+ * The selection manager of the sidebar differs from the selection manager of the content-pane
+ * in that there are two additional selection managers for semesters and courses (we can select
+ * both a semester and a course). They can also be null to represent no selection.
+ * 
+ * * The `selected` state represents the latest item the user clicked, and controls what content
+ * pane is shown.
+ * 
+ * * The `selectedSemester` state represents what semester we have selected, and persists even
+ * if the `selected` state changes. This is so that we can select courses from a semester without
+ * that semester becoming unfocussed. It is also used to keep track of when we should do a network
+ * request for a semester's list of courses (on `selectedSemester` change).
+ *   * It is reset if we click semesters+ / settings / about
+ * 
+ * * The `selectedCourse` state represents what course we have selected and also persists on
+ * `selected` state changes. It is used to keep track of when we should do a network request for
+ * a course's content to display (on `selectedCourse` change).
+ *   * It is reset if we click semesters+ / a semester / courses+ / settings / about.
+ *   * If a course is selected, there MUST be semester that is also selected, as we use both
+ *     to know what to display to the content pane.
  * 
  */
 function Sidebar() {
-  const apiURL = useContext(apiLocation);
   const { theme, toggleTheme } = useContext(contextTheme); // Theme toggle button
   const handleLogout = () => { // For the logout button
     console.log("Logging out");
@@ -67,89 +100,11 @@ function Sidebar() {
   // Global sidebar selection
   const [selected, setSelected] = useState({ id: "", content: <ContentEmpty /> });
 
-  // List-localised selection
-  /** @type {[Course | null, React.Dispatch<React.SetStateAction<Course | null>>]} */
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  // List-localised concerned elements
   /** @type {[Semester | null, React.Dispatch<React.SetStateAction<Semester | null>>]} */
-  const [selectedSemester, setSelectedSemester] = useState(null);
-
-  // console.log("Currently selected course is " + (selectedCourse ? `${selectedCourse.courseName}: ${selectedCourse.courseID}` : selectedCourse));
-  // console.log("Currently selected semester is " + (selectedSemester ? `${selectedSemester.semesterName}: ${selectedSemester.semesterID}` : selectedSemester));
-
-  // Fetch related states
-  /** @type {[[boolean, React.Dispatch<React.SetStateAction<boolean>>], [Error | null, React.Dispatch<React.SetStateAction<Error | null>>], [listSemestersResponse | null, React.Dispatch<React.SetStateAction<listSemestersResponse | null>>]]} */
-  const [[semLoading, setSemLoading], [semError, setSemError], [semData, setSemData]] = [useState(false), useState(null), useState(null)];
-  /** @type {[[boolean, React.Dispatch<React.SetStateAction<boolean>>], [Error | null, React.Dispatch<React.SetStateAction<Error | null>>], [listCoursesResponse | null, React.Dispatch<React.SetStateAction<listCoursesResponse | null>>]]} */
-  const [[courseLoading, setCourseLoading], [courseError, setCourseError], [courseData, setCourseData]] = [useState(false), useState(null), useState(null)];
-  const semFetchMetrics = { loading: semLoading, error: semError, data: semData };
-  const courseFetchMetrics = { loading: courseLoading, error: courseError, data: courseData };
-
-
-  /*
-  The selected semester state remains null until the user actually chooses
-  one through the list (we give the list a callback to set state). Once it
-  becomes set, only then do we do another fetch request to get the courses
-  associated with it.
-
-  So, fetch hook for courses only called on change of selectedSemester.
-   */
-
-  // Fetch on page load
-  useEffect(() => {
-    console.log(`Getting semesters list`);
-    setSemLoading(true);
-    setSemError(null);
-    setSemData(null);
-
-    networkGet(`${apiURL}/semesters/list`)
-      .then((res) => {
-        setSemLoading(false);
-        setSemError(null);
-        setSemData(res);
-      }).catch((err) => {
-        setSemLoading(false);
-        setSemError(err);
-        setSemData(null);
-      });
-    
-  }, []);
-  
-  /* Every time the selected semester changes, fetch that semester's course
-  list and save it into the course list. */
-  useEffect(() => {
-    if (!selectedSemester || !selectedSemester.semesterID) return; // Don't do anything if empty.
-    console.log(`Getting courses for ${selectedSemester ? selectedSemester.semesterName : selectedSemester}`);
-    // Reset course states to display loading
-    setCourseLoading(true);
-    setCourseError(null);
-    setCourseData(null);
-    setSelectedCourse(null);
-
-    // Finally, do the network request
-    networkGet(`${apiURL}/courses/list`, { semesterID: selectedSemester.semesterID })
-      .then((res) => {
-        console.log("GET course list done.");
-
-        // Set course states accordingly
-        setCourseLoading(false);
-        setCourseError(null);
-        setCourseData(res);
-
-      }).catch((err) => {
-        console.log("Get course list failed.");
-
-        // Set course states accordingly
-        setCourseLoading(false);
-        setCourseError(err);
-        setCourseData(null);
-      })
-  }, [selectedSemester]);
-  
-  // console.log("Sem data... " + (semData ? 'exist' : 'dne'));
-  // console.log(`Sem status... ${semLoading ? 'loading' : 'loaded'} / ${semError ? 'err' : 'ok'}`);
-  // console.log("Course data... " + (courseData ? 'exist' : 'dne'));
-  // console.log(`Course status... ${courseLoading ? 'loading' : 'loaded'} / ${courseError ? 'err' : 'ok'}`);
-
+  const [concernedSemester, setConcernedSemester] = useState(null);
+  /** @type {[Course | null, React.Dispatch<React.SetStateAction<Course | null>>]} */
+  const [concernedCourse, setConcernedCourse] = useState(null);
 
   // Get the username from the token.
   const navigate = useNavigate();
@@ -169,6 +124,7 @@ function Sidebar() {
       navigate("/404");
       return null;
     }
+    // eslint-disable-next-line
   }, []); // Run on page load only
 
   return (
@@ -188,26 +144,24 @@ function Sidebar() {
           </div>
           <div className="horizontal-line" />
 
-          <SidebarChoiceSemester
-            semFetchMetrics={semFetchMetrics}
+          {/* List of selectable semester */}
+          <SemesterChoiceList
             selected={selected}
             setSelected={setSelected}
-            selectedSemester={selectedSemester}
-            setSelectedSemester={setSelectedSemester}
+            concernedSemester={concernedSemester}
+            setConcernedSemester={setConcernedSemester}
           />
-
-          
 
           <div className="horizontal-line" />
 
-          <SidebarChoiceCourse 
-            courseFetchMetrics={courseFetchMetrics}
+          {/* List of selectable courses */}
+          <CourseChoiceList 
             selected={selected}
             setSelected={setSelected}
-            selectedCourse={selectedCourse}
-            setSelectedCourse={setSelectedCourse}
-            selectedSemester={selectedSemester}
-            setSelectedSemester={setSelectedSemester}
+            concernedCourse={concernedCourse}
+            setConcernedCourse={setConcernedCourse}
+            concernedSemester={concernedSemester}
+            setConcernedSemester={setConcernedSemester}
           />
 
           <div className="horizontal-line" />
@@ -219,18 +173,17 @@ function Sidebar() {
           
           {/* Push acc/signout to bottom */}
           <div style={{ flexGrow: 1 }} />
-          
-          {/* User (FIXME FIXME FIXME TESTING ONLY SELECTION LOGIC) */}
           <div
-            className={`sb-selectable ${selected.id === "user-container" ? 'sb-selected' : ''}`}
+            className={`sb-selectable ${selected.id === "__user" ? 'sb-selected' : ''}`}
             id="user-container"
             onClick={() => {
-              setSelected({ id: "user-container", content: <ContentSettings /> });
-              setSelectedSemester(null);
-              setSelectedCourse(null);
+              setSelected({ id: "__user", content: <ContentSettings /> });
+              setConcernedSemester(null);
+              setConcernedCourse(null);
             }}
           >
-            {/* We're not actually storing any user pfp this just is just a random gravatar. */}
+            {/* We're not actually storing any user pfp this just is just a random gravatar, 
+            though we could use a gravatar generation library */}
             <img src={identicon} className="not-icon" alt="identicon" />
             <div>
               <div id="username">{tokenPayload && (tokenPayload.username || "Error")}</div>
@@ -245,15 +198,24 @@ function Sidebar() {
           </Link>
 
           {/* Privacy */}
-          <Link to='/about' className="sb-item sb-selectable" id="privacy">
+          <div
+            className={`sb-item sb-selectable ${(selected && selected.id === "__privacy") ? "sb-selected" : ""}`}
+            id="privacy"
+            onClick={() => {
+              setSelected({ id: "__privacy", content: <ContentAbout /> })
+              setConcernedSemester(null);
+              setConcernedCourse(null);
+            }}
+          >
             <img src={privacyIco} alt="privacy" />
             <div>About and Privacy</div>
-          </Link>
+          </div>
+
         </div>
       </div>
       <div id='sidebar-display'>
         {
-          selected.content && selected.content
+          (selected && selected.content) ? selected.content : <ContentEmpty />
         }
       </div>
     </div>

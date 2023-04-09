@@ -9,18 +9,27 @@ import successIco from "img/checkmark-circle-svgrepo-com.svg"
  * network request). It blocks while doing that long operation with a
  * spinners and other effects.
  * 
- * It takes a long-running function as argument. That long-running function is
- * responsible for calling either btnDone() or btnErr(), depending on whether
- * is succeeds or fails. This is similar to Express middlewares' next().
- * @param {{name: string, longFunction: (btnDone: () => void, btnErr: (err: Error) => void) => void }} props
- * @returns
+ * The long function takes two callbacks that should be called when it either
+ * finishes or fails: `btnDone()` and `btnErr()`. Calling these callbacks will
+ * unblock the button. 
+ * 
+ * __If they are not called, the button will never unblock__. This system is
+ * similar to (and inspired by working with) Express middlewares' `next()`
+ * callback.
+ * 
+ * @param {{
+ *   name: string
+ *   longFunction: (btnDone: () => void, btnErr: (err: Error) => void) => void
+ * }} props
+ * @returns {JSX.Element} A button JSX component.
  */
 function LoadingButton({ name, longFunction }) {
+  // Button states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-  // Recall, same element is used, so have to reset on prop changes.
+  // Reset on prop changes due to no unmounting
   useEffect(() => {
     setLoading(false);
     setError(null);
@@ -28,7 +37,8 @@ function LoadingButton({ name, longFunction }) {
   }, [name, longFunction]);
 
   /**
-   * Function to be called if the long function is done.
+   * Callback to be invoked by the long function when it is done and has
+   * succeeded with no errors.
    */
   const btnDone = () => {
     console.log(`"${name}" button unblocked`);
@@ -38,7 +48,7 @@ function LoadingButton({ name, longFunction }) {
   };
 
   /**
-   * Function to be called if the long function errors out.
+   * Callback to be invoked by the long function if it errors out.
    * @param {Error} err 
    */
   const btnErr = (err) => {
@@ -48,6 +58,9 @@ function LoadingButton({ name, longFunction }) {
     setSuccess(false);
   };
 
+  /**
+   * Disable the button and run the long function on clicking the button.
+   */
   const handleClick = () => {
     console.log(`"${name} button blocked`);
     if (loading) {
@@ -60,16 +73,20 @@ function LoadingButton({ name, longFunction }) {
     longFunction(btnDone, btnErr);
   };
 
+  // For convenience, override and use CSS variables instead of declaring new
+  // ones. Buttons use the scrollbar accents normally, and the variables get
+  // overridden on success or error.
   const styleBad = {
     "--scrollbar-thumb-color": "rgb(240, 49, 49)",
     "--scrollbar-thumb-hover-color": "rgb(175, 49, 49)",
   };
-
   const styleGood = {
     "--scrollbar-thumb-color": "rgb(62, 168, 32)",
     "--scrollbar-thumb-hover-color": "rgb(55, 151, 28)",
   };
 
+  // The JSX consists of a button containing 3 images for loading, OK, error.
+  // Only one is visible at any time.
   return (
     <button
       onClick={handleClick}

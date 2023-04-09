@@ -1,8 +1,8 @@
 // @ts-check
 import React, { useContext } from "react";
 import { ColoredPercent } from "utils/Util";
-import { contextCourse, contextSelectedItem, contextSemester } from "./Content/ContentPane";
-import PreviewGradeEdit from "./Preview/GradeEdit";
+import { contextCourse, contextSelectedItem, contextSemester } from "../ContentPane";
+import PreviewGradeEdit from "./GradeEdit";
 
 /**
  * Component that is responsible for displaying a list of grades belonging to some

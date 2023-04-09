@@ -4,8 +4,7 @@ import "css/dashboard/preview.css";
 import "css/dashboard/styles.css";
 import { networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
-import LoadingButton from "../LoadingButton";
-import ContentEmpty from "./ContentEmpty";
+import LoadingButton from "../common/LoadingButton";
 
 /**
  * @typedef {{semesterID: string, semesterName: string}} Semester
@@ -18,7 +17,7 @@ import ContentEmpty from "./ContentEmpty";
  * }} props 
  * @returns {JSX.Element}
  */
-function ContentSemAdd({ setSemesterList, setSelected }) {
+function ContentSemesterAdd({ setSemesterList, setSelected }) {
   const apiURL = useContext(apiLocation);
   
   // Values for controlled inputs
@@ -129,4 +128,4 @@ function ContentSemAdd({ setSemesterList, setSelected }) {
   );
 }
 
-export default ContentSemAdd;
+export default ContentSemesterAdd;

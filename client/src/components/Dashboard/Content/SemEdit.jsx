@@ -2,16 +2,9 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import "css/dashboard/preview.css";
 import "css/dashboard/styles.css";
-import weightIco from "img/weight-svgrepo-com.svg";
-import semesterIco from "img/calendar-svgrepo-com.svg";
-import descriptionIco from "img/open-book-svgrepo-com.svg";
-import { contextCourse, contextSemester } from "../Content/ContentPane";
 import { networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
-import { isNumber } from "utils/Util";
-import PreviewItemInline from "../Preview/ItemInline";
-import PreviewItemVertical from "../Preview/ItemVertical";
-import LoadingButton from "../LoadingButton";
+import LoadingButton from "../common/LoadingButton";
 
 /**
  * @typedef {{semesterID: string, semesterName: string}} Semester
@@ -21,7 +14,7 @@ import LoadingButton from "../LoadingButton";
  * }} props 
  * @returns {JSX.Element}
  */
-function ContentSemEdit({ semester, setSemesterList }) {
+function ContentSemesterEdit({ semester, setSemesterList }) {
   const apiURL = useContext(apiLocation);
   
   // Values for controlled inputs
@@ -130,4 +123,4 @@ function ContentSemEdit({ semester, setSemesterList }) {
   );
 }
 
-export default ContentSemEdit;
+export default ContentSemesterEdit;

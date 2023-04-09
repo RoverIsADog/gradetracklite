@@ -1,7 +1,7 @@
 // @ts-check
 import React, { useContext, useEffect, useState } from "react";
 import plusIco from "img/plus-svgrepo-com.svg";
-import { contextCourse, contextSelectedItem } from "../Content/ContentPane";
+import { contextCourse, contextSelectedItem } from "../ContentPane";
 import PreviewCourseEdit from "./CourseEdit";
 import PreviewCategoryAdd from "./CatAdd";
 import { floatToGPAMcgill, floatToPercentStr } from "utils/Util";
