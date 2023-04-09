@@ -27,7 +27,7 @@ function LoadingButton({ name, longFunction }) {
   // Button states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   // Reset on prop changes due to no unmounting
   useEffect(() => {

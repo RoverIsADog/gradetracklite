@@ -30,6 +30,11 @@
   width: 1.5rem;
 }
 
+/* ################## TEXT PROPERTY ################## */
+/* These properties consist of text only */
+.preview-text {
+}
+
 /* ################## INLINE PROPERTY ################## */
 /* These properties should be displayed in a single line,
 with the property icon and name on the left and the property

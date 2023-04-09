@@ -190,3 +190,8 @@ the grade-list (itself part of a category) */
 .grade-score {
   font-size: x-large;
 }
+
+/* ################## ACCOUNT SETTINGS ################## */
+.option-item {
+  font-size: x-large;
+}

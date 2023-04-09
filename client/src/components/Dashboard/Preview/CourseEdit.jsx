@@ -177,8 +177,9 @@ function PreviewCourseEdit({ setCourseList }) {
         />
       </PreviewItemVertical>
       
-      {/* Buttons */}
       <div style={{ flexGrow: "1" }}></div>
+      
+      {/* Buttons */}
       <div className="preview-item preview-buttons">
         <LoadingButton name="Save" longFunction={sendEdit} />
       </div>

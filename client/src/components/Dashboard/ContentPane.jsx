@@ -137,7 +137,7 @@ function ContentPane({ semester, course, setCourseList }) {
                 when setting the selected, the selected element must also provide
                 a function to generate its previewer. For now, also display template
                 previewer, but remove once all specific previewers are done*/}
-                {selectedItem.preview ? selectedItem.preview : <PreviewEmpty />}
+                {(selectedItem && selectedItem.preview) ? selectedItem.preview : <PreviewEmpty />}
                 {/* <PlaceholderPreview /> */}
               </div>
             </div>

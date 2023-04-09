@@ -337,7 +337,7 @@ function Paragraph( {name, children} ) {
   return (
     <div>
       <div
-        style={{ fontSize: "xx-large" }}
+        style={{ fontSize: "xx-large", cursor: "pointer" }}
         onClick={() => setHidden((prev) => !prev)}
         title="Click to hide"
       >

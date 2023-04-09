@@ -76,7 +76,7 @@ function ContentCourseHeader({ categoryList, setCategoryList, setCourseList }) {
 
   return (
     <div
-      className={`course-info selectable-item ${selectedItem.id === course.courseID ? "selected-item" : ""}`}
+      className={`course-info selectable-item ${(selectedItem && selectedItem.id === course.courseID) ? "selected-item" : ""}`}
       onClick={handleClickModify}
     >
       {/* Box containing the course info to allow the plus to grow */}
