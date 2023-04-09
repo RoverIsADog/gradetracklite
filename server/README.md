@@ -41,7 +41,7 @@ Account administration
 - [POST /account/edit/info](#edit-account-information-post-accounteditinfo) (WIP)
 - [POST /account/edit/password](#edit-account-password-post-accounteditpassword) (WIP)
 - [GET /account/download](#request-data-download-get-accountdownload) (WIP)
-- [POST /account/delete](#delete-account-post-accountdelete) (WIP)
+- [POST /account/delete](#delete-account-post-accountdelete)
 
 Static Resources
 
@@ -64,12 +64,12 @@ By referencing this document, users of our application can ensure that they are 
 
 Example: `localhost:8000/api/v1/courses/list`
 
-| URL Element | Description |
-| -- | -- |
-| `hostname` | Always there. Address of the GradeTrackLite host |
-| `api/v1` | Always there. To distinguish API versions and from static files served from `/` |
-| `dataTypeOrFunctionality` | Denotes either a type of data (`semesters`/`courses`/`categories`/`grades`) or a functionality such as authentication or account management (`auth`/`account`) |
-| `action` | Do some action with regards to the resource or functionality. <br>For data, we generally have: <br> <ul><li>`list`: Given a parent's ID, get a list of all instances of that resource belonging to the parent.</li><li>`add`: Given a parent's ID, add an instance of the resource to the parent</li><li>`get`: Get a specific instance of the resource (and all "children"). Currently only for courses (and that won't change).</li><li>`edit`: Modifies a specified instance of the resource.</li><li>`delete`: Deletes a specified instance of the resource</li></ul>For functionalities, we have stuff like `login`/`resister`/... |
+| URL Element               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hostname`                | Always there. Address of the GradeTrackLite host                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `api/v1`                  | Always there. To distinguish API versions and from static files served from `/`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `dataTypeOrFunctionality` | Denotes either a type of data (`semesters`/`courses`/`categories`/`grades`) or a functionality such as authentication or account management (`auth`/`account`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `action`                  | Do some action with regards to the resource or functionality. <br>For data, we generally have: <br> <ul><li>`list`: Given a parent's ID, get a list of all instances of that resource belonging to the parent.</li><li>`add`: Given a parent's ID, add an instance of the resource to the parent</li><li>`get`: Get a specific instance of the resource (and all "children"). Currently only for courses (and that won't change).</li><li>`edit`: Modifies a specified instance of the resource.</li><li>`delete`: Deletes a specified instance of the resource</li></ul>For functionalities, we have stuff like `login`/`resister`/... |
 
 # Authentication
 
@@ -862,7 +862,7 @@ Here is a sample request:
 
 ### Response
 
-The server verifies the JWT token and checks if the semester exists and belongs to the user. Then, it delete the given semester, along with all of its courses (deleting a course also deletes its associated categories and grade items). It then sends a response with the following content:
+The server verifies the JWT token and checks if the semester exists and belongs to the user. Then, it deletes the given semester, along with all of its courses (deleting a course also deletes its associated categories and grade items). It then sends a response with the following content:
 
 - error
 - message
@@ -913,7 +913,7 @@ Here is a sample request:
 
 ### Response
 
-The server verifies the JWT token and checks if the course exists and belongs to the user. Then, it delete the given course, along with all of its categories (deleting a category also deletes its associated grade items). It then sends a response with the following content:
+The server verifies the JWT token and checks if the course exists and belongs to the user. Then, it deletes the given course, along with all of its categories (deleting a category also deletes its associated grade items). It then sends a response with the following content:
 
 - error
 - message
@@ -964,7 +964,7 @@ Here is a sample request:
 
 ### Response
 
-The server verifies the JWT token and checks if the category exists and belongs to the user. Then, it delete the given category, along with all of its associated grade items. It then sends a response with the following content:
+The server verifies the JWT token and checks if the category exists and belongs to the user. Then, it deletes the given category, along with all of its associated grade items. It then sends a response with the following content:
 
 - error
 - message
@@ -1015,7 +1015,7 @@ Here is a sample request:
 
 ### Response
 
-The server verifies the JWT token and checks if the grade item exists and belongs to the user. Then, it delete the given grade item. It then sends a response with the following content:
+The server verifies the JWT token and checks if the grade item exists and belongs to the user. Then, it deletes the given grade item. It then sends a response with the following content:
 
 - error
 - message
@@ -1119,23 +1119,44 @@ Response should prompt browser to download.
 
 ## Delete Account (POST `/account/delete`)
 
-No payload
+### Request
 
-Sample Response
+On the Account Settings page, the user can delete their account, and the frontend will send a POST request (with no content).
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+### Response
+
+The server verifies the JWT token. Then, it deletes the user's account. It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful deletion, otherwise it failed.
+
+| Error Code | Code Meaning                     |
+| :--------- | :------------------------------- |
+| 0          | Account deleted successfully     |
+| -1         | Internal server error            |
+| -2         | Missing required query parameter |
+
+Here is a sample success response:
 
 ```json
 {
   "error": 0,
-  "message": "Deleted successfully"
+  "message": "Account deleted successfully"
 }
 ```
 
-Sample Error
+Here is a sample fail response:
 
 ```json
 {
-  "error": 1,
-  "message": "Some error"
+  "error": -2,
+  "message": "Error: missing required query parameter"
 }
 ```
 
