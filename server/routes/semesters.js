@@ -137,10 +137,29 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
 const isOwnerMWDel = ownerCheck.getMW((res) => res.body.semesterID, ownerCheck.sql.sem);
 router.post("/delete", isOwnerMWDel, (req, res) => {
   const { semesterID } = req.body;
-  if (!semesterID) res.sendStatus(400);
+  if (!semesterID) {
+    res.status(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+  }
 
-  //TODO
-  res.sendStatus(501);
+  // Delete the semester
+  db.run("DELETE FROM semesters WHERE uuid = ?", [semesterID], (err) => {
+    if (err) {
+      console.log("Error deleting semester:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        error: 0,
+        message: "Semester deleted successfully",
+      });
+    }
+  });
 });
 
 module.exports = router;
