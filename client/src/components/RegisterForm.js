@@ -6,7 +6,8 @@ import { apiLocation } from "../App";
 export const RegisterForm = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [confirmpassword, setConfirmPassword] = useState("");
+  // const [email, setEmail] = useState("");
   const [checkbox, setCheckbox] = useState(false);
   const [buttonPopup, setButtonPopup] = useState(false);
   const [error, setError] = useState('');
@@ -17,10 +18,13 @@ export const RegisterForm = (props) => {
     e.preventDefault();
     console.log(username);
     try {
+      if (password!==confirmpassword){
+        setError('Please make sure to confirm your password');
+      }
       const response = await axios.post(`${apiURL}/auth/register`, {
         username,
         password,
-        email
+        //email
       });
       
       if (response.data.error === 0) {
@@ -61,16 +65,28 @@ export const RegisterForm = (props) => {
           placeholder="*********"
           required id="password"
           name="password" />
+        {/* PASSWORD */}
+        <label className="auth-label" htmlFor="confirmpassword">Confirm Password</label>
+        <input
+          className="auth-input"
+          value={confirmpassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          type="password"
+          placeholder="*********"
+          required id="confirmpassword"
+          name="confirmpassword" />
+
+
 
         {/* Email */}
-        <label className="auth-label" htmlFor="email">Email address (optional)</label>
+        {/* <label className="auth-label" htmlFor="email">Email address (optional)</label>
         <input
           className="auth-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
           name="email"
-          placeholder="youremail@mail.com"></input>
+          placeholder="youremail@mail.com"></input> */}
 
         {/* Checkbox for Terms and Condition */}
         <label className="auth-label" htmlFor="checkbox">
