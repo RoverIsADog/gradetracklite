@@ -32,6 +32,6 @@ In these files, I developed the database queries using SQL to retrieve, update a
 
 ## Deliverables
 
-I wrote up the Architectural Description and Report deliverables along with @zhu22 and @yzhou131.
+I wrote up the Architectural Description and Report deliverables along with @swang297 and @yzhou131.
 
 I helped write Requirements.md, specifically for the [Sample Systems Section](https://gitlab.cs.mcgill.ca/yzhou131/comp555-project-team7/-/blob/dcocs/documentation/Requirements.md#sample-systems) and the requirements sections ([Functional Requirements](https://gitlab.cs.mcgill.ca/yzhou131/comp555-project-team7/-/blob/dcocs/documentation/Requirements.md#functional-requirements) and [Privacy Requirements](https://gitlab.cs.mcgill.ca/yzhou131/comp555-project-team7/-/blob/dcocs/documentation/Requirements.md#functional-requirements)).

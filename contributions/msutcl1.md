@@ -10,4 +10,4 @@ I was assigned the following tasks for the project:
 
 ## Deliverables
 
-I wrote a detailed skeleton of the [Requirements](https://gitlab.cs.mcgill.ca/yzhou131/comp555-project-team7/-/blob/dcocs/documentation/Requirements.md) deliverable.
+I wrote the [Requirements](https://gitlab.cs.mcgill.ca/yzhou131/comp555-project-team7/-/blob/dcocs/documentation/Requirements.md) deliverable and helped with the [Important Scenarios Section]() of the Architecture deliverable.
