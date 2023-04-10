@@ -22,7 +22,7 @@ I implemented the UI for the Login and Registration pages using React. I collabo
 
 ## Back-End
 
-I implemented the "edit" API requests along with @zhu22 and @yzhou131.
+For the back-end, I was requested to help with the "edit" API requests along with @zhu22 and @yzhou131.
 
 # Deliverables
 
