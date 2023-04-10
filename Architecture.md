@@ -36,9 +36,11 @@ Instead, we believe most of the privacy risks associated with the frontend is wi
 
 We believe the largest privacy risk in the frontend is the setup script **create-react-app**. While open-source, supported by Meta, and the recommended way to create a React app for years, it has been getting less frequent updates as of late. In fact, as we were doing the project, it seems to have been delisted as the recommended way to create a React app on the React website [^cra-abandon][^cra-react-page]. Installing it with the node package manager even reveals a number of vulnerabilities in its dependencies (6). This number has fluctuated with time, but it will likely begin increasing now that development has slowed. For this reason, we are looking into switching the development environment to Vite, although since the project has already been created, we do not know if this will be finished before the deadline, depending on the ease of migration.
 
-[^cra-abandon]: [https://dev.to/ag2byte/create-react-app-is-officially-dead-h7o](https://dev.to/ag2byte/create-react-app-is-officially-dead-h7o)
+[^cra-abandon]: A. Gautam, "Goodbye create-react-app", dev.to, https://dev.to/ag2byte/create-react-app-is-officially-dead-h7o
 
-[^cra-react-page]: [https://react.dev/learn/start-a-new-react-project](https://react.dev/learn/start-a-new-react-project)
+[^cra-react-page]: "Start a New React Project", react.dev, https://react.dev/learn/start-a-new-react-project
+
+Finally, we initially considered using Typescript instead of JavaScript to reduce the possibility of runtime errors that occur frequently in untyped languages. However, the documentation for using it with React was not nearly as extensive compared to JS in addition to having a much larger initial setup complexity. As we were not familiar with React, we started with JS. Now, converting to TS would be hard, so we used `// @ts-check` and declared types in JSDocs whenever possible so that the IDEs and linters would spot type errors in the static code.
 
 ### Cookies and Storage
 
@@ -135,7 +137,7 @@ We keep the course-model in sync with the server's version by updating the cours
 
 We designed the paths for requests ("the route") such that they are grouped by functionality. They generally follow the form: `hostname/api/v1/resourceOrFunctionality/action`. For example: `localhost:8000/api/v1/courses/list`
 
-Each route category (e.g., localhost/api/v1/courses/…) is handled using Express Router.
+Each route category (e.g., localhost/api/v1/courses/…) is handled using **Express Router**.
 
 | URL Element               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -183,14 +185,20 @@ Request that involves modifying a resource (semester, course, category, grade) s
 
 # Important Scenarios
 
-#### 1. User sign-up 
+## User sign-up
 
-A user must sign up to use the system. When they initially open the application, they will be prompted to sign in or to create an account. Should the user decide to create an account, they will be asked to create a username, a password, and asked for an optional email address. For security reasons, the text for the password box the user is typing in should be obfuscated, in case of any accidental screen recording, or on-lookers. If the information passed by the user is valid (I.e., the password and confirm password match, and the username is not taken), then the system will create a new username and password combination and store it in the database. If the email was passed, then this will be stored as well. The password will be salted and hashed when stored in the database. This should allow the user to use these credentials in the future to log in securely. 
+A user must sign up to use the system. When they initially open the application, they will be prompted to sign in or to create an account. Should the user decide to create an account, they will be asked to create a username, a password, and asked for an optional email address. For security reasons, the text for the password box the user is typing in should be obfuscated, in case of any accidental screen recording, or on-lookers. If the information passed by the user is valid (I.e., the password and confirm password match, and the username is not taken), then the system will create a new username and password combination and store it in the database. The password will be salted and hashed when stored in the database. This should allow the user to use these credentials in the future to log in securely. 
 
-#### 2. User login 
+## User login 
 
-A user must log in to use the system. When they initially open the application, they will be prompted to sign in or to create an account. Should the user try to log in, they will be asked for a username, and a password. For security reasons, the text for the password box the user is typing in should be obfuscated, in case of any accidental screen recording, or on-lookers. When the user enters information into these boxes, the system will check that the username and password combination match an entry in the database. The password must be salted and hashed to check against the one stored in the database. Should the user attempt an incorrect login 3 times, they will be temporarily locked out of logging in for periods of time that incrementally increase, should they fail to login 3 times again. Should the user provide a correct username and password combination, they will be directed to their dashboard.  
+A user must log in to use the system. When they initially open the application, they will be prompted to sign in or to create an account. Should the user try to log in, they will be asked for a username, and a password. For security reasons, the text for the password box the user is typing in should be obfuscated, in case of any accidental screen recording, or on-lookers. When the user enters information into these boxes, the system will check that the username and password combination match an entry in the database. The password must be salted and hashed to check against the one stored in the database. 
 
-#### User delete account 
+## User delete account (example of non-resource protected API request)
 
-If a user enters their setting menu, they can find a button that allows them to delete their account. On click of this button, they will be logged out, and any data related to their account that is stored on the database will be wiped. 
+If a user enters their setting menu, they can find a button that allows them to delete their account. On click of this button, a request is sent to `/api/v1/account/delete`. As with all protected API requests, the request will pass through the authentication middleware that will either validate or reject the user's token. If the token is valid, the request is sent to the `/account` Express Router where the request is executed (a SQL query) and a success response sent. If not, the request fails and the account is not deleted. The frontend will either display an error or immediately log out the user, depending on the situation.
+
+## Add a grade to a category (example of resource protected API request)
+
+If a user chooses to add a grade to a category in the frontend, the frontend will send an API request with the categoryID, and the new grade's information to `/api/v1/grades/add`. These types of requests first go through the authentication middleware. They are then sent to the `/grades` router, where they pass through an ownership middleware, where the ownership middleware will use a database query to determine if the user owns the category (a large join query). If this ownership middleware accepts, a new ID is generated and the grade is inserted. We then return the grade (with ID) to the user. The frontend will display an error or success depending on the case.
+
+# References
