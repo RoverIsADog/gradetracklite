@@ -1,6 +1,6 @@
 # Contributions
 
-This document states the contributions by Yetong Zhou (@yzhou131 - <MCGILL_ID>).
+This document states the contributions by Yetong Zhou (@yzhou131 - 260929206).
 
 ## Assigned Tasks
 
