@@ -262,9 +262,31 @@ router.post("/delete", isOwnerMWDel, (req, res) => {
   isOwnerMWDel
   - Course exists, is owned by user
   */
+  const { courseID } = req.body;
+  if (!courseID) {
+    res.status(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+  }
 
-  //TODO
-  res.sendStatus(501);
+
+  // Delete the course
+  db.run("DELETE FROM courses WHERE uuid = ?", [courseID], (err) => {
+    if (err) {
+      console.log("Error deleting course:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        error: 0,
+        message: "Course deleted successfully",
+      });
+    }
+  });
 });
 
 module.exports = router;
