@@ -2,22 +2,24 @@
 
 This document states the contributions by Yetong Zhou (@yzhou131 - 260929206).
 
-## Assigned Tasks
+## Completed Tasks
 
-I was assigned the following tasks for the project:
+I did the following tasks for the project.
 
-- [X](#x)
-- [Y](#y)
-- [Z](#z)
+- [Frontend Dashboard](#frontend-dashboard)
+- [Frontend-Backend Coordination](#frontend-backend-coordination)
+- [General Coordination](#general-coordination)
 
-## X
+## Frontend Dashboard
 
-I implemented X.
+I was responsible for implementing the dashboard (the page after login) and about pages for the frontend. As of the deadline, it should be the files ending in .jsx.
 
-## Y
+## Frontend-Backend Coordination
 
-I implemented Y.
+I was responsible for making sure the frontend and backend worked together in terms of what API requests existed, their routes, how the request and responses should be formatted, etc. throughout the project.
 
-## Z
+This culminated in a massive refactoring of the backend and frontend which I lead (!1) that reconciled the differences, and added middlewares to the backend.
 
-I implemented Z.
+## General Coordination
+
+I took part in coordinating the project on Discord, and other tasks such as managing the project files, etc.
