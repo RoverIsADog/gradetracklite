@@ -119,9 +119,30 @@ router.post("/delete", isOwnerMWDel, (req, res) => {
   isOwnerMWDel
   - Target category exists, is owned by user
   */
+  const { categoryID } = req.body;
+  if (!categoryID) {
+    res.status(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+  }
 
-  //TODO
-  res.sendStatus(501);
+  // Delete the semester
+  db.run("DELETE FROM grade_categories WHERE uuid = ?", [categoryID], (err) => {
+    if (err) {
+      console.log("Error deleting category:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        error: 0,
+        message: "Category deleted successfully",
+      });
+    }
+  });
 });
 
 module.exports = router;

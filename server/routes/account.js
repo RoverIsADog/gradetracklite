@@ -95,10 +95,37 @@ router.post("/delete", (req, res) => {
   authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
    - Token valid, tok payload in req.auth, user exists
   */
+  const { auth } = req.auth;
+  if (!auth) {
+    res.status(400).json({
+      error: -2,
+      message: "Missing required query parameter",
+    });
+  }
+  
+  const { userID } = auth.uuid;
+  if (!userID) {
+    res.status(400).json({
+      error: -2,
+      message: "Missing required query parameter",
+    });
+  }
 
-  res.json({
-    error: 0,
-    message: "Deleted successfully",
+  // Delete the semester
+  db.run("DELETE FROM users WHERE uuid = ?", [userID], (err) => {
+    if (err) {
+      console.log("Error deleting user:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        error: 0,
+        message: "Account deleted successfully",
+      });
+    }
   });
 });
 
