@@ -1,4 +1,4 @@
-<center># Sean Wang (260931012) Contributions</center>
+# Sean Wang (260931012) Contributions 
 
 ## Organizational
 I organized meetings, set dates and times for people to agree on and ensured that people showed up through Direct Messaging on Discord.
