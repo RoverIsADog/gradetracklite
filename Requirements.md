@@ -12,7 +12,7 @@ There are many synchronised grade tracking apps (grades accessible from anywhere
 
 Gradebook is a system that provides similar functionality to our application – it allows users to input classes, grades, and other information, perform calculations, and make predictions about future grades.
 
-Like GradeTrackLite, Gradebook is also created by students, which might explain the fact that it provides reasonable data privacy and security measures. However, the application still collects some personally identifiable information (PII), including the user’s first and last name, Google identifier, email address and school [1]. On the other hand, GradeTrackLite strictly collects the user’s username and password (to be exact, a salted and hashed version of the password, rather than the password itself). Although Gradebook claims that this data is used for “basic functionality”, it does not seem necessary for the application’s operation to require the user’s name and school. While Gradebook’s developers claim not to sell user data, they do admit to “work[ing] directly with local advertisers to ensure relevant advertising for [their users]” [1], likely using the user’s school as location data.
+Like GradeTrackLite, Gradebook is also created by students, which might explain the fact that it provides reasonable data privacy and security measures. However, the application still collects some personally identifiable information (PII), including the user’s first and last name, Google identifier, email address and school [^gbpp]. On the other hand, GradeTrackLite strictly collects the user’s username and password (to be exact, a salted and hashed version of the password, rather than the password itself). Although Gradebook claims that this data is used for “basic functionality”, it does not seem necessary for the application’s operation to require the user’s name and school. While Gradebook’s developers claim not to sell user data, they do admit to “work[ing] directly with local advertisers to ensure relevant advertising for [their users]” [^gbpp], likely using the user’s school as location data.
 
 Gradebook allows schools to view anonymized data related to them and request to view an individual’s data (with user approval). Gradebook also claims that users can delete their data at any time, and that it will be permanently deleted (data cannot be recovered). However, Gradebook stores all user data on its servers, which could be compromised in the event of a data breach. Furthermore, it is currently unknown whether Gradebook encrypts its user data. On the other hand, GradeTrackLite allows its users to have their own personal database, stored locally on their personal machine. Additionally, we plan to encrypt user data to add an extra layer of security.
 
@@ -22,9 +22,9 @@ Overall, Gradebook seems to be fairly well privacy minded, and provides a good s
 
 Grade Tracker Pro is another system that provides similar functionality to our application, which is available on the Google Play Store for free.
 
-At first hand, it seems like Grade Tracker Pro respects its users’ privacy. It claims not to collect any data about the user [2]. Furthermore, the privacy policy states that information stored locally will not be collected but does not state what exactly is being stored locally and what isn’t. On the other hand, GradeTrackLite stores all its user data locally, and uses the android backup feature to ensure synchronisation across devices.
+At first hand, it seems like Grade Tracker Pro respects its users’ privacy. It claims not to collect any data about the user [^nspp] (we do not recommend going there). Furthermore, the privacy policy states that information stored locally will not be collected but does not state what exactly is being stored locally and what isn’t. On the other hand, Grade Tracker Pro stores all its user data locally, and uses the android backup feature to ensure synchronisation across devices instead of the developper's own servers.
 
-However, it is important to note that it uses Pollfish SDK to connect users with online surveys for revenue purposes. Pollfish SDK’s privacy policy contains a plethora of privacy concerns. Foremost, Pollfish SDK **automatically** collects all, but not limited to the following (automatically received) data [3]:
+However, it is important to note that it uses Pollfish SDK to connect users with online surveys for revenue purposes. Pollfish SDK’s privacy policy contains a plethora of privacy concerns. Foremost, Pollfish SDK **automatically** collects all, but not limited to the following (automatically received) data [^pfpp]:
 
 - Device Description
 - Network Provider
@@ -38,7 +38,7 @@ However, it is important to note that it uses Pollfish SDK to connect users with
 - User's IP address (retrieved when connecting to the server)
 - Device brand info
 
-Pollfish also collects the following data (sociodemographic and content data) [3]:
+Pollfish also collects the following data (sociodemographic and content data) [^pfpp]:
 
 - Gender
 - Age
@@ -54,7 +54,7 @@ Pollfish also collects the following data (sociodemographic and content data) [3
 - Career
 - Zip code
 
-It is important to note that upon starting the surveys or downloading the application, users consent to the privacy policy, meaning that they consent to providing all this information (which clearly includes sensitive PII), but also to the selling of such data to advertisers. While Pollfish claims to be “opt-in” [3], for a user to stop them from collecting and selling their data, the user must manually access a link on the website, and then submit their advertising ID (which we have no idea how to retrieve). On top of this, the privacy policy is buried 2 links deep under a hidden section in “Developer Contact”. It is also never required to view the privacy policy on download either. As a result, users may be unaware of the data collection practices of this third-party entity.
+It is important to note that upon starting the surveys or downloading the application, users consent to the privacy policy, meaning that they consent to providing all this information (which clearly includes sensitive PII), but also to the selling of such data to advertisers. While Pollfish claims to be “opt-in” [^pfpp], for a user to stop them from collecting and selling their data, the user must manually access a link on the website, and then submit their advertising ID (which we have no idea how to retrieve). On top of this, the privacy policy is buried 2 links deep under a hidden section in “Developer Contact”. It is also never required to view the privacy policy on download either. As a result, users may be unaware of the data collection practices of this third-party entity.
 
 As explained before, Grade Tracker Pro has a decent privacy policy if we exclude Pollfish. Unfortunately, using Pollfish opens a pandora’s box to some of the worst offenses of software privacy that we have ever seen. For this reason, we strongly recommend avoiding this app if you have any concern for the privacy of your data.
 
@@ -291,10 +291,10 @@ The seventh and final principle is the Respect for User privacy, which aims at a
 
 ## References:
 
-[1] Gradebook privacy policy - https://www.gradebook.app/privacy-policy/
+[^gbpp]: Gradebook, "Privacy Policy", gradebook.app, https://www.gradebook.app/privacy-policy/
 
-[2] NSouthProductions privacy policy - https://docs.google.com/document/d/1MGbZkGkwpGMQMERZSvQVBgqkqC86fMtNWRYxDBYwoTw/edit
+[^nspp]: NSouthProductions, "Privacy policy", google.com, https://docs.google.com/document/d/1MGbZkGkwpGMQMERZSvQVBgqkqC86fMtNWRYxDBYwoTw/edit
 
-[3] Pollfish Respondent privacy policy - https://www.pollfish.com/terms/respondent
+[^pfpp]: Pollfish Respondent privacy policy - https://www.pollfish.com/terms/respondent
 
-[4] FitGenie Privacy Policy - https://www.iubenda.com/privacy-policy/50447321
+[^fgpp]: FitGenie Privacy Policy - https://www.iubenda.com/privacy-policy/50447321
