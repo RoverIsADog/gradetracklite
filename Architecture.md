@@ -183,8 +183,14 @@ Request that involves modifying a resource (semester, course, category, grade) s
 
 # Important Scenarios
 
-- User sign-up
-- User login
-- User request information from database
-- User save information to database
-- User delete account
+#### 1. User sign-up 
+
+A user must sign up to use the system. When they initially open the application, they will be prompted to sign in or to create an account. Should the user decide to create an account, they will be asked to create a username, a password, and asked for an optional email address. For security reasons, the text for the password box the user is typing in should be obfuscated, in case of any accidental screen recording, or on-lookers. If the information passed by the user is valid (I.e., the password and confirm password match, and the username is not taken), then the system will create a new username and password combination and store it in the database. If the email was passed, then this will be stored as well. The password will be salted and hashed when stored in the database. This should allow the user to use these credentials in the future to log in securely. 
+
+#### 2. User login 
+
+A user must log in to use the system. When they initially open the application, they will be prompted to sign in or to create an account. Should the user try to log in, they will be asked for a username, and a password. For security reasons, the text for the password box the user is typing in should be obfuscated, in case of any accidental screen recording, or on-lookers. When the user enters information into these boxes, the system will check that the username and password combination match an entry in the database. The password must be salted and hashed to check against the one stored in the database. Should the user attempt an incorrect login 3 times, they will be temporarily locked out of logging in for periods of time that incrementally increase, should they fail to login 3 times again. Should the user provide a correct username and password combination, they will be directed to their dashboard.  
+
+#### User delete account 
+
+If a user enters their setting menu, they can find a button that allows them to delete their account. On click of this button, they will be logged out, and any data related to their account that is stored on the database will be wiped. 
