@@ -1238,11 +1238,22 @@ Here is a sample fail response:
 
 ## Edit Account Information (POST `/account/edit/info`)
 
-Passwords are sent in a separate request for added security
+### Request
 
-**We return a new token since we're using the token's content to know the username and other info!** The client will replace the current token with the new one, if appropriate.
+Passwords are sent in a separate request for added security.
 
-Sample Request
+On the account settings page, the user can change their username, and the frontend will send a POST request with the following content:
+
+- username
+- email
+
+Note that the email is currently deprecated, and is ignored by the back-end.
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
 
 ```json
 {
@@ -1251,29 +1262,59 @@ Sample Request
 }
 ```
 
-Sample Response
+### Response
+
+The server verifies the JWT token and checks if the username already exists. Then, it updates the username. It then sends a response with the following content:
+
+- error
+- message
+- token
+
+**We return a new token since we're using the token's content to know the username and other info!** The client will replace the current token with the new one, if appropriate.
+
+The error code corresponds to 0 for a successful deletion, otherwise it failed.
+
+| Error Code | Code Meaning                             |
+| :--------- | :--------------------------------------- |
+| 0          | Account Information updated successfully |
+| 1          | Error: invalid username                  |
+| -1         | Internal server error                    |
+| -2         | Missing required fields                  |
+
+Here is a sample success response:
 
 ```json
 {
   "error": 0,
-  "message": "Updated successfully",
-  "token": "hfuiweuifyuifyuiregyureguiguigygugsuiegh"
+  "message": "Account Information updated successfully",
+  "token": "HEADER.PAYLOAD.SIGNATURE"
 }
 ```
 
-Sample Error
+Here is a sample fail response:
 
 ```json
 {
-  "error": 1,
-  "message": "Some error",
+  "error": -2,
+  "message": "Error: missing required field",
   "token": null
 }
 ```
 
 ## Edit Account Password (POST `/account/edit/password`)
 
-Sample Request
+### Request
+
+On the account settings page, the user can change their password, and the frontend will send a POST request with the following content:
+
+- oldPassword
+- newPassword
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
 
 ```json
 {
@@ -1282,7 +1323,24 @@ Sample Request
 }
 ```
 
-Sample Response
+### Response
+
+The server verifies the JWT token and checks if the old password is correct. Then, it updates the password. It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful deletion, otherwise it failed.
+
+| Error Code | Code Meaning                             |
+| :--------- | :--------------------------------------- |
+| 0          | Account Information updated successfully |
+| 1          | Error: User not found                    |
+| 2          | Error: invalid password                  |
+| -1         | Internal server error                    |
+| -2         | Missing required fields                  |
+
+Here is a sample success response:
 
 ```json
 {
@@ -1291,7 +1349,7 @@ Sample Response
 }
 ```
 
-Sample Error
+Here is a sample fail response:
 
 ```json
 {

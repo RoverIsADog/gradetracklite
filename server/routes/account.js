@@ -1,6 +1,7 @@
 // Utilities
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 // Database
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
@@ -37,28 +38,146 @@ router.post("/edit/info", (req, res) => {
   authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
    - Token valid, tok payload in req.auth, user exists
   */
-  
-   // TODO returning placeholder for now
-  res.json({
-    error: 0,
-    message: "All good",
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMTk0M2MyMGQtYTFmMS00MzIyLWIzOGEtYzk2NzRhY2MxNGE2IiwidXNlcm5hbWUiOiJSYW5kb20iLCJlbWFpbCI6bnVsbCwiaWF0IjoxNjgwNDk5MjA1LCJleHAiOjE2ODA1MDI4MDV9.7S1amSiXtFBTEdMP3kqR6bt3TZgAAGzgpWNs2N4ZXAo",
+
+  const newUsername = req.body.username;
+
+  if (!newUsername) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+      token: null,
+    });
+    return;
+  }
+
+  // Check if username is the same
+  if (newUsername === req.auth.username) {
+    res.json({
+      error: 0,
+      message: "Account information updated successfully",
+      token: null,
+    });
+    return;
+  }
+
+  // Check if username exists
+  db.get(`SELECT * FROM users WHERE username = ?`,
+  [newUsername], (err, row) => {
+    if (err) {
+      console.error("Error updating account information:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+        token: null,
+      });
+      return;
+    }
+
+    if (row) {
+      res.status(200).json({
+        error: 1,
+        message: "Error: invalid username",
+        token: null,
+      });
+      return;
+    }
+
+    db.run(`UPDATE users SET username = ? WHERE uuid = ?`,
+    [newUsername, req.auth.uuid], (err) => {
+      if (err) {
+        console.error("Error updating account information:", err);
+        res.status(500).json({
+          error: -1,
+          message: "Internal server error",
+          token: null,
+        });
+      } else {
+        const token = jwt.sign(
+        {
+          uuid: req.auth.uuid,
+          username: newUsername,
+          email: "",
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+        );
+        res.json({
+          error: 0,
+          message: "Account information updated successfully",
+          token: token,
+        });
+      }
+    });
   });
 });
 
 /**
  * This request is for changing the account's password.
  */
-router.post("/edit/password", (req, res) => {
+router.post("/edit/password", async (req, res) => {
   /* === At this point these middlewares ran providing these guarantees ===
   authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
    - Token valid, tok payload in req.auth, user exists
   */
 
-  // TODO returning placeholder for now
-  res.json({
-    error: 0,
-    message: "All good",
+  const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !newPassword) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+    return;
+  }
+
+  // Get user
+  db.get(`SELECT * FROM users WHERE uuid = ?`,
+  [req.auth.uuid], async (err, row) => {
+    if (err) {
+      console.error("Error updating password:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+      });
+      return;
+    }
+
+    if (!row) {
+      res.status(200).json({
+        error: 1,
+        message: "Error: user not found",
+      });
+      return;
+    }
+
+    // Validate password
+    const match = await bcrypt.compare(oldPassword, row.password);
+    if (match) {
+      // Salt and hash the password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update the password
+      db.run(`UPDATE users SET password = ? WHERE uuid = ?`,
+      [hashedPassword, req.auth.uuid], (err) => {
+        if (err) {
+          console.error("Error updating password:", err);
+          res.status(500).json({
+            error: -1,
+            message: "Internal server error",
+          });
+        } else {
+          res.json({
+            error: 0,
+            message: "Password updated successfully",
+          });
+        }
+      });
+    } else {
+      res.status(200).json({
+        error: 2,
+        message: "Error: invalid password",
+      });
+      return;
+    }
   });
 });
 
