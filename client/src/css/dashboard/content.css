@@ -88,6 +88,7 @@ hover */
   display: flex;
   flex-direction: row;
   align-items: center;
+  height: 3.5rem;
 }
 
 .content-plus {
@@ -187,5 +188,10 @@ the grade-list (itself part of a category) */
 }
 
 .grade-score {
+  font-size: x-large;
+}
+
+/* ################## ACCOUNT SETTINGS ################## */
+.option-item {
   font-size: x-large;
 }

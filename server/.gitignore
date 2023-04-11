@@ -32,10 +32,12 @@ yarn-error.log*
 /public
 
 # Customizeable documents
-/docs
+/docs/privacy.md
+/docs/terms.md
 
-# Configuration files
-/conf
+# Configuration files (except the readme)
+conf/*
+!conf/README.md
 
 # pkg builds
 server-win.exe

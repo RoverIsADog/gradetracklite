@@ -240,13 +240,13 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
   */
 
   // Verify request body
-  let modifiedCourse, semesterID, semesterName;
+  let modifiedCourse, courseCredits, courseDescription, courseID, courseName, semesterID;
   try {
-    ({ modifiedSemester } = req.body);
-    ({ semesterID, semesterName } = modifiedSemester);
-    if (!modifiedSemester) res.sendStatus(400);
+    ({ modifiedCourse, semesterID } = req.body);
+    ({ courseID, courseName, courseCredits, courseDescription } = modifiedCourse);
+    if (!semesterID) res.status(400).send("Missing semesterID");
   } catch (err) {
-    res.sendStatus(400);
+    res.status(400).send("Malformed request");
     return;
   }
 
