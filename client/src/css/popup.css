@@ -12,7 +12,7 @@
 } 
 
 .popup-inner{
-    position:relative;
+    position:fixed;
     padding: 32px;
     width:100%;
     max-width: 640px;
@@ -25,4 +25,10 @@
     position:absolute;
     top: 16px;
     right: 16px;
+    background-color: rgb(177, 173, 173);
+    outline:auto
+    
+    
 }
+
+
