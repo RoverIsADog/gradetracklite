@@ -29,10 +29,6 @@ function PreviewAccChangeInfo() {
       console.log("Failed to change account information");
       btnErr(err);
     })
-
-    setTimeout(() => {
-      btnDone();
-    }, 2000);
   };
 
   return (
