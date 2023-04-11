@@ -4,8 +4,8 @@ import plusIco from "img/plus-svgrepo-com.svg";
 import { ColoredPercent, floatToDecimalStr } from "utils/Util";
 import { contextSelectedItem } from "../ContentPane";
 import ContentGradeList from "./GradeList";
-import PreviewGradeAdd from "./GradeAdd";
-import PreviewCategoryEdit from "./CatEdit";
+import PreviewGradeAdd from "../CoursePreview/GradeAdd";
+import PreviewCategoryEdit from "../CoursePreview/CatEdit";
 
 /**
  * Component responsible for displaying a category and its associated grades
@@ -16,6 +16,10 @@ import PreviewCategoryEdit from "./CatEdit";
  * In addition, this component must calculate some statistics regarding 
  * itself using its contained grades: the number of points out of the 
  * category's weight and the corresponding percentage.
+ * 
+ * Because the grade list is stored in a local state in each category rather
+ * than being part of one massive state in the content pane, grade updates do
+ * not propagate to the course header until reload. 
  * 
  * @typedef {{
  *   gradeID: string, 

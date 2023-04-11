@@ -1,7 +1,8 @@
+// @ts-check
 import React, { useContext, useState } from "react";
-import axios from "axios";
 import Popup from "./Popup";
 import { apiLocation } from "../App";
+import { networkPost } from "utils/NetworkUtils";
 
 export const RegisterForm = (props) => {
   const [username, setUsername] = useState("");
@@ -22,18 +23,18 @@ export const RegisterForm = (props) => {
         setError('Please make sure to confirm your password');
         return;
       }
-      const response = await axios.post(`${apiURL}/auth/register`, {
+      const response = await networkPost(`${apiURL}/auth/register`, {
         username,
         password,
         //email
       });
-      
-      if (response.data.error === 0) {
-        props.onFormSwitch("login");
-      } else {
-        setError('Error: invalid username or password');
-      }
+
+      alert("Account successfully created");
+
+      props.onFormSwitch("login");
+
     } catch (err) {
+      setError('Error: invalid username or password');
       console.log('Request failed:');
       console.log(err);
     }
@@ -91,7 +92,7 @@ export const RegisterForm = (props) => {
 
         {/* Checkbox for Terms and Condition */}
         <label className="auth-label" htmlFor="checkbox">
-          <input className="auth-input" value={checkbox} onClick={() => setCheckbox(true)} type="checkbox" required id="checkbox" name="checkbox" /> I have agreed to
+          <input className="auth-input" checked={checkbox} onClick={() => setCheckbox(prev => !prev)} type="checkbox" required id="checkbox" name="checkbox" /> I have agreed to
           <button className="popup-btn auth-button " onClick={() => setButtonPopup(true)} type="button">
             the privacy policy and terms of use.
           </button>
@@ -99,6 +100,7 @@ export const RegisterForm = (props) => {
 
         {/* Popup after clicking terms and conditions */}
         <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+          <h3>This privacy policy and terms are provided by your host. Contact them for more details.</h3>
           <h3>Privacy Policy</h3>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac tempus turpis. Suspendisse ultrices vulputate nunc, in sodales lacus iaculis at. In at justo sed lectus dictum tristique. Phasellus iaculis pulvinar diam. Aliquam laoreet non mauris in commodo. Maecenas id ex quis lectus lacinia accumsan. Phasellus sed velit non massa feugiat elementum. Cras viverra risus eu nulla volutpat ultrices. Sed et dui sed orci aliquam sollicitudin in eget quam. Aliquam quis odio vel eros laoreet molestie. Suspendisse consectetur porttitor arcu, vel suscipit massa venenatis in. Nulla eleifend erat sit amet mi pellentesque, ut volutpat orci lobortis. Mauris et nunc id justo semper dictum ac sit amet erat. Praesent sed diam vel leo fermentum varius. Proin pellentesque erat dui, at auctor ligula placerat vel. Mauris sagittis lacus eu diam viverra aliquet.</p>
           <p>Morbi eget dictum dolor. Phasellus tristique malesuada varius. Nunc nisi justo, efficitur a dapibus non, elementum sit amet felis. Aliquam et semper urna. Curabitur ultrices ligula turpis, id tempus odio pretium ut. In gravida, tellus quis suscipit gravida, ex magna fermentum nisl, a consequat erat quam ut lacus. Nullam fringilla sapien sit amet gravida malesuada. Nullam sollicitudin pretium urna et ultricies. Vestibulum sit amet auctor felis. Nunc et diam semper, imperdiet dolor in, maximus arcu.</p>

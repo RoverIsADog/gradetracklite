@@ -181,28 +181,104 @@ router.post("/edit/password", async (req, res) => {
   });
 });
 
+const semestersSQL = `
+SELECT uuid, semester_name AS name FROM semesters WHERE user_uuid = ?;
+`;
+
+const courseSQL = `
+WITH owned_semesters(uuid, semester_name) AS (
+  SELECT uuid, semester_name FROM semesters WHERE user_uuid = ?
+)
+SELECT c.semester_uuid AS parent_semester, c.uuid, c.course_name AS name, c.course_credits as credits, c.course_description as description
+FROM owned_semesters s JOIN courses c ON s.uuid = c.semester_uuid
+`;
+
+const categorySQL = `
+WITH owned_semesters(uuid, name) AS (
+	SELECT uuid, semester_name FROM semesters WHERE user_uuid = ?
+),
+owned_courses(uuid, name) AS (
+	SELECT c.uuid, c.course_name
+	FROM owned_semesters s JOIN courses c ON s.uuid = c.semester_uuid
+)
+SELECT cat.course_uuid AS parent_course, cat.uuid, cat.category_type AS name, cat.category_weight AS weight, cat.category_description AS description
+FROM owned_courses c JOIN grade_categories cat ON c.uuid = cat.course_uuid
+`;
+
+const gradeSQL = `
+WITH owned_semesters(uuid, name) AS (
+  SELECT uuid, semester_name FROM semesters WHERE user_uuid = ?
+),
+owned_courses(uuid, name) AS (
+  SELECT c.uuid, c.course_name
+  FROM owned_semesters s JOIN courses c ON s.uuid = c.semester_uuid
+),
+owned_categories(uuid, name) AS (
+  SELECT cat.uuid, cat.category_type
+  FROM owned_courses c JOIN grade_categories cat ON c.uuid = cat.course_uuid
+)
+SELECT g.category_uuid AS parent_category, g.uuid, g.item_name AS name, g.item_weight AS weight, g.item_mark AS points, g.item_total AS max_points, g.item_description AS description
+FROM owned_categories c JOIN grade_items g ON c.uuid = g.category_uuid
+`;
+
 /**
- * This request is for downloading all the user's data.
- * The response should trigger the browser to download a JSON file
- * (it can be some other field type aswell).
+ * This request is for downloading all the user's data in a JSON format.
  */
 router.get("/download", (req, res) => {
   /* === At this point these middlewares ran providing these guarantees ===
   authMiddlewares (JWT, JWTErrorHandling, JWTPayload, userCheck)
    - Token valid, tok payload in req.auth, user exists
   */
+  
+  const userID = req.auth.uuid;
 
-  // TODO returning placeholder JSON object for now
-  const placeholderData = {
-    mother: "Is a hamster",
-    father: "Smells of elderberries",
-    randomList: ["Tis but a scratch", "Are you the Judean People’s Front?"],
+  const sendError = () => {
+    res.sendStatus(500);
+  }
+  
+  let finalResponse = {
+    uuid: req.auth.uuid,
+    username: req.auth.username
   };
-  const placeholderDataStr = JSON.stringify(placeholderData);
-  res.set({
-    "Content-Disposition": 'attachment; filename="export.json"',
+  db.all(semestersSQL, userID, (err, semRows) => {
+    if (err) {
+      console.error(err);
+      sendError();
+      return;
+    }
+    finalResponse.semesters = semRows;
+
+    db.all(courseSQL, userID, (err, courseRows) => {
+      if (err) {
+        console.error(err);
+        sendError();
+        return;
+      }
+      finalResponse.courses = courseRows;
+
+      db.all(categorySQL, userID, (err, catRows) => {
+        if (err) {
+          console.error(err);
+          sendError();
+          return;
+        }
+
+        finalResponse.categories = catRows;
+
+        db.all(gradeSQL, userID, (err, gradeRows) => {
+          if (err) {
+            console.error(err);
+            sendError();
+            return;
+          }
+
+          finalResponse.grades = gradeRows;
+          res.json(finalResponse);
+
+        })
+      })
+    })
   });
-  res.send(placeholderDataStr);
 });
 
 /**

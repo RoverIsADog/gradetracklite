@@ -1,9 +1,10 @@
 // @ts-check
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import logoImg from "img/logo.png";
 import { apiLocation } from "App";
 import useFetch from "hooks/useFetch";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import Paragraph from "components/Dashboard/common/Paragraph";
 
 const attrib = `
 # Attributions and copyright
@@ -322,40 +323,6 @@ function About() {
       </Paragraph>
 
 
-    </div>
-  );
-}
-
-/**
- * 
- * @param {{name: string, children?: React.ReactNode}} param0 
- * @returns 
- */
-function Paragraph( {name, children} ) {
-  const [hidden, setHidden] = useState(false);
-  
-  return (
-    <div>
-      <div
-        style={{ fontSize: "xx-large", cursor: "pointer" }}
-        onClick={() => setHidden((prev) => !prev)}
-        title="Click to hide"
-      >
-        {name}
-      </div>
-      <div className="horizontal-line" />
-      <div style={{
-        padding: hidden ? "0 1rem" : "1rem",
-        margin: hidden ? "0 1rem" : "1rem",
-        border: hidden ? "none" : "solid",
-        transition: "0.5s",
-        overflow: "hidden",
-        height: hidden ? "0" : ""
-        // display: hidden ? "none" : "block"
-      }}>
-        {children}
-      </div>
-      {hidden && <div>Click the header to unhide paragraph</div>}
     </div>
   );
 }

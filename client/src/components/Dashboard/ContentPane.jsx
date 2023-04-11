@@ -3,9 +3,9 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { apiLocation } from "App";
 import "css/dashboard/content.css";
 import useFetch from "hooks/useFetch";
-import ContentCourseHeader from "./Preview/CourseHeader";
-import PreviewEmpty from "./Preview/EmptyPreview";
-import CategoryList from "./Preview/CategoryList";
+import ContentCourseHeader from "./content/CourseHeader";
+import PreviewEmpty from "./CoursePreview/EmptyPreview";
+import CategoryList from "./content/CategoryList";
 
 
 /**

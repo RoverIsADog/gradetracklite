@@ -4,7 +4,7 @@ import React from "react";
 /**
  * Represents an item in the preview pane that is larger
  * @param {{ico: any, name: string, children?: React.ReactNode}} props
- * @returns 
+ * @returns {JSX.Element}
  */
 function PreviewItemVertical({ico, name, children}) {
   return (

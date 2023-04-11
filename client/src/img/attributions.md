@@ -1,5 +1,7 @@
 # Attributions and copyright
 
+These can be found in the about page aswell.
+
 ## Fonts
 
 SIL Open Font License 1.1

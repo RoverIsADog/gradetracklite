@@ -119,9 +119,9 @@ export function passwordComplexity(pwd) {
     hasNumber: (oneNumber.test(pwd)),
     hasSpecial: (oneSpecial.test(pwd)),
     noInvalid: (noInvalid.test(pwd)),
-  }
+  };
   
-  ret.ok = ret.longEnough && ret.hasLower && ret.hasUpper && ret.hasNumber && ret.hasSpecial && ret.noInvalid
+  ret.ok = ret.longEnough && ret.hasLower && ret.hasUpper && ret.hasNumber && ret.hasSpecial && ret.noInvalid;
   
   return ret;
   

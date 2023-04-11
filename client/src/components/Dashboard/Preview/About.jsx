@@ -1,5 +1,12 @@
+// @ts-check
+import React from 'react'
 import About from 'pages/About';
 
+/**
+ * This component is basically a "wrapper" over the about page so that it
+ * fits inside of the content-area.
+ * @returns {JSX.Element}
+ */
 function ContentAbout() {
 
   return (

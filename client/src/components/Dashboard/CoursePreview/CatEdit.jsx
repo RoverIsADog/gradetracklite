@@ -22,7 +22,7 @@ import { isNumber } from "utils/Util";
  * page if we use setCategoryList to replace the list of categories with an
  * entirely new one with our changes.
  * 
- * The category proo can be used for information and initial state
+ * The category prop can be used for information and initial state
  * initialisation, but their values are not kept in sync after that. All edits
  * should be reflected onto the gradeList (via setGradeList).
  *

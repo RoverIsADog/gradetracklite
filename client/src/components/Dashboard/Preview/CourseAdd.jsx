@@ -9,10 +9,12 @@ import { networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
 import LoadingButton from "../common/LoadingButton";
 import { isNumber } from "utils/Util";
-import PreviewItemInline from "../Preview/ItemInline";
-import PreviewItemVertical from "../Preview/ItemVertical";
+import PreviewItemInline from "../CoursePreview/ItemInline";
+import PreviewItemVertical from "../CoursePreview/ItemVertical";
 
 /**
+ * Preview component to add a course
+ * 
  * @typedef {{semesterID: string, semesterName: string}} Semester
  * @typedef {{courseID: string, courseName: string, courseCredits: number, courseDescription: string}} Course
  * @typedef {{courseName: string, courseCredits: number, courseDescription: string}} CandidateCourse

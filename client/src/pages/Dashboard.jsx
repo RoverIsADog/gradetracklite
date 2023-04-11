@@ -32,11 +32,19 @@ function Dashboard() {
   // Dark mode CSS loading management
   // We could save this in local storage but whatever
   const [theme, setTheme] = useState(readCookie("theme") || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"));
+  
   const toggleTheme = () => {
     console.log("Toggling dark mode...");
+
+    // Ask the user for permission to save the theme cookie.
+    let saveIntoCookie = false;
+    if (!readCookie("theme")) {
+      saveIntoCookie = window.confirm("Do you want to save this setting in your cookies so that it persists across sessions?");
+    }
+
     setTheme((prev) => {
       const newTheme = prev === "light" ? "dark" : "light";
-      document.cookie = `theme=${newTheme}; SameSite=Strict`;
+      if (saveIntoCookie) document.cookie = `theme=${newTheme}; SameSite=Strict`;
       return newTheme;
     });
   };

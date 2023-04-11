@@ -38,7 +38,7 @@ if [[ ! -f conf/.env ]]; then
     mkdir -p conf/ > /dev/null
     touch conf/.env > /dev/null
     echo '# The following keys are relating to JWT secrets' >> conf/.env
-    echo 'JWT_SECRET = "pizza hut"' >> conf/.env
+    echo 'JWT_SECRET = "some_random_string"' >> conf/.env
     echo 'JWT_EXPIRATION_TIME = 86400' >> conf/.env
     echo '' >> conf/.env
     echo '# What port to run the server on' >> conf/.env
@@ -74,11 +74,10 @@ echo "Next steps: start the server (either start.sh or npm start in the server f
 echo "Adding SSL encryption? To quickly setup a self-signed SSL key:"
 echo "(1): Toggle USE_HTTPS to true in server/conf/.env"
 echo "(2): Generate a SSL key in server/conf"
-echo "(2): Generate a SSL key in server/conf"
 echo "        --> openssl genrsa -out key.pem"
 echo "(3): Generate a certification request for the key"
 echo "        --> openssl req -new -key key.pem -out csr.pem"
-echo "(4): Self-certify your key (your browser WILL complain, but whatever)"
+echo "(4): Self-certify your key"
 echo "        --> openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem"
 echo "This key is self certified so your browser WILL complain. It also never expires. We recommend you certify your key from a reputable certification authority."
 echo "It you're hosting, the easiest way is probably using Certbot (https://certbot.eff.org/)"

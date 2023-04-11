@@ -7,17 +7,16 @@ import { apiLocation } from "App";
 import LoadingButton from "../common/LoadingButton";
 
 /**
- * @typedef {{semesterID: string, semesterName: string}} Semester
- * @typedef {{semesterName: string}} CandidateSemester
- * @typedef {{id: string, content: JSX.Element}} Selected
+ * Preview component for editing a semester.
  * 
+ * @typedef {{semesterID: string, semesterName: string}} Semester
  * @param {{
+ *   semester: Semester,
  *   setSemesterList: React.Dispatch<React.SetStateAction<Semester[] | null>>
- *   setSelected: React.Dispatch<React.SetStateAction<Selected>>,
  * }} props 
  * @returns {JSX.Element}
  */
-function ContentSemesterAdd({ setSemesterList, setSelected }) {
+function ContentSemesterEdit({ semester, setSemesterList }) {
   const apiURL = useContext(apiLocation);
   
   // Values for controlled inputs
@@ -26,12 +25,12 @@ function ContentSemesterAdd({ setSemesterList, setSelected }) {
   // See PrevGradeEdit on why this is required
   useEffect(() => {
     console.log("Reset the component!");
-    setName("New Semester");
-  }, []);
+    setName(String(semester.semesterName));
+  }, [semester]);
 
   /** @type {(btnDone: () => void, btnErr: (err: Error) => void) => void} */
-  const sendAdd = useMemo(() => (btnDone, btnErr) => {
-    console.log("Starting create request...");
+  const sendEdit = useMemo(() => (btnDone, btnErr) => {
+    console.log("Starting edit request...");
     
     if (!name) {
       alert("Name missing or mistyped");
@@ -40,50 +39,48 @@ function ContentSemesterAdd({ setSemesterList, setSelected }) {
       return;
     }
 
-    /** @type {CandidateSemester} */
-    const candidateSemester = {
-      semesterName: name
+    /** @type {Semester} */
+    const modifiedSemester = {
+      semesterID: semester.semesterID,
+      semesterName: name,
     };
 
-    networkPost(`${apiURL}/semesters/add`, {
-      candidateSemester: candidateSemester,
+    networkPost(`${apiURL}/semesters/edit`, {
+      modifiedSemester: modifiedSemester,
     })
       .then((res) => {
         // We don't really care about the response other than it's response
         // code 200 and error code 0 (checked by networkPost).
-        console.log("Create request finished");
-
-        /** @type {Semester} */
-        const newSemester = res.newSemester;
+        console.log("Edit request finished");
 
         // Server has accepted the changed semester: replace the semester list
         // with a new list where this semester's entry is changed.
         setSemesterList((prevSemesterList) => {
-          const newList = [...prevSemesterList, newSemester];
-          console.log(`Added semester ${newSemester.semesterName}`);
+          const newList = prevSemesterList.map((sem) => {
+            return (sem.semesterID === semester.semesterID) ? modifiedSemester : sem;
+          });
+          console.log(`Modified semester ${semester.semesterName}`);
           console.log(newList);
           return newList;
         });
         
         btnDone();
-
-        // setSelected({ id: "", content: <ContentEmpty /> });
       })
       .catch((err) => {
         // Server has refused the changed semester
-        console.log(`Create request was unsuccessful!\n${err}`);
+        console.log(`Edit request was unsuccessful!\n${err}`);
         btnErr(err);
-        alert(`Create request was unsuccessful!\n${err}`);
+        alert(`Edit request was unsuccessful!\n${err}`);
         return;
       });
-  }, [name, apiURL, setSemesterList]);
+  }, [name, apiURL, semester, setSemesterList]);
   
   return (
     <div id="course-container">
       <div id="course-itself">
         <div id="course-area" style={{ height: "100%" }}>
           <div className="content-message">
-            Create the semester on the right
+            Edit the semester on the right
           </div>
         </div>
       </div>
@@ -100,7 +97,7 @@ function ContentSemesterAdd({ setSemesterList, setSelected }) {
               // console.log(e.currentTarget.textContent);
               setName(e.currentTarget.textContent);
             }}
-            title={`New semester`}
+            title={`semesterID: ${semester.semesterID}`}
             suppressContentEditableWarning={true} // The only child is text so it's ok
           >
             {/* Can't be {name} because React will keep updating it and setting
@@ -108,19 +105,19 @@ function ContentSemesterAdd({ setSemesterList, setSelected }) {
             initial value and update the React name state to the contentEditable's
             content on change, but never set the CE's actual content to the React
             state. */}
-            {"New semester"}
+            {semester.semesterName}
           </div>
 
           <div className="horizontal-line" />
           
           <div style={{ flexGrow: "1" }}></div>
 
-          <div>Currently, semesters only have a name</div>
+          <div>Currently, only the name of semesters can be changed</div>
 
           <div style={{ flexGrow: "1" }}></div>
           {/* Buttons */}
           <div className="preview-item preview-buttons">
-            <LoadingButton name="Save" longFunction={sendAdd} />
+            <LoadingButton name="Save" longFunction={sendEdit} />
           </div>
         </div>
       </div>
@@ -128,4 +125,4 @@ function ContentSemesterAdd({ setSemesterList, setSelected }) {
   );
 }
 
-export default ContentSemesterAdd;
+export default ContentSemesterEdit;

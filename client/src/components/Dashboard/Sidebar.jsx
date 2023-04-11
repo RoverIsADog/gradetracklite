@@ -16,7 +16,7 @@ import jwt_decode from "jwt-decode";
 import ContentEmpty from "./ContentEmpty";
 import SemesterChoiceList from "./SemChoiceList";
 import CourseChoiceList from "./CourseChoiceList";
-import ContentAbout from "./Content/About";
+import ContentAbout from "./Preview/About";
 
 /**
  * @typedef {{
@@ -120,11 +120,11 @@ function Sidebar() {
     try {
       // Not validating, just decoding
       const tokenStr = jWT;
-      console.log("TokenStr: " + tokenStr);
+      // console.log("TokenStr: " + tokenStr);
       /** @type {TokenPayload} */
       const content = jwt_decode(tokenStr);
-      console.log("Token decoded into");
-      console.log(content);
+      // console.log("Token decoded into");
+      // console.log(content);
       return content;
     } catch (Error) {
       alert("Malformed token");

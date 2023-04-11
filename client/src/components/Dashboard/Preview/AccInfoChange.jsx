@@ -1,9 +1,14 @@
+// @ts-check
 import { apiLocation } from 'App';
 import React, { useContext, useState } from 'react'
 import { networkPost } from 'utils/NetworkUtils';
-import PreviewItemNormal from './ItemNormal';
+import PreviewItemNormal from '../CoursePreview/ItemNormal';
 import LoadingButton from '../common/LoadingButton';
 
+/**
+ * Preview component for changing the user's username.
+ * @returns {JSX.Element}
+ */
 function PreviewAccChangeInfo() {
   const apiURL = useContext(apiLocation);
 
@@ -36,7 +41,7 @@ function PreviewAccChangeInfo() {
       <div className="preview-name">Edit Account Info</div>
       
       <div className="preview-item preview-text">
-        You can change your username and email (if you provided one) here. If you previously had an email and leave the input field blank, it will be removed. <b>We recommend you do not put any personally identifiable information in your username or email</b>
+        You can change your username here. <b>We recommend you do not put any personally identifiable information in your username</b>
       </div>
 
       <PreviewItemNormal name={`Username`} >

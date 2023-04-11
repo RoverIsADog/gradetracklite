@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 import { apiLocation } from "../App";
+import { networkPost } from "utils/NetworkUtils";
 
 
 export const LoginForm = (props) => {
@@ -16,22 +16,18 @@ export const LoginForm = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${apiURL}/auth/login`, {
+      const response = await networkPost(`${apiURL}/auth/login`, {
         username,
         password,
       });
       
-      if (response.data.error === 0) {
-        console.log('Login successful');
-        document.cookie = `token=${response.data.token}; SameSite=Strict`;
-        navigate("/app");
-      } else {
-        console.log('Login failed');
-        setError('Error: invalid username or password');
-      }
+      console.log('Login successful');
+      document.cookie = `token=${response.token}; SameSite=Strict`;
+      navigate("/app");
+      
     } catch (err) {
-      console.log("Error while logging in!")
-      console.log(err);
+      console.log('Login failed');
+      setError('Error: invalid username or password');
     }
     
   };

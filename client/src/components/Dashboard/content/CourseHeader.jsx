@@ -2,8 +2,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import plusIco from "img/plus-svgrepo-com.svg";
 import { contextCourse, contextSelectedItem } from "../ContentPane";
-import PreviewCourseEdit from "./CourseEdit";
-import PreviewCategoryAdd from "./CatAdd";
+import PreviewCourseEdit from "../CoursePreview/CourseEdit";
+import PreviewCategoryAdd from "../CoursePreview/CatAdd";
 import { floatToGPAMcgill, floatToPercentStr } from "utils/Util";
 
 /**
@@ -12,6 +12,12 @@ import { floatToGPAMcgill, floatToPercentStr } from "utils/Util";
  * 
  * As a child of the ContentPane, it itself is selectable and it provides previewers for both
  * modifying the course information and creating a new category in the course (plus).
+ * 
+ * Currently does not update on a grade being added as a grade being added does not trigger
+ * this component to rerender. The only fix is to have one massive state in the content pane
+ * that is passed down to all children (course header, categorylist, category, gradelist,
+ * grade), and having each of these children update the ENTIRE state. This is a known issue
+ * and won't be fixed.
  * 
  * @typedef {{
  *   gradeID: string, 

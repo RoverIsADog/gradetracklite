@@ -6,7 +6,7 @@ import courseIco from "img/education-books-apple-svgrepo-com.svg";
 import spinner from "img/loading.svg";
 import ContentEmpty from "./ContentEmpty";
 import { ContentPane } from "./ContentPane";
-import ContentCourseAdd from "./Content/CourseAdd";
+import ContentCourseAdd from "./Preview/CourseAdd";
 import { networkGet, networkPost } from "utils/NetworkUtils";
 import { apiLocation } from "App";
 
@@ -21,7 +21,8 @@ import { apiLocation } from "App";
 
 /**
  * 
- * @see SbChoiceCourse For more details on the implementation. Differences only here.
+ * @see SemChoiceList For more details on the implementation. Differences only here. This
+ * is basically the same thing but for courses.
  * 
  * # Network
  * On change of concerned semester, reset all fetch metrics and do a new GET request to get

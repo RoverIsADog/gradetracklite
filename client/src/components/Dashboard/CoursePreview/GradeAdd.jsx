@@ -16,19 +16,10 @@ import PreviewItemInline from "./ItemInline";
 import PreviewItemVertical from "./ItemVertical";
 
 /**
- * Renders the contents of a preview pane that allows the user to modify a
- * grade by changing its (name, weight, date(opt), description(opt)). It
- * also gives the option to delete the grade entirely.
+ * Renders the contents of a preview pane that allows the user to add a
+ * grade by setting its (name, weight, date(opt), description(opt)).
  * 
  * It should render a list of items.
- *
- * Changing the category would require minor refactoring and isn't supported.
- * Changing The semester and course would require major refactoring and aren't
- * supported.
- * 
- * Any and all changes made by this component will only be reflected on the
- * page if we use setGradeList to replace the list of grades with an entirely
- * new one with out changes.
  * 
  * The props category and grade can be used for information and initial state
  * initialisation, but their values are not kept in sync after that. All edits

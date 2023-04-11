@@ -1,11 +1,16 @@
+// @ts-check
 import { apiLocation } from "App";
 import React, { useContext, useMemo, useState } from "react";
 import { passwordComplexity } from "utils/Util";
-import PreviewItemNormal from "./ItemNormal";
+import PreviewItemNormal from "../CoursePreview/ItemNormal";
 import LoadingButton from "../common/LoadingButton";
 import errorIco from "img/error-svgrepo-com.svg"
 import { networkPost } from "utils/NetworkUtils";
 
+/**
+ * Preview component for changing the user's password.
+ * @returns {JSX.Element}
+ */
 function PreviewAccChangePwd() {
   const apiURL = useContext(apiLocation);
 

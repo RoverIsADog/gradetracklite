@@ -25,6 +25,7 @@ export async function networkGet(url, params = null) {
         "Content-Type": "application/json",
         Authorization: token ? "Bearer " + token : "",
       },
+      credentials: "omit" // We don't send any cookies
     })
       .then((response) => {
         if (!response.ok) {

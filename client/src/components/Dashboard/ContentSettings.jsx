@@ -1,12 +1,16 @@
 // @ts-check
 import React, { useState } from "react";
 import "css/dashboard/content.css";
-import EmptyPreview from "./Preview/EmptyPreview";
+import EmptyPreview from "./CoursePreview/EmptyPreview";
 import PreviewAccChangePwd from "./Preview/AccPwdChange";
 import PreviewAccDownload from "./Preview/AccDownload";
 import PreviewAccDelete from "./Preview/AccDelete";
 import PreviewAccChangeInfo from "./Preview/AccInfoChange";
 
+/**
+ * Similar to ContentPane, but for the user's settings instead.
+ * @returns {JSX.Element}
+ */
 function ContentSettings() {
 
   const [selected, setSelected] = useState(null);
