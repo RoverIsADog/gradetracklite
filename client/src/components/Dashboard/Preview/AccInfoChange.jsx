@@ -26,7 +26,7 @@ function PreviewAccChangeInfo() {
       document.cookie = `token=${res.token}; SameSite=Strict`;
       btnDone();
     }).catch((err) => {
-      console.log("Failed to change account information");
+      alert(`Failed to change account information.\n${err}`);
       btnErr(err);
     })
   };
