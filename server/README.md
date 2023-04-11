@@ -27,13 +27,13 @@ Courses
 Grade Categories
 
 - [POST /categories/add](#create-a-grade-category-post-categoriesadd)
-- [POST /categories/edit](#edit-a-category-post-coursesedit) (WIP)
+- [POST /categories/edit](#edit-a-category-post-coursesedit)
 - [POST /categories/delete](#delete-a-category-post-categoriesdelete)
 
 Grade Items
 
 - [POST /grades/add](#create-a-grade-item-post-gradesadd)
-- [POST /grades/edit](#edit-a-grade-post-coursesedit) (WIP)
+- [POST /grades/edit](#edit-a-grade-post-coursesedit)
 - [POST /grades/delete](#delete-a-grade-post-gradesdelete)
 
 Account administration
@@ -812,7 +812,7 @@ Here is a sample success response:
 ```json
 {
   "error": 0,
-  "message": "Semester deleted successfully"
+  "message": "Semester updated successfully"
 }
 ```
 
@@ -827,7 +827,21 @@ Here is a sample fail response:
 
 ## Edit a Course (POST `/courses/edit`)
 
-Sample Request
+### Request
+
+On the dashboard page, the user can select an existing course and edit its information, and the frontend will send a POST request with the following content:
+
+- modifiedCourse
+  - courseID
+  - courseName
+  - courseCredits
+  - courseDescription
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
 
 ```json
 {
@@ -840,14 +854,60 @@ Sample Request
 }
 ```
 
-## Edit a Category (POST `/courses/edit`)
+### Response
 
-Sample Request
+The server verifies the JWT token and checks if the course exists and belongs to the user. Then, it updates the course. It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful edit, otherwise it failed.
+
+| Error Code | Code Meaning                |
+| :--------- | :-------------------------- |
+| 0          | Course updated successfully |
+| -1         | Internal server error       |
+| -2         | Missing required fields     |
+
+Here is a sample success response:
 
 ```json
 {
-  "modifiedCategory":
-  {
+  "error": 0,
+  "message": "Course updated successfully"
+}
+```
+
+Here is a sample fail response:
+
+```json
+{
+  "error": -2,
+  "message": "Missing required fields"
+}
+```
+
+## Edit a Category (POST `/courses/edit`)
+
+### Request
+
+On the dashboard page, the user can select an existing category and edit its information, and the frontend will send a POST request with the following content:
+
+- modifiedCategory
+  - categoryID
+  - categoryName
+  - categoryWeight
+  - categoryDescription
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```json
+{
+  "modifiedCategory": {
     "categoryID": "59fb5718-235e-4e72-88ee-867c7783c52d",
     "categoryName": "Assignments",
     "categoryWeight": 20,
@@ -856,14 +916,63 @@ Sample Request
 }
 ```
 
-## Edit a Grade (POST `/courses/edit`)
+### Response
 
-Sample Requests
+The server verifies the JWT token and checks if the category exists and belongs to the user. Then, it updates the category. It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful edit, otherwise it failed.
+
+| Error Code | Code Meaning                  |
+| :--------- | :---------------------------- |
+| 0          | Category updated successfully |
+| -1         | Internal server error         |
+| -2         | Missing required fields       |
+
+Here is a sample success response:
 
 ```json
 {
-  "modifiedGrade":
-  {
+  "error": 0,
+  "message": "Category updated successfully"
+}
+```
+
+Here is a sample fail response:
+
+```json
+{
+  "error": -2,
+  "message": "Missing required fields"
+}
+```
+
+## Edit a Grade (POST `/courses/edit`)
+
+### Request
+
+On the dashboard page, the user can select an existing grade and edit its information, and the frontend will send a POST request with the following content:
+
+- modifiedGrade
+  - gradeID
+  - gradeName
+  - gradeWeight
+  - gradePointsAct
+  - gradePointsMax
+  - gradeDescription
+  - gradeDate
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
+
+```json
+{
+  "modifiedGrade": {
     "gradeID": "59fb5718-235e-4e72-88ee-867c7783c52d",
     "gradeName": "COMP 555 Quiz 7",
     "gradeWeight": 12.5,
@@ -872,6 +981,39 @@ Sample Requests
     "gradeDescription": "VPN Quiz",
     "gradeDate": "2023-03-16"
   }
+}
+```
+
+### Response
+
+The server verifies the JWT token and checks if the grade exists and belongs to the user. Then, it updates the grade. It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful edit, otherwise it failed.
+
+| Error Code | Code Meaning               |
+| :--------- | :------------------------- |
+| 0          | Grade updated successfully |
+| -1         | Internal server error      |
+| -2         | Missing required fields    |
+
+Here is a sample success response:
+
+```json
+{
+  "error": 0,
+  "message": "Grade updated successfully"
+}
+```
+
+Here is a sample fail response:
+
+```json
+{
+  "error": -2,
+  "message": "Missing required fields"
 }
 ```
 
@@ -1135,8 +1277,8 @@ Sample Request
 
 ```json
 {
-    "oldPassword": "1234",
-    "newPassword": "4321"
+  "oldPassword": "1234",
+  "newPassword": "4321"
 }
 ```
 

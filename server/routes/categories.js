@@ -107,8 +107,44 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
   - Target category exists, is owned by user
   */
 
-  //TODO
-  res.sendStatus(501);
+  // Get the category to modify
+  const { modifiedCategory } = req.body;
+  if (!modifiedCategory) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+    return;
+  }
+
+  // Get the category information
+  const { categoryID, categoryName, categoryWeight, categoryDescription } = modifiedCategory;
+  if (!categoryID || !categoryName || !categoryWeight || !categoryDescription) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+    return;
+  }
+
+  // Modify category
+  db.run(
+    `UPDATE grade_categories SET category_type = ?, category_weight = ?, category_description = ? WHERE uuid = ?`,
+    [categoryName, categoryWeight, categoryDescription, categoryID], (err) => {
+      if (err) {
+        console.error("Error updating category:", err);
+        res.status(500).json({
+          error: -1,
+          message: "Internal server error",
+        });
+      } else {
+        res.json({
+          error: 0,
+          message: "Category updated successfully",
+        });
+      }
+    }
+  );
 });
 
 const isOwnerMWDel = ownerCheck.getMW((req) => req.body.categoryID, ownerCheck.sql.cat);

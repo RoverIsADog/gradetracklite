@@ -108,8 +108,44 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
   - Target grade exists, is owned by user
   */
 
-  //TODO
-  res.sendStatus(501);
+  // Get the category to modify
+  const { modifiedGrade } = req.body;
+  if (!modifiedGrade) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+    return;
+  }
+
+  // Get the category information
+  const { gradeID, gradeName, gradeWeight, gradePointsAct, gradePointsMax, gradeDescription, gradeDate } = modifiedGrade;
+  if (!gradeID || !gradeName || !gradeWeight || !gradePointsAct || !gradePointsMax || !gradeDescription || !gradeDate) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+    return;
+  }
+
+  // Modify category
+  db.run(
+    `UPDATE grade_items SET item_name = ?, item_weight = ?, item_mark = ?, item_total = ?, item_description = ?, item_date = ? WHERE uuid = ?`,
+    [gradeName, gradeWeight, gradePointsAct, gradePointsMax, gradeDescription, gradeDate, gradeID], (err) => {
+      if (err) {
+        console.error("Error updating grade:", err);
+        res.status(500).json({
+          error: -1,
+          message: "Internal server error",
+        });
+      } else {
+        res.json({
+          error: 0,
+          message: "Grade updated successfully",
+        });
+      }
+    }
+  );
 });
 
 const isOwnerMWDel = ownerCheck.getMW((req) => req.body.gradeID, ownerCheck.sql.grade);
