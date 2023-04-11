@@ -16,6 +16,7 @@ if possible.
 require("dotenv").config({ path: "conf/.env" }); // Loads .env into process.env.
 let { HTTPS_ENABLED: HTTPS_ENABLED_STR, PORT: PORT_STR, SSL_PRIVATE_KEY, SSL_CERTIFICATE, JWT_SECRET } = process.env;
 let PORT = Number(PORT_STR); // It's ok if it NaNs since we check right after
+console.log(PORT);
 let HTTPS_ENABLED = HTTPS_ENABLED_STR === "true";
 
 // HTTPS error checking

@@ -129,7 +129,7 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
    - Token valid, tok payload in req.auth, user exists
   */
 
-   // Get the semester to modify
+  // Get the semester to modify
   const { modifiedSemester } = req.body;
   if (!modifiedSemester) {
     res.sendStatus(400).json({
@@ -149,31 +149,53 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
     return;
   }
 
-  // Modify semester
-  db.run(
-    `UPDATE semesters SET semester_name = ? WHERE uuid = ?`,
-    [semesterName, semesterID], (err) => {
-      if (err) {
-        console.error("Error updating semester:", err);
-        res.status(500).json({
-          error: -1,
-          message: "Internal server error",
-        });
-      } else {
-        if (this.changes > 0) {
+  // Check if the semester name already exists
+  db.get(`SELECT * FROM semesters WHERE user_uuid = ? AND semester_name = ?`,
+  [req.auth.uuid, semesterName], (err, row) => {
+    if (err) {
+      console.error("Error updating semester:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+      });
+      return;
+    }
+    
+    if (row && row.uuid !== semesterID) {
+      res.status(400).json({
+        error: 1,
+        message: "Semester name already exists",
+      });
+      return;
+    }
+
+    if (row) {
+      res.json({
+        error: 0,
+        message: "Semester updated successfully",
+      });
+      return;
+    }
+
+    // Modify semester
+    db.run(
+      `UPDATE semesters SET semester_name = ? WHERE uuid = ?`,
+      [semesterName, semesterID], (err) => {
+        if (err) {
+          console.error("Error updating semester:", err);
+          res.status(500).json({
+            error: -1,
+            message: "Internal server error",
+          });
+        } else {
           res.json({
             error: 0,
             message: "Semester updated successfully",
           });
-        } else {
-          res.status(404).json({
-            error: 1,
-            message: "Semester not found",
-          });
         }
       }
-    }
-  );
+    );
+  });
 });
 
 const isOwnerMWDel = ownerCheck.getMW((res) => res.body.semesterID, ownerCheck.sql.sem);

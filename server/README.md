@@ -13,14 +13,14 @@ Semesters
 
 - [GET /semesters/list](#list-of-semesters-get-semesterslist)
 - [POST /semesters/add](#create-a-semester-post-semestersadd)
-- [POST /semesters/edit](#edit-a-semester-post-semestersedit) (WIP)
+- [POST /semesters/edit](#edit-a-semester-post-semestersedit)
 - [POST /semesters/delete](#delete-a-semester-post-semestersdelete)
 
 Courses
 
 - [GET /courses/list](#list-of-courses-get-courseslist)
 - [POST /courses/add](#create-a-course-post-coursesadd)
-- [POST /courses/edit](#edit-a-course-post-coursesedit) (WIP)
+- [POST /courses/edit](#edit-a-course-post-coursesedit)
 - [GET /courses/get](#get-a-course-and-its-children-get-coursesget)
 - [GET /courses/delete](#delete-a-course-post-coursesdelete)
 
@@ -768,9 +768,19 @@ Sample Error
 
 ## Edit a Semester (POST `/semesters/edit`)
 
-Not sure if we should bother with that one (not sure if frontend will suport). It should be really easy so might aswell.
+### Request
 
-Sample Request
+On the dashboard page, the user can select an existing semester and edit its information, and the frontend will send a POST request with the following content:
+
+- modifiedSemester
+  - semesterID
+  - semesterName
+
+The JWT token is included in the header as follows:
+
+- `Authorization: Bearer <JWT Token>`
+
+Here is a sample request:
 
 ```json
 {
@@ -778,6 +788,40 @@ Sample Request
     "semesterID": "59fb5718-235e-4e72-88ee-867c7783c52d",
     "semesterName": "Summer 2023"
   }
+}
+```
+
+### Response
+
+The server verifies the JWT token and checks if the semester exists and belongs to the user. Then, it checks if the new name is valid, and updates the semester. It then sends a response with the following content:
+
+- error
+- message
+
+The error code corresponds to 0 for a successful edit, otherwise it failed.
+
+| Error Code | Code Meaning                  |
+| :--------- | :---------------------------- |
+| 0          | Semester updated successfully |
+| 1          | Semester name already exists  |
+| -1         | Internal server error         |
+| -2         | Missing required fields       |
+
+Here is a sample success response:
+
+```json
+{
+  "error": 0,
+  "message": "Semester deleted successfully"
+}
+```
+
+Here is a sample fail response:
+
+```json
+{
+  "error": 1,
+  "message": "Semester name already exists"
 }
 ```
 
