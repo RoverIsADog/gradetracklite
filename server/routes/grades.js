@@ -9,6 +9,7 @@ db.get("PRAGMA foreign_keys = ON");
 // Routing
 const express = require("express");
 const ownerCheck = require("../middlewares/ownerCheck");
+const { isNumber } = require("../utils/util");
 const router = express.Router();
 
 /**
@@ -40,7 +41,7 @@ router.post("/add", isOwnerMWAdd, (req, res) => {
   const { gradeName, gradeWeight, gradePointsAct, gradePointsMax, gradeDescription, gradeDate } = candidateGrade;
 
   // Check if request body contains the required fields
-  if (!categoryID || !gradeName || !gradeWeight || !gradePointsAct || !gradePointsMax || !gradeDate) {
+  if (!categoryID || !gradeName || !isNumber(gradeWeight) || !isNumber(gradePointsAct) || !gradePointsMax || !gradeDate) {
     res.status(400).json({
       error: -2,
       message: "Missing required fields",
@@ -120,7 +121,7 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
 
   // Get the category information
   const { gradeID, gradeName, gradeWeight, gradePointsAct, gradePointsMax, gradeDescription, gradeDate } = modifiedGrade;
-  if (!gradeID || !gradeName || !gradeWeight || !gradePointsAct || !gradePointsMax || !gradeDescription || !gradeDate) {
+  if (!gradeID || !gradeName || !isNumber(gradeWeight) || !isNumber(gradePointsAct) || !gradePointsMax || !gradeDescription || !gradeDate) {
     res.sendStatus(400).json({
       error: -2,
       message: "Error: missing required field",
