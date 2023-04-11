@@ -1,3 +1,11 @@
+// @ts-check
+import React, { useContext, useState } from "react";
+import logoImg from "img/logo.png";
+import { apiLocation } from "App";
+import useFetch from "hooks/useFetch";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+
+const attrib = `
 # Attributions and copyright
 
 ## Fonts
@@ -127,7 +135,7 @@ Some licenses require a copy of the license to be included with the resource. Th
 
 Replace copyright holder with author. Years are not specified and could not be found.
 
-```txt
+\`\`\`txt
 MIT License
 
 Copyright (c) [year] [author]
@@ -149,11 +157,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
+\`\`\`
 
 ### License for the Montserrat font
 
-```txt
+\`\`\`txt
 Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
@@ -247,4 +255,109 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
-```
+\`\`\`
+
+`
+
+function About() {
+
+  const apiURL = useContext(apiLocation);
+
+  const { loading: loadingPrivacy, error: errorPrivacy, data: dataPrivacy } = useFetch(`${apiURL}/docs/privacy`);
+  const { loading: loadingTerms, error: errorTerms, data: dataTerms } = useFetch(`${apiURL}/docs/terms`);
+
+  return (
+    <div style={{ padding: '2rem' }}>
+      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+        <img src={logoImg} className="not-icon" style={{ height: "6rem" }} alt="Logo" />
+      </div>
+
+      {/* About */}
+      <Paragraph name="About">
+        <p>
+          GradeTrackLite is a simple privacy-conscious grade tracking webapp.
+        </p>
+        <p>
+          GradeTrackLite authors: COMP555 Project Group 7
+        </p>
+        <p>
+          Your host is your data processor and you are subject to their terms of use and privacy notice, which are attached below. Read them carefully and contact them if you have any questions. 
+        </p>
+      </Paragraph>
+
+      <Paragraph name="Cookie Usage">
+        <p>
+          This website uses two cookies: "theme" and "token"
+        </p>
+        <ul>
+          <li>token: stores your authentication token. The site cannot function without it. Removed on logout.</li>
+          <li>theme: either "dark" or "light". <b>Only set if you change the theme from the default</b> (click the sun/moon).</li>
+        </ul>
+      </Paragraph>
+
+      {/* Privacy Policy */}
+      <Paragraph name="Your Host's Privacy Notice">
+        {loadingPrivacy && <div>loading privacy policy...</div>}
+        {errorPrivacy && <div style={{color: "red"}}>Error loading privacy policy!</div>}
+        {
+          dataPrivacy && <ReactMarkdown>{dataPrivacy.content}</ReactMarkdown>
+        }
+      </Paragraph>
+      
+      {/* Terms of Use */}
+      <Paragraph name="Your Host's Terms of Use">
+        {loadingTerms && <div>loading privacy policy...</div>}
+        {errorTerms && <div style={{color: "red"}}>Error loading privacy policy!</div>}
+        {
+          dataTerms && <ReactMarkdown>{dataTerms.content}</ReactMarkdown>
+        }
+      </Paragraph>
+
+      {/* Attributions */}
+      <Paragraph name="Attributions and Licenses">
+        <p>
+          This webapp uses open-licensed resources. Their authors and copies of their respective licenses (if required) are listed below.
+        </p>
+        <ReactMarkdown>{attrib}</ReactMarkdown>
+      </Paragraph>
+
+
+    </div>
+  );
+}
+
+/**
+ * 
+ * @param {{name: string, children?: React.ReactNode}} param0 
+ * @returns 
+ */
+function Paragraph( {name, children} ) {
+  const [hidden, setHidden] = useState(false);
+  
+  return (
+    <div>
+      <div
+        style={{ fontSize: "xx-large", cursor: "pointer" }}
+        onClick={() => setHidden((prev) => !prev)}
+        title="Click to hide"
+      >
+        {name}
+      </div>
+      <div className="horizontal-line" />
+      <div style={{
+        padding: hidden ? "0 1rem" : "1rem",
+        margin: hidden ? "0 1rem" : "1rem",
+        border: hidden ? "none" : "solid",
+        transition: "0.5s",
+        overflow: "hidden",
+        height: hidden ? "0" : ""
+        // display: hidden ? "none" : "block"
+      }}>
+        {children}
+      </div>
+      {hidden && <div>Click the header to unhide paragraph</div>}
+    </div>
+  );
+}
+
+export default About;

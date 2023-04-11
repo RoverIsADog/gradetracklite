@@ -1,0 +1,11 @@
+{
+   "compilerOptions": {
+       "jsx": "react",
+       "strict": false,
+       "strictPropertyInitialization": false,
+       "strictNullChecks": false,
+       "baseUrl": "src"
+   },
+   "include": ["./src/**/*", "./src/img/*","custom.d.ts", "src"]
+}
+ 

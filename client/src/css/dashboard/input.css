@@ -45,6 +45,10 @@ don't stand out (except for a bottom edge) when unused. */
   width: 3em;
 }
 
+.input-large {
+  
+}
+
 .input-small::-webkit-outer-spin-button,
 .input-small::-webkit-inner-spin-button {
   -webkit-appearance: none;

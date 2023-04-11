@@ -20,14 +20,26 @@
 /* ################## PREVIEW PROPERTY HEADER ################## */
 
 .preview-item-name {
-  padding-left: 0.5rem;
   font-size: large;
   font-weight: bold;
 }
 
 .preview-item-ico {
-  height: 2rem;
-  width: 2rem;
+  height: 1.5rem;
+  width: 1.5rem;
+  padding-right: 0.5rem;
+}
+
+/* ################## TEXT PROPERTY ################## */
+/* These properties consist of text only */
+.preview-text {
+}
+
+.password-condition {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
 }
 
 /* ################## INLINE PROPERTY ################## */
@@ -58,6 +70,25 @@ itself on the right */
 .preview-buttons {
   display: flex;
   flex-direction: row;
+}
+.preview-buttons>button {
+  flex-grow: 1;
+  max-width: calc(50% - 0.4rem);
+  height: 2rem;
+  border-radius: 0;
+  border: 0;
+  margin: 0 0.2rem;
+  font-family: inherit;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.preview-buttons>button>img {
+  transition: 0.2s;
+  width: 0;
+  padding: 0;
 }
 
 /* ################## VERTICAL PROPERTY ################## */

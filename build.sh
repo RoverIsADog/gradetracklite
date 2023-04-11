@@ -52,7 +52,7 @@ if [[ ! -f conf/.env ]]; then
 fi
 
 # Creating sample privacy policies if doesn't exist
-if [[ ! -f conf/docs/privacy.md || ! -f conf/docs/terms.md ]]; then
+if [[ ! -f docs/privacy.md || ! -f docs/terms.md ]]; then
     mkdir -p docs/ > /dev/null
     touch docs/privacy.md > /dev/null
     echo '# Privacy Policy' >> docs/privacy.md
