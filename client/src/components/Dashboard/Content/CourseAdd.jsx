@@ -102,7 +102,7 @@ function ContentCourseAdd({ semester, setCourseList, setSelected }) {
         });
     },
     // eslint-disable-next-line
-    [name]
+    [name, credits, description]
   );
 
   return (
