@@ -20,6 +20,7 @@ export const RegisterForm = (props) => {
     try {
       if (password!==confirmpassword){
         setError('Please make sure to confirm your password');
+        return;
       }
       const response = await axios.post(`${apiURL}/auth/register`, {
         username,
