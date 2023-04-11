@@ -41,9 +41,9 @@ the dark theme variables take precedence.
   /* Has to be brighter */
 
   /* Inputs */
-  --input-color: #ffffff75;
-  --input-bottom-line: #d9d9d9;
-  --input-bottom-background: linear-gradient(to bottom, #00000000 96%, #d9d9d9 4%), white;
+  --input-background-color: #ffffff75;
+  --input-line: #d9d9d9;
+  --input-bottom-background: linear-gradient(to bottom, #00000000 96%, var(--input-line) 4%);
   --input-hover: white;
 
   /* Icons */
@@ -84,11 +84,8 @@ the dark theme variables take precedence.
   /* Has to be brighter */
 
   /* Inputs */
-  --input-color: #00000020;
-  --input-bottom-line: #505050;
-  --input-bottom-line-err: red;
-  --input-bottom-background: linear-gradient(to bottom, #00000000 96%, #505050 4%), #00000099;
-  --input-bottom-background-err: linear-gradient(to bottom, #00000000 96%, red 4%), 00000099;
+  --input-background-color: #00000020;
+  --input-line: #505050;
   --input-hover: #00000099;
 
   /* Icons */
@@ -171,8 +168,14 @@ the category's select colour */
 /* #################### FROM INPUT.CSS ####################  */
 .dash-input,
 .dash-textarea {
-  border-bottom-color: var(--input-bottom-line);
-  background-color: var(--input-color);
+  border-bottom-color: var(--input-line);
+  background-color: var(--input-background-color);
+}
+
+.dash-input-err,
+.dash-textarea-err {
+  --input-line: var(--color-bad) !important;
+  --input-bottom-background: linear-gradient(to bottom, #00000000 96%, var(--input-line) 4%) !important;
 }
 
 .dash-input:focus,

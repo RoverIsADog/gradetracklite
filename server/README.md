@@ -876,7 +876,8 @@ Sample Error
 Sample Request
 ```json
 {
-    "password": "4321"
+    "oldPassword": "1234",
+    "newPassword": "4321"
 }
 ```
 Sample Response

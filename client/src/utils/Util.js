@@ -73,3 +73,56 @@ export function floatToGPAMcgill(percent) {
     </>
   );
 }
+
+/**
+ * 
+ * @typedef {{ 
+ *   ok: boolean
+ *   longEnough: boolean
+ *   hasLower: boolean
+ *   hasUpper: boolean
+ *   hasNumber: boolean
+ *   hasSpecial: boolean
+ *   noInvalid: boolean
+ * }} returnVal
+ * 
+ * Checks whether the password is sophisticated enough and returns a boolean
+ * of whether it is, and an error message if it is not.
+ * 
+ * ^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?!.* ).{8,}$
+ * 
+ * ^ ... $: Match the entire string
+ * (?=.*[A-Z]): Match at least one uppercase
+ * (?=.*[a-z]): Match at least one lowercase
+ * (?=.*[0-9]): Match at least one number
+ * (?=.*[!@#\$%\^&\*]): Match at least one special (escaped in regex string)
+ * (?!.* ): Doesn't match any spaces
+ * .{8,}: Match at least 8 characters
+ * 
+ * @param {string} pwd 
+ * @returns {returnVal}
+ */
+export function passwordComplexity(pwd) {
+
+  const oneLower = new RegExp('^(?=.*[a-z]).{1,}$');
+  const oneUpper = new RegExp('^(?=.*[A-Z]).{1,}$');
+  const oneNumber = new RegExp('^(?=.*[0-9]).{1,}$');
+  const oneSpecial = new RegExp('^(?=.*[!@#\\$%\\^&\\*]).{1,}$');
+  const noInvalid = new RegExp('^(?!.* ).{1,}$');
+
+  /** @type {returnVal} */
+  let ret = {
+    ok: false,
+    longEnough: (pwd.length >= 8),
+    hasLower: (oneLower.test(pwd)),
+    hasUpper: (oneUpper.test(pwd)),
+    hasNumber: (oneNumber.test(pwd)),
+    hasSpecial: (oneSpecial.test(pwd)),
+    noInvalid: (noInvalid.test(pwd)),
+  }
+  
+  ret.ok = ret.longEnough && ret.hasLower && ret.hasUpper && ret.hasNumber && ret.hasSpecial && ret.noInvalid
+  
+  return ret;
+  
+}

@@ -106,13 +106,20 @@ function Sidebar() {
   /** @type {[Course | null, React.Dispatch<React.SetStateAction<Course | null>>]} */
   const [concernedCourse, setConcernedCourse] = useState(null);
 
+  // Token management (allow changing)
+  const [jWT, setJWT] = useState(readCookie("token"));
+  const currentCookie = readCookie("token");
+  if (jWT !== currentCookie) {
+    setJWT(currentCookie);
+  }
+
   // Get the username from the token.
   const navigate = useNavigate();
   /** @type {TokenPayload} */
   const tokenPayload = useMemo(() => {
     try {
       // Not validating, just decoding
-      const tokenStr = readCookie("token");
+      const tokenStr = jWT;
       console.log("TokenStr: " + tokenStr);
       /** @type {TokenPayload} */
       const content = jwt_decode(tokenStr);
@@ -125,7 +132,7 @@ function Sidebar() {
       return null;
     }
     // eslint-disable-next-line
-  }, []); // Run on page load only
+  }, [jWT]); // Run on page load only
 
   return (
     <div id="sidebar-container">
