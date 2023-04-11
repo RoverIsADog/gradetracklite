@@ -120,9 +120,31 @@ router.post("/delete", isOwnerMWDel, (req, res) => {
   isOwnerMWDel
   - Target grade exists, is owned by user
   */
+  const { gradeID } = req.body;
+  if (!gradeID) {
+    res.status(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+  }
 
-  //TODO
-  res.sendStatus(501);
+
+  // Delete the course
+  db.run("DELETE FROM grade_items WHERE uuid = ?", [gradeID], (err) => {
+    if (err) {
+      console.log("Error deleting grade:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        error: 0,
+        message: "Grade deleted successfully",
+      });
+    }
+  });
 });
 
 module.exports = router;

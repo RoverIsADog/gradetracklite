@@ -129,18 +129,79 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
    - Token valid, tok payload in req.auth, user exists
   */
 
-  // Potentially only those that changed are sent over, so expect some of these to be undefined? idk
-  //TODO
-  res.sendStatus(501);
+   // Get the semester to modify
+  const { modifiedSemester } = req.body;
+  if (!modifiedSemester) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+    return;
+  }
+
+  // Get the semester information
+  const { semesterID, semesterName } = modifiedSemester;
+  if (!semesterID || !semesterName) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+    return;
+  }
+
+  // Modify semester
+  db.run(
+    `UPDATE semesters SET semester_name = ? WHERE uuid = ?`,
+    [semesterName, semesterID], (err) => {
+      if (err) {
+        console.error("Error updating semester:", err);
+        res.status(500).json({
+          error: -1,
+          message: "Internal server error",
+        });
+      } else {
+        if (this.changes > 0) {
+          res.json({
+            error: 0,
+            message: "Semester updated successfully",
+          });
+        } else {
+          res.status(404).json({
+            error: 1,
+            message: "Semester not found",
+          });
+        }
+      }
+    }
+  );
 });
 
 const isOwnerMWDel = ownerCheck.getMW((res) => res.body.semesterID, ownerCheck.sql.sem);
 router.post("/delete", isOwnerMWDel, (req, res) => {
   const { semesterID } = req.body;
-  if (!semesterID) res.sendStatus(400);
+  if (!semesterID) {
+    res.status(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+  }
 
-  //TODO
-  res.sendStatus(501);
+  // Delete the semester
+  db.run("DELETE FROM semesters WHERE uuid = ?", [semesterID], (err) => {
+    if (err) {
+      console.log("Error deleting semester:", err);
+      res.status(500).json({
+        error: -1,
+        message: "Internal server error",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        error: 0,
+        message: "Semester deleted successfully",
+      });
+    }
+  });
 });
 
 module.exports = router;

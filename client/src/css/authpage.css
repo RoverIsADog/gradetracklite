@@ -29,16 +29,38 @@
 }
 
 .top-bar{
-  background-color:rgb(59, 58, 58);
+  background-color:rgb(113, 129, 143);
+  background-image: linear-gradient(-90deg, #33332e, #364655,#616972 70%);
   overflow: hidden;
-  border: black;
   box-shadow: 0 8px 6px -6px black;
   height: 5vh;
+  justify-content: space-between;
+  align-items: center;
+  display:flex;
+  padding: 0 10px;
 }
 
 .top-bar-text{
+  text-align: left;
+  margin: 1rem 1rem 1rem 1rem;
+  font-size: 1.6em;
+  font-style: oblique;
+  font-weight: 400;
+  background: none;
+  border: none;
+  cursor:pointer;
+}
+
+.about-btn{
   text-align: right;
-  margin: 0.5rem 1rem 0 0;
+  margin: 1rem 1rem 1rem 1rem;
+  font-size: 1.4em;
+  font-style:italic;
+  font-weight: 400;
+  background: none;
+  border: none;
+  cursor:pointer;
+  
 }
 
 .auth-label {
@@ -100,6 +122,7 @@
 
 .error-message {
   color: #f44336;
+  text-align: center;
 }
 
 
