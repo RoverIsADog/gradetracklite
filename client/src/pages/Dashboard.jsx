@@ -1,10 +1,10 @@
 // @ts-check
 import React, { createContext, useState } from "react";
-import Sidebar from "../components/Dashboard/Sidebar";
-import "../css/dashboard/styles.css";
-import "../css/dashboard/input.css";
-import "../css/dashboard/colors.css";
-import { readCookie } from "../utils/Util";
+import Sidebar from "components/Dashboard/Sidebar";
+import "css/dashboard/styles.css";
+import "css/dashboard/input.css";
+import "css/dashboard/colors.css";
+import { readCookie } from "utils/Util";
 
 /**
  * Context providing a function to allow changing the theme of the dashboard.
@@ -12,7 +12,7 @@ import { readCookie } from "../utils/Util";
  * Could be moved up the component so that the login page can also use it, but
  * there are no more user-defined divs above the dashboard (except root &
  * body), so we can't easily set a property data-theme. 
- * @type {React.Context}
+ * @type {React.Context<{theme: string, toggleTheme: () => void}>}
  */
 const contextTheme = createContext(null);
 
@@ -31,12 +31,12 @@ const contextTheme = createContext(null);
 function Dashboard() {
   // Dark mode CSS loading management
   // We could save this in local storage but whatever
-  const [theme, setTheme] = useState(readCookie("theme") || "light");
+  const [theme, setTheme] = useState(readCookie("theme") || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"));
   const toggleTheme = () => {
     console.log("Toggling dark mode...");
     setTheme((prev) => {
       const newTheme = prev === "light" ? "dark" : "light";
-      document.cookie = `theme=${newTheme}`;
+      document.cookie = `theme=${newTheme}; SameSite=Strict`;
       return newTheme;
     });
   };

@@ -51,7 +51,7 @@ function useFetch(url) {
       method: "GET",
       headers: {
         // Can't use new header() because it will lowercase it
-        Authorization: token ? "Bearer " + token : "Bearer randomToken",
+        Authorization: token ? "Bearer " + token : "",
       },
       signal: abortController.signal // stop request on unmount
     };
@@ -69,7 +69,7 @@ function useFetch(url) {
           throw new Error("Error: response status: " + response.status);
         }
         console.log("Response received and is OK");
-        console.log(response);
+        // console.log(response);
         return response.json(); // Another promise
       })
       /* .then: We wait until the promise resolves (AKA the response is parsed into JSON)
@@ -77,7 +77,7 @@ function useFetch(url) {
         the states. */
       .then((json) => {
         console.log("Response JSON content is");
-        console.log(json);
+        // console.log(json);
 
         // In the event of a nonfatal error
         if (json.error && json.error !== 0) {
@@ -92,7 +92,7 @@ function useFetch(url) {
         // Ignore abort errors
         if (err.name === 'AbortError') return;
         console.log("Error with request");
-        console.log(err);
+        // console.log(err);
         setError(err);
         setLoading(false);
         setData(null);

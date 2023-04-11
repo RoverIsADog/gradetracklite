@@ -1,3 +1,4 @@
+// @ts-check
 import React, { createContext } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import About from "./pages/About";
@@ -14,6 +15,8 @@ import Dashboard from "./pages/Dashboard"; // Path: /app
  * In production, this relative path (without a hostname) allows API calls to be sent
  * to wherever the website was served from (which is the same as the server).
  */
+
+/** @type {React.Context<string>} */
 const apiLocation = createContext(null);
 
 function App() {
