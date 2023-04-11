@@ -846,7 +846,8 @@ Sample Request
 
 ```json
 {
-  "modifiedCategory": {
+  "modifiedCategory":
+  {
     "categoryID": "59fb5718-235e-4e72-88ee-867c7783c52d",
     "categoryName": "Assignments",
     "categoryWeight": 20,
@@ -861,7 +862,8 @@ Sample Requests
 
 ```json
 {
-  "modifiedGrade": {
+  "modifiedGrade":
+  {
     "gradeID": "59fb5718-235e-4e72-88ee-867c7783c52d",
     "gradeName": "COMP 555 Quiz 7",
     "gradeWeight": 12.5,

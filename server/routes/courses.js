@@ -92,10 +92,20 @@ router.post("/add", isOwnerMWAdd, (req, res) => {
 
   // Get request body
   const { semesterID, candidateCourse } = req.body;
+
+  // Check if request body contains the required fields
+  if (!semesterID || !candidateCourse) {
+    res.status(400).json({
+      error: -2,
+      message: "Missing required fields",
+    });
+    return;
+  }
+
   const { courseName, courseCredits, courseDescription } = candidateCourse;
 
   // Check if request body contains the required fields
-  if (!semesterID || !courseName || !courseCredits) {
+  if (!courseName || !courseCredits) {
     res.status(400).json({
       error: -2,
       message: "Missing required fields",
@@ -104,7 +114,8 @@ router.post("/add", isOwnerMWAdd, (req, res) => {
   }
 
   // Check that course does not already exist
-  db.get("SELECT * FROM courses WHERE semester_uuid = ? AND course_name = ?", [semesterID, courseName], (err, courseRow) => {
+  db.get("SELECT * FROM courses WHERE semester_uuid = ? AND course_name = ?",
+  [semesterID, courseName], (err, courseRow) => {
     if (err) {
       console.error("Error selecting course:", err);
       res.status(500).json({
@@ -126,7 +137,8 @@ router.post("/add", isOwnerMWAdd, (req, res) => {
 
     // SQL query
     const newCourseID = uuidv4();
-    db.run("INSERT INTO courses (uuid, semester_uuid, course_name, course_credits, course_description) VALUES (?, ?, ?, ?, ?)", [newCourseID, semesterID, courseName, courseCredits, courseDescription || "No Description."], (err) => {
+    db.run("INSERT INTO courses (uuid, semester_uuid, course_name, course_credits, course_description) VALUES (?, ?, ?, ?, ?)",
+    [newCourseID, semesterID, courseName, courseCredits, courseDescription || "No Description."], (err) => {
       if (err) {
         console.error("Error inserting course:", err);
         res.status(500).json({
@@ -239,19 +251,44 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
   - Course exists, is owned by user
   */
 
-  // Verify request body
-  let modifiedCourse, courseCredits, courseDescription, courseID, courseName, semesterID;
-  try {
-    ({ modifiedCourse, semesterID } = req.body);
-    ({ courseID, courseName, courseCredits, courseDescription } = modifiedCourse);
-    if (!semesterID) res.status(400).send("Missing semesterID");
-  } catch (err) {
-    res.status(400).send("Malformed request");
+  // Get the course to modify
+  const { modifiedCourse } = req.body;
+  if (!modifiedCourse) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
     return;
   }
 
-  //TODO
-  res.sendStatus(501);
+  // Get the course information
+  const { courseID, courseName, courseCredits, courseDescription } = modifiedCourse;
+  if (!courseID || !courseName || !courseCredits || !courseDescription) {
+    res.sendStatus(400).json({
+      error: -2,
+      message: "Error: missing required field",
+    });
+    return;
+  }
+
+  // Modify course
+  db.run(
+    `UPDATE courses SET course_name = ?, course_credits = ?, course_description = ? WHERE uuid = ?`,
+    [courseName, courseCredits, courseDescription, courseID], (err) => {
+      if (err) {
+        console.error("Error updating course:", err);
+        res.status(500).json({
+          error: -1,
+          message: "Internal server error",
+        });
+      } else {
+        res.json({
+          error: 0,
+          message: "Course updated successfully",
+        });
+      }
+    }
+  );
 });
 
 const isOwnerMWDel = ownerCheck.getMW((req) => req.body.courseID, ownerCheck.sql.course);
