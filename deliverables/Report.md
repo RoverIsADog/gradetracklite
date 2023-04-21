@@ -114,4 +114,3 @@ In short, we concluded that because our application works perfectly well without
 Another lesson we learned is that ensuring privacy to users while allowing them full control over data is very difficult. There is a balance between security, ease of use, and privacy that is hard to thread. For example, we can ensure higher security by enforcing HTTPS, but doing so already adds significant complexity that the host has to deal with. In addition, security features such as email password recovery increase security at the cost of requiring an email address, which could be personally identifiable. We believe that the compromises we made (no email account recovery, optional HTTPS, etc.) strike a good balance between these three points. There is only so much an average user is likely to want to put up with before they switch to another more convenient service even if they know it is less private.
 
 # References
-

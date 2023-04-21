@@ -6,67 +6,7 @@ GradeTrackLite is a privacy-minded, user-friendly academic grade tracking web ap
 
 ## Sample Systems
 
-There are many synchronised grade tracking apps (grades accessible from anywhere). We searched “Grade Tracking App” on Google and picked 3 from the first page, which is what most users would likely find as well. We picked **Gradebook**, **Grade Tracker Pro**, and **Grades – Grade Calculator, GPA**.
-
-### Gradebook
-
-Gradebook is a system that provides similar functionality to our application – it allows users to input classes, grades, and other information, perform calculations, and make predictions about future grades.
-
-Like GradeTrackLite, Gradebook is also created by students, which might explain the fact that it provides reasonable data privacy and security measures. However, the application still collects some personally identifiable information (PII), including the user’s first and last name, Google identifier, email address and school [^gbpp]. On the other hand, GradeTrackLite strictly collects the user’s username and password (to be exact, a salted and hashed version of the password, rather than the password itself). Although Gradebook claims that this data is used for “basic functionality”, it does not seem necessary for the application’s operation to require the user’s name and school. While Gradebook’s developers claim not to sell user data, they do admit to “work[ing] directly with local advertisers to ensure relevant advertising for [their users]” [^gbpp], likely using the user’s school as location data.
-
-Gradebook allows schools to view anonymized data related to them and request to view an individual’s data (with user approval). Gradebook also claims that users can delete their data at any time, and that it will be permanently deleted (data cannot be recovered). However, Gradebook stores all user data on its servers, which could be compromised in the event of a data breach. Furthermore, it is currently unknown whether Gradebook encrypts its user data. On the other hand, GradeTrackLite allows its users to have their own personal database, stored locally on their personal machine. Additionally, we plan to encrypt user data to add an extra layer of security.
-
-Overall, Gradebook seems to be fairly well privacy minded, and provides a good service to its users, for free, making it a reasonable alternative for users who do not mind handing over their name, Google identifier, email and school data and having this information stored on servers.
-
-### Grade Tracker Pro
-
-Grade Tracker Pro is another system that provides similar functionality to our application, which is available on the Google Play Store for free.
-
-At first hand, it seems like Grade Tracker Pro respects its users’ privacy. It claims not to collect any data about the user [^nspp] (we do not recommend going there). Furthermore, the privacy policy states that information stored locally will not be collected but does not state what exactly is being stored locally and what isn’t. On the other hand, Grade Tracker Pro stores all its user data locally, and uses the android backup feature to ensure synchronisation across devices instead of the developper's own servers.
-
-However, it is important to note that it uses Pollfish SDK to connect users with online surveys for revenue purposes. Pollfish SDK’s privacy policy contains a plethora of privacy concerns. Foremost, Pollfish SDK **automatically** collects all, but not limited to the following (automatically received) data [^pfpp]:
-
-- Device Description
-- Network Provider
-- Operating system and its version
-- Type of connection (e.g., Wi-Fi)
-- Device language
-- If roaming is used
-- If accessibility is enabled
-- If the Device is hardware accelerated
-- Exact time of communication with server
-- User's IP address (retrieved when connecting to the server)
-- Device brand info
-
-Pollfish also collects the following data (sociodemographic and content data) [^pfpp]:
-
-- Gender
-- Age
-- Education
-- Income level
-- Race
-- Spoken languages
-- Organization role
-- Organization size
-- Year of birth
-- Marital status
-- Employment
-- Career
-- Zip code
-
-It is important to note that upon starting the surveys or downloading the application, users consent to the privacy policy, meaning that they consent to providing all this information (which clearly includes sensitive PII), but also to the selling of such data to advertisers. While Pollfish claims to be “opt-in” [^pfpp], for a user to stop them from collecting and selling their data, the user must manually access a link on the website, and then submit their advertising ID (which we have no idea how to retrieve). On top of this, the privacy policy is buried 2 links deep under a hidden section in “Developer Contact”. It is also never required to view the privacy policy on download either. As a result, users may be unaware of the data collection practices of this third-party entity.
-
-As explained before, Grade Tracker Pro has a decent privacy policy if we exclude Pollfish. Unfortunately, using Pollfish opens a pandora’s box to some of the worst offenses of software privacy that we have ever seen. For this reason, we strongly recommend avoiding this app if you have any concern for the privacy of your data.
-
-### Grades – Grade Calculator, GPA
-
-Our final comparison is to “Grades – Grade Calculator, GPA”, which is available for free on the Apple App store. The app follows uses a freemium model, offering basic services for free and allowing users to purchase a premium subscription for additional features, such as more courses, no ads, etc.
-
-One big issue is that we were not able to find a concrete privacy policy for this app. The privacy policy link redirects to the privacy policy for another app, “FitGenie” - an app created by FitGenie LLC, which has the same developers as Plutonium Apps LLC – the creators of the Grades app.
-
-Considering that there is no concrete privacy policy, it would be safe to assume that the app does not provide the user with adequate privacy protection. Even if we assume that this app has the same privacy policy as FitGenie, the users’ privacy is not well respected. The FitGenie privacy policy allows for the collection of almost all the users’ data, including location data, biometric data, camera permissions, Facebook account access, google data, and much more. To top it all off, the app is also allowed to sell this data to advertisers to be used for “interest-based advertising”.
-
-It is not too far-fetched to assume that the developers of one app would have similar lapses in attention when it comes to providing the user with proper privacy. We recommend that users stay away from this app.
+There are many synchronised grade tracking apps (app and grades accessible from anywhere). We searched “Grade Tracking App” on Google and picked 3 from the first page, which is what most users would likely find as well. We found that all three had some serious potential privacy issues, be it from their 3rd party integrations or analysing their privacy policies. In addition, they did not have an option for self-hosting.
 
 ## Functional Requirements
 
@@ -288,13 +228,3 @@ The sixth principle is Visibility and Transparency, which aims at being open abo
 ### 7. Respect for User Privacy
 
 The seventh and final principle is the Respect for User privacy, which aims at allowing users to manage their data easily. In GradeTrackLite, we implement this principle by giving users the ability to add and delete account information such as courses and grades. They also have the option to download all their account data and delete their account at the click of a button without the possibility of the server host blocking it. Overall, once users make an account, they have full control over their data.
-
-## References:
-
-[^gbpp]: Gradebook, "Privacy Policy", gradebook.app, https://www.gradebook.app/privacy-policy/
-
-[^nspp]: NSouthProductions, "Privacy policy", google.com, https://docs.google.com/document/d/1MGbZkGkwpGMQMERZSvQVBgqkqC86fMtNWRYxDBYwoTw/edit
-
-[^pfpp]: Pollfish Respondent privacy policy - https://www.pollfish.com/terms/respondent
-
-[^fgpp]: FitGenie Privacy Policy - https://www.iubenda.com/privacy-policy/50447321

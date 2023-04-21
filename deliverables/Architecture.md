@@ -105,7 +105,7 @@ This allows the preview pane to be type-independent. Each selectable item provid
 
 In the figure below, the course holds a state "selected", which it passes to the preview pane for display (selected.preview). Then, it displays all categories, grades and its own information in the content pane. All elements in the content pane are selectable, and on click, they will set the selected value to their own ID, and a custom previewer for whatever type of item is selected (grade, category, course header, etc.).
 
-![](SelectionManager.svg)
+![selection manager](./SelectionManager.svg)
 
 Note that this is not an UML diagram as we are not using object-oriented programming. Rather, it represents a component tree with Course as its root. It is also a simplified representation of the model; this exact structure does not exist in the code.
 
@@ -131,7 +131,7 @@ We keep the course-model in sync with the server's version by updating the cours
 
 ## Backend Request Handling
 
-![](Request-cropped.svg)
+![request flowchart](./Request-cropped.svg)
 
 ### Routes
 
