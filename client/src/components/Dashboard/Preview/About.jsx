@@ -1,6 +1,6 @@
 // @ts-check
 import React from 'react'
-import About from 'pages/About';
+import About from '@/pages/About';
 
 /**
  * This component is basically a "wrapper" over the about page so that it

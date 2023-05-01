@@ -4,8 +4,11 @@
        "strict": false,
        "strictPropertyInitialization": false,
        "strictNullChecks": false,
-       "baseUrl": "src"
+       "baseUrl": ".",
+       "paths": {
+        "@/*": ["src/*"]
+       },
    },
-   "include": ["./src/**/*", "./src/img/*","custom.d.ts", "src"]
+   "include": ["./src/img/*","custom.d.ts", "src"]
 }
  

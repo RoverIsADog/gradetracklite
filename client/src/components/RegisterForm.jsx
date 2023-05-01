@@ -2,7 +2,7 @@
 import React, { useContext, useState } from "react";
 import Popup from "./Popup";
 import { apiLocation } from "../App";
-import { networkPost } from "utils/NetworkUtils";
+import { networkPost } from "@/utils/NetworkUtils";
 
 export const RegisterForm = (props) => {
   const [username, setUsername] = useState("");

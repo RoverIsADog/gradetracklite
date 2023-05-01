@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { RegisterForm } from "../components/RegisterForm";
 import { LoginForm } from "../components/LoginForm";
-import "../css/authpage.css";
+import "@/css/authpage.css";
 import { useNavigate } from "react-router-dom";
 
 /**

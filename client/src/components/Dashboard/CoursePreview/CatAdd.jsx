@@ -1,17 +1,17 @@
 // @ts-check
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import "css/dashboard/preview.css";
-import weightIco from "img/weight-svgrepo-com.svg";
-import courseIco from "img/education-books-apple-svgrepo-com.svg";
-import semesterIco from "img/calendar-svgrepo-com.svg";
-import descriptionIco from "img/open-book-svgrepo-com.svg";
+import "@/css/dashboard/preview.css";
+import weightIco from "@/img/weight-svgrepo-com.svg";
+import courseIco from "@/img/education-books-apple-svgrepo-com.svg";
+import semesterIco from "@/img/calendar-svgrepo-com.svg";
+import descriptionIco from "@/img/open-book-svgrepo-com.svg";
 import { contextCourse, contextSemester } from "../ContentPane";
 import LoadingButton from "../common/LoadingButton";
-import { networkPost } from "utils/NetworkUtils";
-import { apiLocation } from "App";
+import { networkPost } from "@/utils/NetworkUtils";
+import { apiLocation } from "@/App";
 import PreviewItemInline from "./ItemInline";
 import PreviewItemVertical from "./ItemVertical";
-import { isNumber } from "utils/Util";
+import { isNumber } from "@/utils/Util";
 
 /**
  * Renders the contents of a preview pane that allows the user to modify a

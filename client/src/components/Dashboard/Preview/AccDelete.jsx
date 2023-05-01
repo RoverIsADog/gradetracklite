@@ -1,8 +1,8 @@
 // @ts-check
-import { apiLocation } from "App";
+import { apiLocation } from "@/App";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { networkPost } from "utils/NetworkUtils";
+import { networkPost } from "@/utils/NetworkUtils";
 import LoadingButton from "../common/LoadingButton";
 
 /**

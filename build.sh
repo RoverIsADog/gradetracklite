@@ -26,7 +26,7 @@ npm run build
 
 # Copy it over the backend
 echo "Copying to backend folder..."
-cp -a build/. ../server/public/
+cp -a dist/. ../server/public/
 
 cd ../server || exit
 

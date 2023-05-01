@@ -1,17 +1,17 @@
 // @ts-check
 import React, { useContext, useMemo, useState } from "react";
-import "css/dashboard/sidebar.css";
-import "css/dashboard/content.css";
-import logoImg from "img/logo.png";
-import sunIco from "img/sun-svgrepo-com.svg";
-import moonIco from "img/moon-svgrepo-com.svg";
-import identicon from "img/identicon.png"; // TODO procedurally generate based on username??
-import logoutIco from "img/sign-out-2-svgrepo-com.svg";
-import privacyIco from "img/contract-line-svgrepo-com.svg";
+import "@/css/dashboard/sidebar.css";
+import "@/css/dashboard/content.css";
+import logoImg from "@/img/logo.png";
+import sunIco from "@/img/sun-svgrepo-com.svg";
+import moonIco from "@/img/moon-svgrepo-com.svg";
+import identicon from "@/img/identicon.png"; // TODO procedurally generate based on username??
+import logoutIco from "@/img/sign-out-2-svgrepo-com.svg";
+import privacyIco from "@/img/contract-line-svgrepo-com.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { contextTheme } from "pages/Dashboard";
+import { contextTheme } from "@/pages/Dashboard";
 import ContentSettings from "./ContentSettings";
-import { readCookie } from "utils/Util";
+import { readCookie } from "@/utils/Util";
 import jwt_decode from "jwt-decode";
 import ContentEmpty from "./ContentEmpty";
 import SemesterChoiceList from "./SemChoiceList";

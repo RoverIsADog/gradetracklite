@@ -1,7 +1,7 @@
 // @ts-check
-import { apiLocation } from "App";
+import { apiLocation } from "@/App";
 import React, { useContext } from "react";
-import { networkGet } from "utils/NetworkUtils";
+import { networkGet } from "@/utils/NetworkUtils";
 import LoadingButton from "../common/LoadingButton";
 
 /**

@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import "../css/popup.css";
-import { apiLocation } from "App";
+import { apiLocation } from "@/App";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import useFetch from "hooks/useFetch";
+import useFetch from "@/hooks/useFetch";
 import Paragraph from "./Dashboard/common/Paragraph";
 
 function Popup(props) {

@@ -1,7 +1,7 @@
 // @ts-check
 import React, { useContext, useEffect, useState } from "react";
-import plusIco from "img/plus-svgrepo-com.svg";
-import { ColoredPercent, floatToDecimalStr } from "utils/Util";
+import plusIco from "@/img/plus-svgrepo-com.svg";
+import { ColoredPercent, floatToDecimalStr } from "@/utils/Util";
 import { contextSelectedItem } from "../ContentPane";
 import ContentGradeList from "./GradeList";
 import PreviewGradeAdd from "../CoursePreview/GradeAdd";

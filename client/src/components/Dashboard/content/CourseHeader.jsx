@@ -1,10 +1,10 @@
 // @ts-check
 import React, { useContext, useEffect, useState } from "react";
-import plusIco from "img/plus-svgrepo-com.svg";
+import plusIco from "@/img/plus-svgrepo-com.svg";
 import { contextCourse, contextSelectedItem } from "../ContentPane";
 import PreviewCourseEdit from "../CoursePreview/CourseEdit";
 import PreviewCategoryAdd from "../CoursePreview/CatAdd";
-import { floatToGPAMcgill, floatToPercentStr } from "utils/Util";
+import { floatToGPAMcgill, floatToPercentStr } from "@/utils/Util";
 
 /**
  * Component that is responsible for rendering a course's header containing it name, overall

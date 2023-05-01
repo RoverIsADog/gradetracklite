@@ -1,14 +1,14 @@
 // @ts-check
 import React, { useContext, useEffect, useState } from "react";
-import plusIco from "img/plus-svgrepo-com.svg";
-import trashIco from "img/delete-1-svgrepo-com.svg";
-import semIco from "img/calendar-svgrepo-com.svg";
-import spinner from "img/loading.svg";
+import plusIco from "@/img/plus-svgrepo-com.svg";
+import trashIco from "@/img/delete-1-svgrepo-com.svg";
+import semIco from "@/img/calendar-svgrepo-com.svg";
+import spinner from "@/img/loading.svg";
 import ContentSemesterEdit from "./Preview/SemEdit";
 import ContentSemesterAdd from "./Preview/SemAdd";
 import ContentEmpty from "./ContentEmpty";
-import { networkGet, networkPost } from "utils/NetworkUtils";
-import { apiLocation } from "App";
+import { networkGet, networkPost } from "@/utils/NetworkUtils";
+import { apiLocation } from "@/App";
 
 /**
  * @typedef {{semesterID: string, semesterName: string}} Semester

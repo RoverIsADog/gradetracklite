@@ -1,10 +1,10 @@
 // @ts-check
 import React, { useContext } from "react";
-import logoImg from "img/logo.png";
-import { apiLocation } from "App";
-import useFetch from "hooks/useFetch";
+import logoImg from "@/img/logo.png";
+import { apiLocation } from "@/App";
+import useFetch from "@/hooks/useFetch";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import Paragraph from "components/Dashboard/common/Paragraph";
+import Paragraph from "@/components/Dashboard/common/Paragraph";
 
 const attrib = `
 # Attributions and copyright

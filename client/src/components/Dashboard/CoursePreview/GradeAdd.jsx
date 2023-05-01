@@ -1,17 +1,17 @@
 // @ts-check
 import React, { useContext, useEffect, useState } from "react";
-import "css/dashboard/preview.css";
-import gradeIco from "img/abacus-svgrepo-com.svg";
-import weightIco from "img/weight-svgrepo-com.svg";
-import dateIco from "img/time-svgrepo-com.svg";
-import categoryIco from "img/bookshelf-library-svgrepo-com.svg";
-import courseIco from "img/education-books-apple-svgrepo-com.svg";
-import descriptionIco from "img/open-book-svgrepo-com.svg";
+import "@/css/dashboard/preview.css";
+import gradeIco from "@/img/abacus-svgrepo-com.svg";
+import weightIco from "@/img/weight-svgrepo-com.svg";
+import dateIco from "@/img/time-svgrepo-com.svg";
+import categoryIco from "@/img/bookshelf-library-svgrepo-com.svg";
+import courseIco from "@/img/education-books-apple-svgrepo-com.svg";
+import descriptionIco from "@/img/open-book-svgrepo-com.svg";
 import { contextCourse, contextSelectedItem } from "../ContentPane";
-import { floatToPercentStr, isNumber } from "utils/Util";
+import { floatToPercentStr, isNumber } from "@/utils/Util";
 import LoadingButton from "../common/LoadingButton";
-import { networkPost } from "utils/NetworkUtils";
-import { apiLocation } from "App";
+import { networkPost } from "@/utils/NetworkUtils";
+import { apiLocation } from "@/App";
 import PreviewItemInline from "./ItemInline";
 import PreviewItemVertical from "./ItemVertical";
 

@@ -1,7 +1,7 @@
 // @ts-check
-import { apiLocation } from 'App';
+import { apiLocation } from '@/App';
 import React, { useContext, useState } from 'react'
-import { networkPost } from 'utils/NetworkUtils';
+import { networkPost } from '@/utils/NetworkUtils';
 import PreviewItemNormal from '../CoursePreview/ItemNormal';
 import LoadingButton from '../common/LoadingButton';
 

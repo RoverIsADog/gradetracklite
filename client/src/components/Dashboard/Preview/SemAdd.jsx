@@ -1,9 +1,9 @@
 // @ts-check
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import "css/dashboard/preview.css";
-import "css/dashboard/styles.css";
-import { networkPost } from "utils/NetworkUtils";
-import { apiLocation } from "App";
+import "@/css/dashboard/preview.css";
+import "@/css/dashboard/styles.css";
+import { networkPost } from "@/utils/NetworkUtils";
+import { apiLocation } from "@/App";
 import LoadingButton from "../common/LoadingButton";
 
 /**

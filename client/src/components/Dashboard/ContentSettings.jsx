@@ -1,6 +1,6 @@
 // @ts-check
 import React, { useState } from "react";
-import "css/dashboard/content.css";
+import "@/css/dashboard/content.css";
 import EmptyPreview from "./CoursePreview/EmptyPreview";
 import PreviewAccChangePwd from "./Preview/AccPwdChange";
 import PreviewAccDownload from "./Preview/AccDownload";

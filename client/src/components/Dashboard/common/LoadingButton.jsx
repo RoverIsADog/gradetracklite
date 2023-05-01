@@ -1,8 +1,8 @@
 // @ts-check
 import React, { useEffect, useState } from "react";
-import spinner from "img/loading.svg"
-import errorIco from "img/error-svgrepo-com.svg"
-import successIco from "img/checkmark-circle-svgrepo-com.svg"
+import spinner from "@/img/loading.svg"
+import errorIco from "@/img/error-svgrepo-com.svg"
+import successIco from "@/img/checkmark-circle-svgrepo-com.svg"
 
 /**
  * Represents a button that, when pressed, does some long function (usually a

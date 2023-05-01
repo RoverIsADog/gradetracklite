@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiLocation } from "../App";
-import { networkPost } from "utils/NetworkUtils";
+import { networkPost } from "@/utils/NetworkUtils";
 
 
 export const LoginForm = (props) => {
