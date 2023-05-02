@@ -1,6 +1,6 @@
 // @ts-check
 import React, { useContext } from "react";
-import { ColoredPercent } from "@/utils/Util";
+import { ColoredPercent } from "@/utils/UtilComponents";
 import { contextCourse, contextSelectedItem, contextSemester } from "../ContentPane";
 import PreviewGradeEdit from "../CoursePreview/GradeEdit";
 

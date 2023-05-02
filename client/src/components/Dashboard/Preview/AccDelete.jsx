@@ -40,7 +40,7 @@ function PreviewAccDelete() {
       <div className="preview-name">Delete Account</div>
       <div className="preview-item preview-text">
         You can request to delete your account and all associated data from the system. Please read
-        your host's privacy notice or ask them as to whether they have a data retention policy
+        your host&apos;s privacy notice or ask them as to whether they have a data retention policy
       </div>
       <div style={{ flexGrow: "1" }}></div>
       <div className="preview-item preview-buttons">

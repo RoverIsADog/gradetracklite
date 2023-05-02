@@ -1,11 +1,12 @@
 // @ts-check
 import React, { useContext, useEffect, useState } from "react";
 import plusIco from "@/img/plus-svgrepo-com.svg";
-import { ColoredPercent, floatToDecimalStr } from "@/utils/Util";
+import { floatToDecimalStr } from "@/utils/Util";
 import { contextSelectedItem } from "../ContentPane";
 import ContentGradeList from "./GradeList";
 import PreviewGradeAdd from "../CoursePreview/GradeAdd";
 import PreviewCategoryEdit from "../CoursePreview/CatEdit";
+import { ColoredPercent } from "@/utils/UtilComponents";
 
 /**
  * Component responsible for displaying a category and its associated grades

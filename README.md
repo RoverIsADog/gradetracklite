@@ -94,3 +94,9 @@ Accessible on browser (JavaScript required) at: `protocol://address:port`
 | `address` | The IP address of the host or a domain name that redirects to said address |
 | `port` | Specified in `.env`|
 
+## Setting up a development environment
+### Client
+`cd` into `client` and run `npm run dev` to start a development server serving the frontend that refreshes any time there is a change. The development server proxies every API calls to `http://localhost:8000`, so make sure the backend server runs there. You can modify this [here](./client/vite.config.js). See [package.json](./client/package.json) for more info on the scripts.
+
+### Server
+`cd` into `server` and run `npm run startDev` to start a development server that restarts on every change. See [package.json](./server/package.json) for more info on the scripts. Make sure to start it on the same port and protocol as the client development server is proxying to!
