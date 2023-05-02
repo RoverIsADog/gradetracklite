@@ -16,7 +16,6 @@ if possible.
 require("dotenv").config({ path: "conf/.env" }); // Loads .env into process.env.
 let { HTTPS_ENABLED: HTTPS_ENABLED_STR, PORT: PORT_STR, SSL_PRIVATE_KEY, SSL_CERTIFICATE, JWT_SECRET } = process.env;
 let PORT = Number(PORT_STR); // It's ok if it NaNs since we check right after
-console.log(PORT);
 let HTTPS_ENABLED = HTTPS_ENABLED_STR === "true";
 
 // HTTPS error checking
@@ -36,9 +35,10 @@ if (!HTTPS_ENABLED) {
 
 // Port selection
 if (!PORT) {
-  console.log("No port specified, starting server on default port 8000");
+  console.log("No port specified, defaulting to port 8000");
   PORT = 8000;
 }
+console.log("GradeTrackLite server starting on port " + PORT);
 
 // JWT Token Related
 if (!JWT_SECRET) {

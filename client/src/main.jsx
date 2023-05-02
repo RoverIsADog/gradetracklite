@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    {/* Keep basename up to date with package.json's homepage */}
     <BrowserRouter basename="">
       <App />
     </BrowserRouter>

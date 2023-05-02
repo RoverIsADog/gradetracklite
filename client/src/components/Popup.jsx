@@ -5,7 +5,7 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import useFetch from "@/hooks/useFetch";
 import Paragraph from "./Dashboard/common/Paragraph";
 
-function Popup(props) {
+function TermsPopup(props) {
   const apiURL = useContext(apiLocation);
 
   const {
@@ -32,14 +32,14 @@ function Popup(props) {
 
         {/* Privacy Policy */}
         <Paragraph name="Cookies, Terms and Privacy">
-        <p>This website uses two cookies: "theme" and "token"</p>
+        <p>This website uses two cookies: &quot;theme&quot; and &quot;token&quot;</p>
           <ul>
             <li>
               token: stores your authentication token. The site cannot function without it. Removed
               on logout.
             </li>
             <li>
-              theme: either "dark" or "light".{" "}
+              theme: either &quot;dark&quot; or &quot;light&quot;.{" "}
               <b>Only set if you change the theme from the default</b> (click the sun/moon).
             </li>
           </ul>
@@ -67,4 +67,4 @@ function Popup(props) {
   );
 }
 
-export default Popup;
+export default TermsPopup;

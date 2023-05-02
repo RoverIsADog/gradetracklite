@@ -2,5 +2,8 @@
 
 echo "Make sure to run build before starting"
 
-cd server
+BASEDIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $BASEDIR || exit
+
+cd server || exit
 npm start

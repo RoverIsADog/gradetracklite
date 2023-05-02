@@ -1,18 +1,28 @@
 // @ts-check
 import React from "react";
 
+/**
+ * 
+ * @typedef {{
+ *   number: number,
+ *   decimals: number,
+ * }} param0
+ * @param {param0} param0 
+ * @returns 
+ */
 export function ColoredPercent({ number, decimals = 1 }) {
   let col;
   if (number < 0.55) col = 'color-bad';
   else if (number < 0.75) col = 'color-mid';
   else col = 'color-good';
   return (
-    <span className={col}>{floatToPercentStr(number)}</span>
+    <span className={col}>{floatToPercentStr(number, decimals)}</span>
   );
 }
 
 /**
- * @param {number} number  
+ * @param {number} number
+ * @param {number?} decimals
  * @returns {string} String denoting the percentage of the provided fraction. 
  */
 export function floatToPercentStr(number, decimals = 1) {

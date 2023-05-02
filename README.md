@@ -2,7 +2,18 @@
 
 GradeTrackLite is a privacy-oriented grade tracking app that can be self hosted.
 
-**USE AT YOUR OWN RISK**. This project **prototype** was made in a short amount of time as part of a course. The _existence_ of data privacy features and meeting the deadline were the priority. Bugs, vulnerabilities, spagetti code, antipatterns, etc... may be present. Also be aware that there are risks with opening any port on your network.
+The frontend is written in Javascript using React and built using Vite. Most files make use of type hints along with `ts-check` whenever possible for greater safety. 
+
+The backend is written in Javascript using Express.
+
+## Features
+* Keep track of past and future grades
+* Keep track of course and semester GPAs
+* Hierarchy: Semester > Course > Grade Category > Grade
+
+## Disclaimer
+
+**USE AT YOUR OWN RISK**. This project **prototype** was made in a short amount of time as part of a course. The _existence_ of data privacy features and meeting the deadline were the priority. Bugs, vulnerabilities, spagetti code, antipatterns, etc. may be present. Also be aware that there are always risks with opening any port on your network. The authors of this project are not responsible for any damages arising from using this project.
 
 Here is a sample of known issues in no particular order: storing keys and secrets in a `.env` file instead of environment variables (or using a key vault), using an `.env` file in production, lack of frontend and/or backend input checking, occasional frontend-server desync, **frontend/backend console printing of debug info (potentially sensitive)**, ...
 
