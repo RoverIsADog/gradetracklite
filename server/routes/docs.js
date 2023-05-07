@@ -16,8 +16,8 @@ const router = express.Router();
  */
 
 // Load files into string form at server start.
-const privacy = fs.readFileSync("docs/privacy.md").toString();
-const terms = fs.readFileSync("docs/terms.md").toString();
+const privacy = fs.readFileSync("../data/docs/privacy.md").toString();
+const terms = fs.readFileSync("../data/docs/terms.md").toString();
 
 router.get("/privacy", (req, res) => {
   res.json({

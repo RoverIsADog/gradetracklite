@@ -8,12 +8,14 @@ const http = require("http");
 const https = require("https");
 const fs = require("fs");
 
+const datadirpath = path.join(__dirname, "../data/");
+
 /* ######################### CONFIGURATION CHECKING #########################
 Don't let the server start if anything is missing. The goal is to not
 have to depend on environment variables or config files pas this point,
 if possible.
 */
-require("dotenv").config({ path: "conf/.env" }); // Loads .env into process.env.
+require("dotenv").config({ path: path.join(datadirpath, "conf/.env") }); // Loads .env into process.env.
 let { HTTPS_ENABLED: HTTPS_ENABLED_STR, PORT: PORT_STR, SSL_PRIVATE_KEY, SSL_CERTIFICATE, JWT_SECRET } = process.env;
 let PORT = Number(PORT_STR); // It's ok if it NaNs since we check right after
 let HTTPS_ENABLED = HTTPS_ENABLED_STR === "true";
@@ -27,7 +29,7 @@ if (!HTTPS_ENABLED) {
     console.error("Your have enabled HTTPS. You must specify the location of your private key and certificate in environment variables SSL_PRIVATE_KEY and SSL_CERTIFICATE.");
     process.exit(0); // Exit application
   }
-  if (!fs.existsSync(path.join(__dirname, SSL_PRIVATE_KEY)) || !fs.existsSync(path.join(__dirname, SSL_CERTIFICATE))) {
+  if (!fs.existsSync(path.join(datadirpath, SSL_PRIVATE_KEY)) || !fs.existsSync(path.join(datadirpath, SSL_CERTIFICATE))) {
     console.error("Either the SSL key or certificate could not be found");
     process.exit(0);
   }
@@ -56,7 +58,7 @@ SQLite is (actually) serverless and we can just import it at every file
 when required.
 */
 const app = express();
-const db = new sqlite3.Database(path.join(__dirname, "database.db"));
+const db = new sqlite3.Database(path.join(datadirpath, "database.db"));
 db.get("PRAGMA foreign_keys = ON");
 
 /* FIXME cors is redundant now that we're hosting the website on the
@@ -274,9 +276,9 @@ if (HTTPS_ENABLED) {
     .createServer(
       {
         // @ts-ignore
-        key: fs.readFileSync(path.join(__dirname, SSL_PRIVATE_KEY)),
+        key: fs.readFileSync(path.join(datadirpath, SSL_PRIVATE_KEY)),
         // @ts-ignore
-        cert: fs.readFileSync(path.join(__dirname, SSL_CERTIFICATE)),
+        cert: fs.readFileSync(path.join(datadirpath, SSL_CERTIFICATE)),
       },
       app
     )

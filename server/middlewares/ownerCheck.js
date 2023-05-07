@@ -2,7 +2,7 @@
 // Database
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
-const db = new sqlite3.Database(path.join(__dirname, "../database.db"));
+const db = new sqlite3.Database(path.join(__dirname, "../../data/database.db"));
 db.get("PRAGMA foreign_keys = ON");
 // Routing
 const express = require("express");

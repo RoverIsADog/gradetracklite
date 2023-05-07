@@ -33,6 +33,9 @@ cd ../server || exit
 npm install
 
 # Creating configuration files, if doesn't exist
+mkdir ../data > /dev/null
+cd ../data || exit
+
 if [[ ! -f conf/.env ]]; then
     echo "Missing .env configuration file. Creating it now with default values...";
     mkdir -p conf/ > /dev/null
@@ -51,15 +54,23 @@ if [[ ! -f conf/.env ]]; then
     echo 'SSL_CERTIFICATE = conf/cert.pem' >> conf/.env
 fi
 
-# Creating sample privacy policies if doesn't exist
-if [[ ! -f docs/privacy.md || ! -f docs/terms.md ]]; then
+# Creating sample privacy policy if doesn't exist
+if [[ ! -f docs/privacy.md ]]; then
+    echo "Missing privacy policy. Creating lorem ipsum sample."
     mkdir -p docs/ > /dev/null
+
     touch docs/privacy.md > /dev/null
     echo '# Privacy Policy' >> docs/privacy.md
     echo 'This is a sample privacy policy. You are free to change it.' >> docs/privacy.md
     echo '## Praesent est est' >> docs/privacy.md
     echo 'Praesent pretium rutrum nunc, vitae feugiat sapien ultrices bibendum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur auctor condimentum tortor, id tempus tellus fringilla sed. Curabitur malesuada velit et metus aliquet lobortis. Praesent magna sapien, euismod semper mi ut, molestie egestas enim. Praesent quis efficitur nisl. Praesent est est, aliquam ut metus id, tempor tempor ipsum.' >> docs/privacy.md
-    
+fi
+
+# Creating terms if doesn't exist
+if [[ ! -f docs/terms.md ]]; then
+    echo "Missing terms and conditions. Creating lorem ipsum sample."
+    mkdir -p docs/ > /dev/null
+
     touch docs/terms.md > /dev/null
     echo '# Terms of use' >> docs/terms.md
     echo 'This is a sample terms of use. You are free to change it.' >> docs/terms.md
@@ -72,8 +83,8 @@ echo "#         Build COMPLETE        #"
 echo "#################################"
 echo "Next steps: start the server (either start.sh or npm start in the server folder)"
 echo "Adding SSL encryption? To quickly setup a self-signed SSL key:"
-echo "(1): Toggle USE_HTTPS to true in server/conf/.env"
-echo "(2): Generate a SSL key in server/conf"
+echo "(1): Toggle USE_HTTPS to true in /data/conf/.env"
+echo "(2): Generate a SSL key in /data/conf"
 echo "        --> openssl genrsa -out key.pem"
 echo "(3): Generate a certification request for the key"
 echo "        --> openssl req -new -key key.pem -out csr.pem"

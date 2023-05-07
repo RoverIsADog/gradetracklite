@@ -1,0 +1,13 @@
+# DOCKER ONLY CHECKS FOR .dockerignore IN THE ROOT FOLDER, not subfolders
+
+# Client stuff
+
+client/node_modules
+client/dist
+
+# Server stuff
+
+server/node_modules
+# We want to copy over the newly compiled ui from the react-build image, not whatever's in the
+# "public" folder in the host filesystem. 
+server/public

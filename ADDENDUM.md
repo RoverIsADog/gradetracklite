@@ -7,13 +7,13 @@ If you have no way to run bash scripts, the steps below are what the build and s
 1. `cd` into the `client` folder, and run `npm install` to install all the client dependencies.
 2. Compile the client using `npm run build`
 3. Create a folder `server/public`
-4. Copy the **contents** of the `build` folder into `server/public` (don't copy the build folder). The `server/public` folder should now contain a folder `staic`, `index.html` and a few other files.
+4. Copy the **contents** of the `build` folder into `server/public` (don't copy the build folder itself). The `server/public` folder should now contain `static/`, `index.html` and a few other files.
 
 ## Creating required files
 
-1. Inside `server/conf`, **create a file `.env`** (you can copy from the one above).
-2. Inside `server/docs`, **create a file `privacy.md`** and fill it with your privacy policy.
-3. Inside `server/docs`, **create a file `terms.md`** and fill it with your terms of use.
+1. Inside `data/conf`, **create a file `.env`** (you can copy from the one below).
+2. Inside `data/docs`, **create a file `privacy.md`** and fill it with your privacy policy written in md.
+3. Inside `data/docs`, **create a file `terms.md`** and fill it with your terms of use written in md.
 4. At this point, you will want to change the JWT_SECRET and enable HTTPS as explained in the [readme](./README.md).
 
 ## Starting the server
@@ -25,7 +25,7 @@ If you have no way to run bash scripts, the steps below are what the build and s
 
 You will need the `openssl` command line utility. If unavailable, you will need to find another way to generate a key and certificate.
 
-* Generate a SSL key in `server/conf`.
+* Generate a SSL key in `data/conf`.
 
 ```bash
 # cd into server/conf, then:
@@ -53,3 +53,19 @@ When entering `host.com`, browsers will default to using HTTP and the HTTP port 
 Assuming you are hosting on `gtl.mydomain.com` and have HTTPS enabled, you should preferrably host on port 443. However, most users are used to typing only `gtl.mydomain.com`, which defaults to `http://gtl.mydomain.com:80`, where there is nothing. To avoid this and make it convenient to users, you can setup a webserver on port 80 which permanently redirects to the HTTPS address: `https://gtl.mydomain.com:443`.
 
 The GradeTrackLite server does not support displaying a website at both the HTTP and HTTPS ports simultaneously.
+
+## Sample `.env` file
+```yaml
+# The following keys are relating to JWT secrets
+JWT_SECRET = "some_random_string"
+JWT_EXPIRATION_TIME = 86400
+
+# What port to run the server on
+PORT = 8000
+
+# The following keys are relating the whether to use HTTPS.
+# SSL_PRIVATE_KEY and SSL_CERTIFICATE only required if using HTTPS.
+HTTPS_ENABLED = false
+SSL_PRIVATE_KEY = conf/key.pem
+SSL_CERTIFICATE = conf/cert.pem
+```
