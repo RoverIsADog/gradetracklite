@@ -2,91 +2,58 @@
 
 GradeTrackLite is a privacy-oriented grade tracking app that can be self hosted.
 
-The frontend is written in Javascript using React and built using Vite. Most files make use of type hints along with `ts-check` whenever possible for greater safety. 
+The frontend is written in Javascript using React and built using Vite. Most files make use of type hints along with `ts-check` whenever possible for greater safety. The backend is written in Javascript using Express.
 
-The backend is written in Javascript using Express.
+> NOTE: Read the [disclaimer](#disclaimer)!
 
 ## Features
 * Keep track of past and future grades
-* Keep track of course and semester GPAs
+* Compute and keep track of averages and course GPAs
 * Hierarchy: Semester > Course > Grade Category > Grade
-
-## Disclaimer
-
-**USE AT YOUR OWN RISK**. This project **prototype** was made in a short amount of time as part of a course. The _existence_ of data privacy features and meeting the deadline were the priority. Bugs, vulnerabilities, spagetti code, antipatterns, etc. may be present. Also be aware that there are always risks with opening any port on your network. The authors of this project are not responsible for any damages arising from using this project.
-
-Here is a sample of known issues in no particular order: storing keys and secrets in a `.env` file instead of environment variables (or using a key vault), using an `.env` file in production, lack of frontend and/or backend input checking, occasional frontend-server desync, **frontend/backend console printing of debug info (potentially sensitive)**, ...
+* Dark and light mode (only in the dashboard)
 
 ## Requirements
 
 * Node.js installed on your system. Download it [here](https://nodejs.org/).
-* A system capable to run bash files (e.g. linux, macOS). If you are using Windows, you can run the scripts using Git Bash, MinGW, etc. Otherwise, you'll have to follow the manual installation instructions [here](./ADDENDUM.md#manual-installation-instructions).
+* A system capable of running bash files (e.g. linux, macOS). If you are using Windows, you can run the scripts using Git Bash, MinGW, etc. Otherwise, you'll have to follow the manual installation instructions [here](./ADDENDUM.md#manual-installation-instructions).
 * Rudimentary familiarity with the command line and opening ports.
+* Docker (if running in a container).
 
-## Quick Installation
+## 1. Building
 
-In the root folder, run the build script. It will compile GradeTrackLite and create the required files.
+Docker instructions below.
+
+In the root folder, run the build script. This all-in-one script will compile GradeTrackLite and create sample data files inside `/data/`. 
 
 ```bash
 ./build.sh
 ```
 
-## Before Starting
+## 2. Modifying data files (optional) 
+* You may want to modify the sample config file at `/data/conf/.env`.
+  * Change the `JWT_SECRET` to a secret string only you know. Don't leave it as the default.
+* You should replace the lorem ipsum privacy policy and terms of use with your own in `/data/docs` (written in maarkdown).
+* If you have previous GTL user data, move the old `database.db` into `/data/`.
 
-The build script will create a couple of files, which you may want to modify.
+> ### Quickly get HTTPS up and running: 
+> * Toggle HTTPS_ENABLED to true in `/data/conf/.env`
+> * [Self generate a key and certificate](./ADDENDUM.md#self-generating-a-key-and-certificate) or provide your own.
+> * Put the SSL key and certificate in `/data/conf/` as `key.pem` and `cert.pem` respectively.
+> 
+> You may want to have an [HTTP redirect server](/ADDENDUM.md#http-redirection) for convenience.
 
-### `server/docs`
+## 3. Opening ports (optional)
+If you intend to use GTL outside of your local network, you will need to open the port specified in the configuration file. Using HTTPS strongly recommended.
 
-The `docs` folder contains the privacy policy (`privacy.md`) and the terms of use (`terms.md`) that will be shown to users of your GradeTrackLite instance. The build script will insert lorem ipsum into them, and you should change it to your practices.
-
-They are parsed as markdown.
-
-### `server/conf`
-
-The `conf` folder contains your GradeTrackLite instance's configuration files. **These settings are crucial to the security of your GTL instance.**
-
-You should change the `JWT_SECRET` to a secret string only you know. Don't leave it as the default.
-
-We also recommend you enable HTTPS by providing your own SSL key and certificate so that data is encrypted during traffic. Place your key in the `conf` folder named `key.pem` and the certificate next to it named `cert.pem`. You can find more info at the bottom of the page.
-
-`.env`
-
-```yaml
-# The jwt secret is used for token signing.
-JWT_SECRET = "some_random_string"
-# How long before users need to login again.
-JWT_EXPIRATION_TIME = 86400
-
-# What port to run the server on.
-PORT = 8000
-
-# The following keys are relating the whether to use HTTPS.
-# SSL_PRIVATE_KEY and SSL_CERTIFICATE only required if using HTTPS (paths to key/cert).
-# Their paths are relative to the server folder.
-HTTPS_ENABLED = false
-SSL_PRIVATE_KEY = conf/key.pem
-SSL_CERTIFICATE = conf/cert.pem
-```
-
-To quickly get HTTPS up and running:
-
-* Toggle USE_HTTPS to true in `server/conf/.env`
-* [Self generate a key and certification](./ADDENDUM.md#self-generating-a-key-and-certificate) or provide your own (make sure to update `SSL_PRIVATE_KEY` and `SSL_CERTIFICATE` to their paths in `.env`).
-
-You may want to have an [HTTP redirect server](/ADDENDUM.md#http-redirection) for convenience.
-
-Finally, you must open the port you are using (or port forward it to an open port).
-
-## Starting
+## 4. Starting
 
 ```bash
-# Clone the repository and cd into its folder, then:
 ./start.sh
 ```
 
-## Using
+## 5. Accessing
 
-Accessible on browser (JavaScript required) at: `protocol://address:port`
+Accessible on any browser (JavaScript required) at: `protocol://address:port`. It has only been tested on Chrome and Firefox.
 
 | URL component | Replace with |
 | --- | --- |
@@ -94,9 +61,43 @@ Accessible on browser (JavaScript required) at: `protocol://address:port`
 | `address` | The IP address of the host or a domain name that redirects to said address |
 | `port` | Specified in `.env`|
 
-## Setting up a development environment
-### Client
-`cd` into `client` and run `npm run dev` to start a development server serving the frontend that refreshes any time there is a change. The development server proxies every API calls to `http://localhost:8000`, so make sure the backend server runs there. You can modify this [here](./client/vite.config.js). See [package.json](./client/package.json) for more info on the scripts.
+## Using Docker
 
-### Server
-`cd` into `server` and run `npm run startDev` to start a development server that restarts on every change. See [package.json](./server/package.json) for more info on the scripts. Make sure to start it on the same port and protocol as the client development server is proxying to!
+It is preferrable to use docker-compose for simplicity. If you prefer manually setting docker up, then [see here](/ADDENDUM.md#manual-installation-docker). 
+
+In the root folder, create a `docker-compose.yml` file with the following contents.
+
+```yaml
+version: '3'
+services:
+  gradetracklite:
+    image: gradetracklite:1.0
+    build: .
+    container_name: gradetracklite_c1
+    ports:
+      # Make sure to update this if you changed the port in the configs
+      - "8000:8000"
+    volumes:
+      # "./data" can be placed wherever on host system
+      - ./data:/gradetracklite/data 
+
+```
+
+**Create the data files** with `./createconfigs.sh` and modify them (see step 2 above, optional)
+
+**Start** with `docker-compose up`
+
+**Stop** with `docker-compose down` in another terminal window.
+ * If you don't want GTL images lingering around, then use `docker-compose down --rmi all --volumes` to also delete them.
+
+## Read more
+* [Manual installation](/ADDENDUM.md#manual-installation-instructions)
+* [Self gen+cert key](/ADDENDUM.md#self-generating-a-key-and-certificate)
+* [Setting up a development environment](/ADDENDUM.md#setting-up-a-development-environment)
+* [HTTP redirection](/ADDENDUM.md#http-redirection)
+
+## Disclaimer
+
+**USE AT YOUR OWN RISK**. This project **prototype** was made in a short amount of time as part of a data privacy course. The _existence_ of data privacy features and meeting the deadline were the priority. Bugs, vulnerabilities, spagetti code, antipatterns, etc. may be present. Also be aware that there are always risks with opening any port on your network. The authors of this project are not responsible for any damages arising from using this project.
+
+Here is a sample of known issues in no particular order: storing keys and secrets in a `.env` file instead of environment variables (or using a key vault), using an `.env` file in production, lack of frontend and/or backend input checking, occasional frontend-server desync, **frontend/backend console printing of debug info (potentially sensitive)**, ...

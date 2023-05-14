@@ -263,7 +263,7 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
 
   // Get the course information
   const { courseID, courseName, courseCredits, courseDescription } = modifiedCourse;
-  if (!courseID || !courseName || !courseCredits || !courseDescription) {
+  if (!courseID || !courseName || !courseCredits || (!courseDescription && courseDescription !== '')) {
     res.sendStatus(400).json({
       error: -2,
       message: "Error: missing required field",

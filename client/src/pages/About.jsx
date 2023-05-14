@@ -130,11 +130,11 @@ Delete icon:
 
 ## Licenses
 
-Some licenses require a copy of the license to be included with the resource. They are included below.
+Some resoures have licenses that require a copy itself to be included with the resource. They are included below.
 
 ### Icons under the MIT License
 
-Replace copyright holder with author. Years are not specified and could not be found.
+Replace copyright holder with author in list above. Years are not specified and could not be found.
 
 \`\`\`txt
 MIT License

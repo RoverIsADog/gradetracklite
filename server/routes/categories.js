@@ -119,7 +119,7 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
 
   // Get the category information
   const { categoryID, categoryName, categoryWeight, categoryDescription } = modifiedCategory;
-  if (!categoryID || !categoryName || !categoryWeight || !categoryDescription) {
+  if (!categoryID || !categoryName || !categoryWeight || (!categoryDescription && categoryDescription !== "")) {
     res.sendStatus(400).json({
       error: -2,
       message: "Error: missing required field",

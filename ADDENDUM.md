@@ -9,23 +9,63 @@ If you have no way to run bash scripts, the steps below are what the build and s
 3. Create a folder `server/public`
 4. Copy the **contents** of the `build` folder into `server/public` (don't copy the build folder itself). The `server/public` folder should now contain `static/`, `index.html` and a few other files.
 
-## Creating required files
+## Creating data files
 
-1. Inside `data/conf`, **create a file `.env`** (you can copy from the one below).
-2. Inside `data/docs`, **create a file `privacy.md`** and fill it with your privacy policy written in md.
-3. Inside `data/docs`, **create a file `terms.md`** and fill it with your terms of use written in md.
-4. At this point, you will want to change the JWT_SECRET and enable HTTPS as explained in the [readme](./README.md).
+1. Inside `/data/conf`, **create a file `.env`** (you can copy the one below).
+2. Inside `/data/docs`, **create a file `privacy.md`** and fill it with your privacy policy written in markdown.
+3. Inside `/data/docs`, **create a file `terms.md`** and fill it with your terms of use written in markdown.
+4. At this point, you will want to change the JWT_SECRET and enable HTTPS as explained in the [README](./README.md).
+
+Sample `/data/conf/.env` file
+```yaml
+# The following keys are relating to JWT secrets
+JWT_SECRET = "some_random_string"
+JWT_EXPIRATION_TIME = 86400
+
+# What port to run the server on
+PORT = 8000
+
+# The following keys are relating the whether to use HTTPS.
+# SSL_PRIVATE_KEY and SSL_CERTIFICATE only required if using HTTPS.
+HTTPS_ENABLED = false
+SSL_PRIVATE_KEY = conf/key.pem
+SSL_CERTIFICATE = conf/cert.pem
+```
 
 ## Starting the server
 
 1. `cd` into the `server` folder, and run `npm install` to install all the server dependencies.
 2. Start the server by running `npm run start`
 
+# Manual Installation (Docker)
+If you prefer manually building the image and running a docker container, then follow these steps.
+## Building image
+In the root folder, create a docker image from scratch from the dockerfile (you can name it whatever you want).
+```bash
+docker build --tag gradetracklite:1.0 .
+```
+Then, generate the sample data files inside `/data/`.
+```bash
+./generateconfigs.sh
+```
+If you are unable to run the bash script, you will have to [create the data files yourself](/ADDENDUM.md#creating-data-files).
+
+## Modify the data files (optional)
+See readme.
+
+## Run the container
+Run the previously created image.
+```sh
+# If using docker-compose, ignore this
+docker run --name gradetracklite_c1 --volume ./data:/gradetracklite/data --publish 8000:8000 gradetracklite:1.0
+# If on Windows, you MUST use DOS paths for the host folder. I.e. use ".\data:..." instead of /data:..."
+```
+
 # Self generating a key and certificate
 
 You will need the `openssl` command line utility. If unavailable, you will need to find another way to generate a key and certificate.
 
-* Generate a SSL key in `data/conf`.
+* Generate a SSL key in `/data/conf/`.
 
 ```bash
 # cd into server/conf, then:
@@ -54,18 +94,10 @@ Assuming you are hosting on `gtl.mydomain.com` and have HTTPS enabled, you shoul
 
 The GradeTrackLite server does not support displaying a website at both the HTTP and HTTPS ports simultaneously.
 
-## Sample `.env` file
-```yaml
-# The following keys are relating to JWT secrets
-JWT_SECRET = "some_random_string"
-JWT_EXPIRATION_TIME = 86400
+# Setting up a development environment
+### Client
+`cd` into `client` and run `npm run dev` to start a development server serving the frontend that refreshes any time there is a change. The development server proxies every API calls to `http://localhost:8000`, so make sure the backend server runs there. You can modify this [here](./client/vite.config.js). See [package.json](./client/package.json) for more info on the scripts.
 
-# What port to run the server on
-PORT = 8000
+### Server
+`cd` into `server` and run `npm run startDev` to start a development server that restarts on every change. See [package.json](./server/package.json) for more info on the scripts. Make sure to start it on the same port and protocol as the client development server is proxying to!
 
-# The following keys are relating the whether to use HTTPS.
-# SSL_PRIVATE_KEY and SSL_CERTIFICATE only required if using HTTPS.
-HTTPS_ENABLED = false
-SSL_PRIVATE_KEY = conf/key.pem
-SSL_CERTIFICATE = conf/cert.pem
-```

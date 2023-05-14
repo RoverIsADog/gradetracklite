@@ -1,7 +1,5 @@
+# Compile the client into /gradetracklite/client/ in a temp stage
 FROM node:18-alpine AS react-build
-
-
-# Compile the client into /gradetracklite/client/
 
 # Install first to allow layer caching (takes a long time)
 WORKDIR /gradetracklite/client
@@ -12,6 +10,7 @@ RUN npm install
 COPY ./client/ .
 RUN npm run build
 
+# Stage 2: copy over ui artifacts into server
 FROM node:18-alpine AS server-build
 
 # Copy the compiled client ui into /gradetracklite/server/dist
@@ -30,3 +29,4 @@ EXPOSE 8000
 
 # Actually start the server
 CMD ["npm", "run", "start"]
+

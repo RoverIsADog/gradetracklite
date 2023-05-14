@@ -121,7 +121,7 @@ router.post("/edit", isOwnerMWEdit, (req, res) => {
 
   // Get the category information
   const { gradeID, gradeName, gradeWeight, gradePointsAct, gradePointsMax, gradeDescription, gradeDate } = modifiedGrade;
-  if (!gradeID || !gradeName || !isNumber(gradeWeight) || !isNumber(gradePointsAct) || !gradePointsMax || !gradeDescription || !gradeDate) {
+  if (!gradeID || !gradeName || !isNumber(gradeWeight) || !isNumber(gradePointsAct) || !gradePointsMax || (!gradeDescription && gradeDescription !== "") || !gradeDate) {
     res.sendStatus(400).json({
       error: -2,
       message: "Error: missing required field",
