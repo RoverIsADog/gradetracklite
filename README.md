@@ -71,7 +71,7 @@ In the root folder, create a `docker-compose.yml` file with the following conten
 version: '3'
 services:
   gradetracklite:
-    image: gradetracklite:1.0
+    image: gradetracklite:1.1
     build: .
     container_name: gradetracklite_c1
     ports:

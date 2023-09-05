@@ -42,7 +42,7 @@ If you prefer manually building the image and running a docker container, then f
 ## Building image
 In the root folder, create a docker image from scratch from the dockerfile (you can name it whatever you want).
 ```bash
-docker build --tag gradetracklite:1.0 .
+docker build --tag gradetracklite:1.1 .
 ```
 Then, generate the sample data files inside `/data/`.
 ```bash
@@ -57,7 +57,7 @@ See readme.
 Run the previously created image.
 ```sh
 # If using docker-compose, ignore this
-docker run --name gradetracklite_c1 --volume ./data:/gradetracklite/data --publish 8000:8000 gradetracklite:1.0
+docker run --name gradetracklite_c1 --volume ./data:/gradetracklite/data --publish 8000:8000 gradetracklite:1.1
 # If on Windows, you MUST use DOS paths for the host folder. I.e. use ".\data:..." instead of /data:..."
 ```
 
